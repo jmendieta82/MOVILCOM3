@@ -1,31 +1,32 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
-import 'package:movilcomercios/src/internet_services/dio/paths.dart';
+import 'package:movilcomercios/src/internet_services/dio/dio_exception.dart';
 
 /// Create a singleton class to contain all Dio methods and helper functions
 class DioClient {
   DioClient._();
-
   static final instance = DioClient._();
 
   final Dio _dio = Dio(
       BaseOptions(
-          baseUrl: baseUrl,
+          baseUrl: "http://192.168.1.103:8000/",
+          //baseUrl: "https://api-produccion-recargas-mrn.click/",
           connectTimeout: const Duration(seconds: 60),
           receiveTimeout: const Duration(seconds: 60),
           responseType: ResponseType.json,
           contentType: 'application/json',
-          headers: {'Authorization': 'Token 8583bfb912ad624fee1c8a14162bb237cfec69a7'})
+          )
   );
-
+  void setAuthToken(String token) {
+    _dio.options.headers['Authorization'] = 'Token $token';
+  }
   ///Get Method
   Future<List<dynamic>> get(
       String path, {
         Map<String, dynamic>? queryParameters,
         Options? options,
         CancelToken? cancelToken,
-        ProgressCallback? onReceiveProgress
+        ProgressCallback? onReceiveProgress,
       }) async{
     try{
       final Response response = await _dio.get(
@@ -38,7 +39,7 @@ class DioClient {
       if(response.statusCode == 200){
         return response.data;
       }
-      throw "something went wrong";
+      throw Exception("Received status code ${response.statusCode}");
     } catch(e){
       rethrow;
     }
@@ -52,7 +53,7 @@ class DioClient {
         Options? options,
         CancelToken? cancelToken,
         ProgressCallback? onSendProgress,
-        ProgressCallback? onReceiveProgress
+        ProgressCallback? onReceiveProgress,
       }) async {
     try {
       final Response response = await _dio.post(
@@ -72,12 +73,14 @@ class DioClient {
             // Utilizar decodedData como un mapa
             return decodedData;
           }
+        }else{
+          return response.data;
         }
         throw "Response data is not in the expected format";
       }
-      throw "something went wrong";
-    } catch (e) {
-      rethrow;
+      throw Exception("Received status code ${response.statusCode}");
+    }on DioException catch (e) {
+      throw DioExceptionCustom.fromDioError(e);
     }
   }
 }

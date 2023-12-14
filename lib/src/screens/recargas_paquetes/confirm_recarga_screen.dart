@@ -1,14 +1,14 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:movilcomercios/src/models/venta_recarga_paquete.dart';
-import 'package:movilcomercios/src/providers/recargas_paquetes_provider.dart';
-
+import 'package:movilcomercios/src/models/recargas/paquetes.dart';
+import 'package:movilcomercios/src/providers/ventas_provider.dart';
 import '../../app_router/app_router.dart';
-import '../../internet_services/venta_api_conection.dart';
-import '../../models/lista_ventas.dart';
+import '../../internet_services/common/login_api_conection.dart';
+import '../../internet_services/recargas/venta_api_conection.dart';
+import '../../models/recargas/ws_recargas.dart';
 import '../../providers/lista_ventas_provider.dart';
+
 
 class ConfirmRecargasPaquetesScreen extends ConsumerWidget {
   const ConfirmRecargasPaquetesScreen({super.key});
@@ -18,6 +18,8 @@ class ConfirmRecargasPaquetesScreen extends ConsumerWidget {
     final empresaSeleccionada = ref.watch(empresaSeleccionadaProvider);
     final valorSeleccionado = ref.watch(valorSeleccionadoProvider);
     final telefonoSeleccionado = ref.watch(telefonoSeleccionadoProvider);
+    final paqueteSeleccionado = ref.watch(paqueteSeleccionadoProvider);
+    final usuarioConectado = ref.watch(usuarioConectadoProvider);
     final route  = ref.watch(appRouteProvider);
     final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
       locale: 'es-Co', decimalDigits: 0,symbol: '',
@@ -56,7 +58,16 @@ class ConfirmRecargasPaquetesScreen extends ConsumerWidget {
                 Expanded(
                   child: ListView(
                     children: [
-                       ListTile(
+                      if (paqueteSeleccionado.nomProducto != null)
+                      ListTile(
+                        title: Text(paqueteSeleccionado.nomProducto.toString(),
+                          style: const TextStyle(
+                              color: Colors.blueGrey,
+                              fontSize: 20),
+                          textAlign: TextAlign.justify,),
+                        subtitle: const Text('Paquete en venta',textAlign: TextAlign.right),
+                      ),
+                      ListTile(
                         title: Text(telefonoSeleccionado,
                           style: const TextStyle(
                               color: Colors.blueGrey,
@@ -89,78 +100,52 @@ class ConfirmRecargasPaquetesScreen extends ConsumerWidget {
                         ),
                         child: const Text('Vender con saldo'),
                         onPressed: () async {
-                          final objVenta = {
-                            'nodo': '15',
-                            'usuario_mrn':'15',
-                            'producto_venta':'1',
-                            'producto':'42',
-                            'valor':1000,
-                            'celular':'3178551266',
-                            'canal_transaccion':'2',
-                            'transaccion_externa':'0',
-                            'documento':'1088310088',
-                            'oficina':'',
-                            'matricula':'',
-                            'email':'',
-                            'recargas_multiproducto':'1',
-                            'token':'',
-                            'nombre':'',
-                            'cod_municipio':'',
-                            'cant_sorteos':'0',
-                            'cant_cartones':'0',
-                            'bolsa_ganancia':'',
-                            'venta_ganancias':false,
-                            'medioVenta':'Movil',
-                            'tipo_datos':'Propios',
-                            'tipo_red':'Wifi',
-                            'app_ver':'3'
-                          };
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Realizando venta...'),
-                                content: FutureBuilder(
-                                  future: VentaApiConnection(obj: objVenta).ventaRecarga(),
-                                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                                    if (snapshot.connectionState == ConnectionState.waiting) {
-                                      return const Center(
-                                        child: CircularProgressIndicator(), // Indicador de carga mientras espera la respuesta
-                                      );
-                                    } else {
-                                      if (snapshot.hasError) {
-                                        return Text('Error: ${snapshot.error}');
-                                        // Manejo de errores si ocurre algún problema con la petición
-                                      } else {
-                                        // Operación completada, muestra el resultado en un diálogo
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: const Text('Resultado de la venta'),
-                                              content: Text(snapshot.data.mensaje.toString()),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  onPressed: () {
-                                                    ref.read(telefonoSeleccionadoProvider.notifier).update((state) => '');
-                                                    ref.read(valorSeleccionadoProvider.notifier).update((state) => 0);
-                                                    ref.read(empresaSeleccionadaProvider.notifier).update((state) => ListaVentas());
-                                                    Navigator.of(context).pop(); // Cierra el popup
-                                                  },
-                                                  child: const Text('Cerrar'),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                        return Container(); // Puedes retornar un contenedor vacío aquí
-                                      }
-                                    }
-                                  },
-                                ),
-                              );
-                            },
+                          final obj  = MSData(
+                            nodo: usuarioConectado.nodoId.toString(),
+                            usuario_mrn:usuarioConectado.id.toString(),
+                            producto_venta:paqueteSeleccionado.id.toString(),
+                            producto:paqueteSeleccionado.codigoProducto.toString(),
+                            valor:paqueteSeleccionado.valorProducto != 0?paqueteSeleccionado.valorProducto:valorSeleccionado,
+                            celular: telefonoSeleccionado.replaceAll(RegExp(r'[^0-9]'), ''),
                           );
+                          ventaRecarga(obj).then((resultado) {
+                            print(resultado.toJson());
+                            showModalBottomSheet(
+                              isDismissible: false,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return SizedBox(
+                                  height: 200,
+                                  child: Center(
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 30),
+                                          child: Text('${resultado.mensaje}'),
+                                        ),
+                                        const SizedBox( height: 20.0),
+                                        ElevatedButton(
+                                            onPressed: (){
+                                              if(resultado.codigo != '500'){
+                                                ref.read(ventaResponseProvider.notifier).update((state) =>resultado.data!);
+                                                route.go('/venta_result');
+                                              }else{
+                                                route.go('/recargas_paquetes');
+                                              }
+                                            },
+                                            child: const Text('Aceptar'))
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                            // Puedes realizar más operaciones con el resultado si es necesario
+                          })
+                              .catchError((error) {
+                            // Manejar los errores si ocurre algún problema con la petición
+                            print('Error: $error');
+                          });
                         }
                     ),
                     TextButton(
@@ -169,7 +154,53 @@ class ConfirmRecargasPaquetesScreen extends ConsumerWidget {
                       ),
                       child: const Text('Vender con ganancias'),
                       onPressed: () {
-                        //TODO implementar venta con ganancias
+                        final obj  = MSData(
+                          nodo: usuarioConectado.nodoId.toString(),
+                          usuario_mrn:usuarioConectado.id.toString(),
+                          producto_venta:paqueteSeleccionado.id.toString(),
+                          producto:paqueteSeleccionado.codigoProducto.toString(),
+                          valor:paqueteSeleccionado.valorProducto != 0?paqueteSeleccionado.valorProducto:valorSeleccionado,
+                          celular: telefonoSeleccionado.replaceAll(RegExp(r'[^0-9]'), ''),
+                          venta_ganancias: true
+                        );
+                        ventaRecarga(obj).then((resultado) {
+                          print(resultado.toJson());
+                          showModalBottomSheet(
+                            isDismissible: false,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return SizedBox(
+                                height: 200,
+                                child: Center(
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 30),
+                                        child: Text('${resultado.mensaje}'),
+                                      ),
+                                      const SizedBox( height: 20.0),
+                                      ElevatedButton(
+                                          onPressed: (){
+                                            if(resultado.codigo != '500'){
+                                              ref.read(ventaResponseProvider.notifier).update((state) =>resultado.data!);
+                                              route.go('/venta_result');
+                                            }else{
+                                              route.go('/recargas_paquetes');
+                                            }
+                                          },
+                                          child: const Text('Aceptar'))
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                          // Puedes realizar más operaciones con el resultado si es necesario
+                        })
+                            .catchError((error) {
+                          // Manejar los errores si ocurre algún problema con la petición
+                          print('Error: $error');
+                        });
                       },
                     ),
                   ],
@@ -181,14 +212,8 @@ class ConfirmRecargasPaquetesScreen extends ConsumerWidget {
                         style: TextButton.styleFrom(
                           padding: const EdgeInsets.all(16.0),
                         ),
-                        child: const Text('Cancelar'),
+                        child: const Text('Atras'),
                         onPressed: () {
-                          ref.read(telefonoSeleccionadoProvider.notifier).update((
-                              state) => '');
-                          ref.read(valorSeleccionadoProvider.notifier).update((
-                              state) => 0);
-                          ref.read(empresaSeleccionadaProvider.notifier).update((
-                              state) => ListaVentas());
                           route.go('/recargas_paquetes');
                         }
                     ),

@@ -1,8 +1,11 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:movilcomercios/src/models/ultimas_ventas.dart';
-import '../internet_services/ultimas_ventas_api_conection.dart';
+import 'package:movilcomercios/src/models/common/ultimas_ventas.dart';
+import 'package:tuple/tuple.dart';
+import '../internet_services/common/ultimas_ventas_api_conection.dart';
 
-final ultimasVentasListProvider = FutureProvider<List<UltimasVentas>>((ref) async {
-  return ref.watch(ultimasVentsaProvider).getUltimasVentasList();
+final ultimasVentasListProvider = FutureProvider.family<List<UltimasVentas>,Tuple2>((ref,tuple) async {
+  return ref.watch(ultimasVentsaProvider).getUltimasVentasList(tuple.item1,tuple.item2);
 });
+
+final ultimaVentaSeleccionadaProvider = StateProvider<UltimasVentas>((ref) => UltimasVentas());
