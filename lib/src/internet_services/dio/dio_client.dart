@@ -9,8 +9,8 @@ class DioClient {
 
   final Dio _dio = Dio(
       BaseOptions(
-          baseUrl: "http://192.168.1.103:8000/",
-          //baseUrl: "https://api-produccion-recargas-mrn.click/",
+          //baseUrl: "http://192.168.1.103:8000/",
+          baseUrl: "https://api-produccion-recargas-mrn.click/",
           connectTimeout: const Duration(seconds: 60),
           receiveTimeout: const Duration(seconds: 60),
           responseType: ResponseType.json,

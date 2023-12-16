@@ -33,14 +33,14 @@ class BolsaScreen extends ConsumerWidget {
                   children: [
                     Column(
                           children: [
-                            Text("\$$saldoDisponible",style: const TextStyle(fontSize: 20,color: Colors.blueGrey),),
-                            const Text('Cupo disponible',style: TextStyle(color: Colors.black45)),
+                            Text("\$$saldoDisponible",style: const TextStyle(fontSize: 20,color: Color(0xFF2863F1)),),
+                            const Text('Disponible',style: TextStyle(fontSize: 13,color: Color(0xFF182130))),
                           ],
                         ),
                     Column(
                       children: [
-                        Text("\$$utilidad",style: const TextStyle(fontSize: 20,color: Colors.blueGrey),),
-                        const Text('Ganancias',style: TextStyle(color: Colors.black45),)
+                        Text("\$$utilidad",style: const TextStyle(fontSize: 20,color: Color(0xFF2863F1)),),
+                        const Text('Ganancias',style: TextStyle(fontSize: 13,color: Color(0xFF182130)),)
                       ],
                     ),
                   ],

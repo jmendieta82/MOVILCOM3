@@ -1,147 +1,142 @@
+
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movilcomercios/src/app_router/app_router.dart';
 import 'package:movilcomercios/src/models/common/lista_ventas.dart';
-import 'package:movilcomercios/src/models/common/ultimas_ventas.dart';
-import 'package:movilcomercios/src/providers/ultimas_ventas_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuple/tuple.dart';
 import '../../internet_services/common/login_api_conection.dart';
 import '../../providers/lista_ventas_provider.dart';
 import 'footer_screen.dart';
+import 'menu.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class InicioScreen extends ConsumerWidget {
   const InicioScreen({super.key});
 
   @override
   Widget build(BuildContext context,ref) {
+    final List<String> imageList = [
+      'assets/banner1.png',
+      'assets/banner2.png',
+      'assets/banner3.png',
+      'assets/banner4.png',
+      // Agrega aquí tus URLs de imágenes
+    ];
+    final List<String> urls = [
+      'https://mrncolombia.com/ofertas/',
+      'https://mrncolombia.com/',
+      'https://mrncolombia.com/trabaja-con-nosotros/',
+      'https://mrncolombia.com/trabaja-con-nosotros/',
+      // Agrega aquí las URLs correspondientes a cada imagen
+    ];
+    final List<String> cardTitles = [
+      'Últimas ventas',
+      'Saldos',
+      'Reportes',
+      'Mi Distribuidor',
+      'MRN Colombia'
+    ];
+    final List<String> routes = [
+      '/ultimas_ventas',
+      '/saldos',
+      '/construccion',
+      '/construccion',
+      '/about_us',
+    ];
     final route  = ref.watch(appRouteProvider);
-    SharedPreferences? _prefs;
     return DefaultTabController(
       length: 2,
       child: Scaffold
         (
-          drawer: Drawer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(top: 30,left: 30),
-                  width: 120, // Ancho deseado
-                  height: 120, // Alto deseado
-                  child: const Image(
-                      image: AssetImage('assets/nuevo_logo.png'),
-                  ),
-                ),
-                Expanded(
-                  child: ListView(
-                    children: [
-                      ListTile(
-                        onTap:()async{
-                          route.go('/home');
-                        },
-                        title: const Text(
-                            'Inicio',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20
-                            )
-                        ),
-                        leading: const Icon(Icons.home_outlined),
-                      ),
-                      ListTile(
-                        onTap:()async{
-                          route.go('/construccion');
-                        },
-                        title: const Text(
-                            'Saldos',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20
-                            )
-                        ),
-                        leading: const Icon(Icons.money_outlined),
-                      ),
-                      ListTile(
-                        onTap:()async{
-                          route.go('/construccion');
-                        },
-                        title: const Text(
-                            'Reportes',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20
-                            )
-                        ),
-                        leading: const Icon(Icons.bar_chart),
-                      ),
-                      ListTile(
-                        onTap:()async{
-                          route.go('/construccion');
-                        },
-                        title: const Text(
-                            'Mi distribuidor',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20
-                            )
-                        ),
-                        leading: const Icon(Icons.people_alt),
-                      ),
-                      ListTile(
-                        onTap:()async{
-                          _prefs = await SharedPreferences.getInstance();
-                          if(_prefs!=null){
-                            _prefs!.setString('username', '');
-                            _prefs!.setString('password', '');
-                            route.go('/');
-                          }
-                      },
-                        title: const Text(
-                            'Cerrar sesion',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20
-                            )
-                        ),
-                        leading: const Icon(Icons.logout_outlined),
-                      ),
-                      const ListTile(
-                        title: Text(
-                            'MRN Recargas Version 3.0.0 beta',
-                            style: TextStyle(
-                                color: Colors.black26,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15
-                            ),textAlign: TextAlign.center,
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
           extendBodyBehindAppBar: true, // Extiende el fondo detrás del AppBar
           extendBody: true, // Extiende el cuerpo de la Scaffold
           appBar: AppBar(
+            actions: [
+              IconButton(
+                  onPressed:()async{
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Cerrar sesión'),
+                          content: const Text('¿Estás seguro de que quieres cerrar sesión?'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Cierra el diálogo
+                              },
+                              child: const Text('Cancelar'),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                                prefs.setString('username', '');
+                                prefs.setString('password', '');
+                                route.go('/');
+                                Navigator.of(context).pop(); // Cierra el diálogo
+                              },
+                              child: const Text('Aceptar'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  icon: const Icon(Icons.logout_outlined),)
+            ],
             backgroundColor: Colors.transparent, // Hace el fondo del AppBar transparente
             elevation: 0, // Quita la sombra del AppBar
             title: const Column(
               children: [
-                Text(
-                  "MRN Recargas",
-                  style: TextStyle(
-                      color: Colors.blueGrey,
-                      fontWeight:FontWeight.bold,fontSize: 25),
-                ),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    height: 100, // Altura deseada
+                    width: 100, // Anchura deseada
+                    child: Image(
+                      image: AssetImage('assets/nuevo_logo.png'),
+                    ),
+                  ),
+                )
               ],
             ),
           ),
           body: SafeArea(
             child: Column(
               children: [
-                CardCarousel(),
+                Center(
+                  child: CarouselSlider.builder(
+                    itemCount: imageList.length,
+                    options: CarouselOptions(
+                      autoPlay: true, // Habilita el desplazamiento automático
+                      aspectRatio: 16 / 9, // Proporción de aspecto de las imágenes
+                      viewportFraction: 1, // Porción de la pantalla que ocupa cada imagen
+                      enlargeCenterPage: true, // Agrandar la imagen en el centro
+                      height: 150, // Ajusta la altura del carrusel aquí
+                      autoPlayInterval: const Duration(seconds: 7),// Ajusta el intervalo aquí
+                    ),
+                    itemBuilder: (BuildContext context, int index, _) {
+                      return GestureDetector(
+                        onTap: () {
+                          _launchURL(urls[index]);
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                          child: Image.asset(
+                            imageList[index],
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox( // Añade un espacio entre la Card y el ListView
+                  height: 15.0,
+                ),
+                CardCarousel(cardTitles: cardTitles, route: routes,),
                 const Padding(
                   padding: EdgeInsets.only(right: 16.0),
                   child: Align(
@@ -170,6 +165,15 @@ class InicioScreen extends ConsumerWidget {
   }
 }
 
+Future<void> _launchURL(String url) async {
+  if (await canLaunchUrl(url as Uri)) {
+    await launchUrl(url as Uri);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+
+
 class ListaVentasView extends ConsumerWidget {
   const ListaVentasView({super.key});
 
@@ -196,32 +200,46 @@ class ListaVentasView extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox( // Añade un espacio entre la Card y el ListView
-                  height: 30.0,
+                  height: 10.0,
                 ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
-                    child: ListView(
+                    child: GridView.count(
+                      crossAxisCount: 3, // Número de elementos en cada fila
+                      mainAxisSpacing: 10.0, // Espacio vertical entre las tarjetas
+                      crossAxisSpacing: 5.0, // Espacio horizontal entre las tarjetas
                       children: categorias.keys.map((categoria) {
-                        return ListTile(
-                          trailing: const Icon(Icons.arrow_forward_ios),
-                          onTap: (){
+                        return GestureDetector(
+                          onTap: () {
                             ref.read(categoriaSeleccionadaProvider.notifier).update((state) => state = categoria);
                             route.go('/empresas');
-                          } ,
-                          title: Text(
-                              categoria,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blueGrey,
-                              )
-                          ),
-                          subtitle:Text(
-                              '${categorias[categoria]?.length} empresas',
-                              style: const TextStyle(
-                                color: Colors.blueGrey,
+                          },
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    categoria,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF2863F1),
+                                    ),
+                                  ),
+                                  Text(
+                                    '${categorias[categoria]?.length} empresas',
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Color(0xFF182130),
+                                    ),
+                                  ),
+                                ],
                               ),
+                            ),
                           ),
                         );
                       }).toList(),
@@ -237,87 +255,4 @@ class ListaVentasView extends ConsumerWidget {
   }
 }
 
-class CardCarousel extends ConsumerWidget {
-  final List<String> cardTitles = ['Últimas ventas', 'Saldos', 'Reportes', 'Mi Distribuidor'];
-  final List<List<Color>> cardGradients = [
-    [Colors.blue, Colors.lightBlueAccent],
-    [Colors.green, Colors.lightGreen],
-    [Colors.orange, Colors.deepOrange],
-    [Colors.teal, Colors.cyan],
-  ];
-  final List<String> route = [
-    '/ultimas_ventas',
-    '/saldos',
-    '/construccion',
-    '/construccion',
-  ];
 
-  CardCarousel({super.key});
-
-  @override
-  Widget build(BuildContext context,ref) {
-    final router = ref.watch(appRouteProvider);
-    return SizedBox(
-      height: 60.0,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: cardTitles.length,
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: (){
-              router.go(route[index]);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CardItem(
-                title: cardTitles[index],
-                gradientColors: cardGradients[index],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class CardItem extends StatelessWidget {
-  final String title;
-  final List<Color> gradientColors;
-
-  const CardItem({super.key,
-    required this.title,
-    required this.gradientColors,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 140.0,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        border: Border.all(
-          color: Colors.blueGrey, // Color del borde
-          width: 2.0, // Ancho del borde
-        ),
-      ),
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(width: 10.0),
-            Text(
-              title,
-              style: const TextStyle(
-                color: Colors.blueGrey,
-                fontSize: 15.0,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

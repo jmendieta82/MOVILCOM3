@@ -14,6 +14,7 @@ class SolicitudCreditoScreen extends ConsumerStatefulWidget {
 class _CreditRequestScreenState extends ConsumerState<SolicitudCreditoScreen> {
   @override
   Widget build(BuildContext context) {
+    final route  = ref.watch(appRouteProvider);
     final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
       locale: 'es-Co', decimalDigits: 0,symbol: '',
     );
@@ -25,6 +26,10 @@ class _CreditRequestScreenState extends ConsumerState<SolicitudCreditoScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Solicitud de Saldo'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: (){route.go('/saldos');},
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(7.0),

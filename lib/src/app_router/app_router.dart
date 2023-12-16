@@ -13,17 +13,21 @@ import 'package:movilcomercios/src/screens/recaudos/confirm_recaudo_screen.dart'
 import 'package:movilcomercios/src/screens/recaudos/info_reacudo_screen.dart';
 import 'package:movilcomercios/src/screens/recaudos/venta_recaudo_screen.dart';
 import 'package:movilcomercios/src/screens/recaudos/venta_recaudos_result.dart';
+import 'package:movilcomercios/src/screens/saldos/cartera_screen.dart';
 import 'package:movilcomercios/src/screens/saldos/image_screen.dart';
 import 'package:movilcomercios/src/screens/saldos/resumen_solicitud_screen.dart';
 import 'package:movilcomercios/src/screens/saldos/saldo_credito.dart';
 import 'package:movilcomercios/src/screens/saldos/saldos_screen.dart';
+import 'package:movilcomercios/src/screens/saldos/ultimas_solicitudes_screen.dart';
 import '../screens/apuestas/confirm_apuesta_screen.dart';
+import '../screens/common/about_us.dart';
 import '../screens/common/ultimas_ventas_screen.dart';
 import '../screens/pines/confirm_pin_screen.dart';
 import '../screens/recargas_paquetes/confirm_recarga_screen.dart';
 import '../screens/common/empresa_screen.dart';
 import '../screens/common/inicio_screen.dart';
 import '../screens/recaudos/convenios_screen.dart';
+import '../screens/saldos/pagar_facturas_screen.dart';
 
 
 final appRouteProvider  = Provider<GoRouter>((ref){
@@ -53,6 +57,10 @@ final appRouteProvider  = Provider<GoRouter>((ref){
         GoRoute(path: '/solicitud_credito', builder: (context,state) => const SolicitudCreditoScreen()),
         GoRoute(path: '/image_soporte', builder: (context,state) => const ImageScreen()),
         GoRoute(path: '/resumen_solicitud', builder: (context,state) => const ResumenSolicitudScreen()),
+        GoRoute(path: '/about_us', builder: (context,state) => const AboutUsPage()),
+        GoRoute(path: '/ultimas_solicitudes', builder: (context,state) => const UltimasSolicitudesScreen()),
+        GoRoute(path: '/cartera', builder: (context,state) => const CarteraScreen()),
+        GoRoute(path: '/pago_facturas', builder: (context,state) => PagoFacturasScreen()),
       ]
   );
 });

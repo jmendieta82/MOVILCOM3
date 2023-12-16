@@ -46,7 +46,7 @@ class ListUltimasVentasScreen extends ConsumerWidget {
                           }
                           return ListTile(
                             leading:buildIcon(list[index].codigoResultado.toString()),
-                            title: Text('Transaccion : ${list[index]}'),
+                            title: Text('Transaccion : ${list[index].id}'),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
