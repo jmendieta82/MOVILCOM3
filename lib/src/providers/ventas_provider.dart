@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movilcomercios/src/models/common/transaccion.dart';
-import 'package:movilcomercios/src/models/common/venta_response.dart';
 import 'package:movilcomercios/src/models/recargas/paquetes.dart';
 
 final valorSeleccionadoProvider = StateProvider((ref) =>0);

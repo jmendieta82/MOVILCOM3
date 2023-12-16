@@ -1,7 +1,6 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:movilcomercios/src/models/recargas/paquetes.dart';
 import 'package:movilcomercios/src/providers/ventas_provider.dart';
 import '../../app_router/app_router.dart';
 import '../../internet_services/common/login_api_conection.dart';
@@ -109,7 +108,6 @@ class ConfirmRecargasPaquetesScreen extends ConsumerWidget {
                             celular: telefonoSeleccionado.replaceAll(RegExp(r'[^0-9]'), ''),
                           );
                           ventaRecarga(obj).then((resultado) {
-                            print(resultado.toJson());
                             showModalBottomSheet(
                               isDismissible: false,
                               context: context,
@@ -144,7 +142,7 @@ class ConfirmRecargasPaquetesScreen extends ConsumerWidget {
                           })
                               .catchError((error) {
                             // Manejar los errores si ocurre algún problema con la petición
-                            print('Error: $error');
+                            Text(error);
                           });
                         }
                     ),
@@ -164,7 +162,6 @@ class ConfirmRecargasPaquetesScreen extends ConsumerWidget {
                           venta_ganancias: true
                         );
                         ventaRecarga(obj).then((resultado) {
-                          print(resultado.toJson());
                           showModalBottomSheet(
                             isDismissible: false,
                             context: context,
@@ -199,7 +196,7 @@ class ConfirmRecargasPaquetesScreen extends ConsumerWidget {
                         })
                             .catchError((error) {
                           // Manejar los errores si ocurre algún problema con la petición
-                          print('Error: $error');
+                          Text(error);
                         });
                       },
                     ),

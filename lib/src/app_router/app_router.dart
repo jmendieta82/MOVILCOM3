@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movilcomercios/src/screens/apuestas/venta_apuestas_result.dart';
@@ -60,7 +59,7 @@ final appRouteProvider  = Provider<GoRouter>((ref){
         GoRoute(path: '/about_us', builder: (context,state) => const AboutUsPage()),
         GoRoute(path: '/ultimas_solicitudes', builder: (context,state) => const UltimasSolicitudesScreen()),
         GoRoute(path: '/cartera', builder: (context,state) => const CarteraScreen()),
-        GoRoute(path: '/pago_facturas', builder: (context,state) => PagoFacturasScreen()),
+        GoRoute(path: '/pago_facturas', builder: (context,state) => const PagoFacturasScreen()),
       ]
   );
 });

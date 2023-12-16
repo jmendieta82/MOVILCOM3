@@ -1,14 +1,9 @@
 
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movilcomercios/src/app_router/app_router.dart';
-import 'package:movilcomercios/src/providers/ventas_provider.dart';
 import 'package:tuple/tuple.dart';
 import '../../internet_services/common/login_api_conection.dart';
-import '../../internet_services/recargas/paquetes_api_connection.dart';
 import '../../models/common/lista_ventas.dart';
 import '../../providers/lista_ventas_provider.dart';
 

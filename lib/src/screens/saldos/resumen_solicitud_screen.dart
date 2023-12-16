@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movilcomercios/src/app_router/app_router.dart';
 import 'package:movilcomercios/src/internet_services/common/login_api_conection.dart';
 import 'package:movilcomercios/src/internet_services/saldos/solicitud_saldo_api_conection.dart';
-import 'dart:io';
+
 class ResumenSolicitudScreen extends ConsumerWidget {
   const ResumenSolicitudScreen({super.key});
 
@@ -16,7 +16,6 @@ class ResumenSolicitudScreen extends ConsumerWidget {
     final router = ref.watch(appRouteProvider);
     final metodoSeleccionado = ref.watch(metodoSeleccionadoProvider);
     final valorSeleccionado = ref.watch(valorSolicitudProvider);
-    final imagenSeleccionada = ref.watch(imagenProvider);
     final imagen64Seleccionada = ref.watch(imagen64Provider);
     final usuarioConectado = ref.watch(usuarioConectadoProvider);
     final respuestaSaldo = ref.watch(respuestaSaldoPovider);

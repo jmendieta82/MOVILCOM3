@@ -40,9 +40,7 @@ class _ConveniosScreenState extends ConsumerState {
               onChanged:(text){
                 if(text.length >4){
                   getConveniosList(text).then((value){
-                    ref.read(conveniosListProvider.notifier).update((state) => value);
-                    print(value);
-                  });
+                    ref.read(conveniosListProvider.notifier).update((state) => value);});
                 }
               },
             ),

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app_router/app_router.dart';
 import '../../internet_services/recaudos/consulta_convenios_conection.dart';
-import '../../models/recargas/paquetes.dart';
 import '../../models/recaudos/factura.dart';
 import '../../providers/ventas_provider.dart';
 import 'package:intl/intl.dart';
