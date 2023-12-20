@@ -7,4 +7,3 @@ final ultimasSolicitudesListProvider = FutureProvider.family<List<UltimasSolicit
   return ref.watch(ultimasSolicitudesProvider).getUltimasSolicitudesList(tuple.item1,tuple.item2);
 });
 
-final ultimaSolicitudSeleccionadaProvider = StateProvider<UltimasSolicitudes>((ref) => UltimasSolicitudes());

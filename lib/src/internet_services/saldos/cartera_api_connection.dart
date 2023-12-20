@@ -8,7 +8,6 @@ class CarteraApiConection{
     DioClient.instance.setAuthToken(token);
     final response = await DioClient.instance.get('cartera_appv3/?nodo=$nodoId');
     return (response).map((e) => Cartera.fromJson(e)).toList();
-
   }
 }
 final carteraProvider =  Provider<CarteraApiConection>((ref)  => CarteraApiConection());

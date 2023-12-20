@@ -66,31 +66,31 @@ class _SaldosScreenState extends ConsumerState<SaldosScreen> {
             child: credito.when(
                 data:(data){
                   final double resultado = data.montoUtilizado!/data.montoAutorizado!;
-                  return  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox(height: 70.0),
-                      SizedBox(
-                        height: 230, // Altura del SizedBox
-                        width: 230, // Anchura del SizedBox
-                        child:CircularProgressIndicator(
-                            value: resultado, // Valor del 50%
-                            backgroundColor: Colors.grey,
-                            strokeWidth: 30, // Grosor de la línea
-                            valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue)),
-                      ),
-                      const SizedBox(height: 50),
-                      Expanded(
-                        child: ListView(
-                          children: [
-                            _buildListItem('Monto utilizado','\$${formatter.format(data.montoUtilizado.toString())}',Colors.blue),
-                            _buildListItem('Monto disponible','\$${formatter.format(data.montoDisponible.toString())}',Colors.grey),
-                            _buildListItem('Monto autorizado','\$${formatter.format(data.montoAutorizado.toString())}',Colors.green),
-
-                          ],
+                  return  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 50.0),
+                        LinearProgressIndicator(
+                          value: resultado, // Valor de progreso actual
+                          minHeight: 10, // Altura mínima del indicador
+                          backgroundColor: Colors.green, // Color de fondo
+                          valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 10.0),
+                        Expanded(
+                          child: ListView(
+                            children: [
+                              _buildListItem('Monto utilizado','\$${formatter.format(data.montoUtilizado.toString())}',Colors.blue),
+                              _buildListItem('Monto disponible','\$${formatter.format(data.montoDisponible.toString())}',Colors.green),
+                              _buildListItem('Monto autorizado','\$${formatter.format(data.montoAutorizado.toString())}',Colors.grey),
+
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 },
                 error: (err,s) => Text(err.toString()),

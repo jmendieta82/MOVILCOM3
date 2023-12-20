@@ -8,6 +8,7 @@ class ListaVentas {
   int? empresa_id;
   int? proveedor_id;
   int? nodo_id;
+  String? img_categoria;
   double? micomision;
 
   ListaVentas({
@@ -20,6 +21,7 @@ class ListaVentas {
     this.proveedor_id,
     this.nodo_id,
     this.micomision,
+    this.img_categoria,
   });
 
   ListaVentas.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,7 @@ class ListaVentas {
     proveedor_id = json['proveedor_id'];
     nodo_id = json['nodo_id'];
     micomision = json['micomision'];
+    img_categoria = json['img_categoria'];
   }
 
   Map<String, dynamic> toJson() {
@@ -45,6 +48,7 @@ class ListaVentas {
     data['proveedor_id'] = proveedor_id;
     data['nodo_id'] = nodo_id;
     data['micomision'] = micomision;
+    data['img_categoria'] = img_categoria;
     return data;
   }
 }

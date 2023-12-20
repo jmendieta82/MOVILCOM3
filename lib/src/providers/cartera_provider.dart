@@ -7,5 +7,3 @@ final carteraListProvider = FutureProvider.family<List<Cartera>,Tuple2>((ref,tup
   return ref.watch(carteraProvider).getCarteraList(tuple.item1,tuple.item2);
 });
 
-final carteraSeleccionadaProvider = StateProvider<Cartera>((ref) => Cartera());
-final facturasSeleccionadasProvider = StateProvider<List<Cartera>>((ref) => []);

@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movilcomercios/src/internet_services/recaudos/consulta_convenios_conection.dart';
 import 'package:movilcomercios/src/internet_services/common/login_api_conection.dart';
-import 'package:movilcomercios/src/providers/ventas_provider.dart';
 import '../../app_router/app_router.dart';
 import '../../internet_services/recargas/venta_api_conection.dart';
-import '../../providers/lista_ventas_provider.dart';
+import '../../providers/shared_providers.dart';
 
 
 class ConfirmVentaRecaudoScreen extends ConsumerWidget {
@@ -21,6 +20,7 @@ class ConfirmVentaRecaudoScreen extends ConsumerWidget {
     final usuarioConectado = ref.watch(usuarioConectadoProvider);
     final convenioSeleccionado = ref.watch(convenioSeleccionadoProvider);
     final route  = ref.watch(appRouteProvider);
+    bool isProgress = ref.watch(progressProvider);
     final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
       locale: 'es-Co', decimalDigits: 0,symbol: '',
     );
@@ -100,6 +100,13 @@ class ConfirmVentaRecaudoScreen extends ConsumerWidget {
                 const SizedBox( // Añade un espacio entre la Card y el ListView
                   height: 40.0,
                 ),
+                isProgress ? const Center(child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    Text('Un momento por favor....')
+                  ],
+                )) :
                 ButtonBar(
                   alignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
@@ -128,7 +135,9 @@ class ConfirmVentaRecaudoScreen extends ConsumerWidget {
                             "tipo_red":'Wifi',
                             "app_ver":'3'
                           };
+                          ref.read(progressProvider.notifier).update((state) => true);
                        ventaRecaudo(obj).then((resultado) {
+                            ref.read(progressProvider.notifier).update((state) => false);
                             showModalBottomSheet(
                               isDismissible: false,
                               context: context,
@@ -145,7 +154,7 @@ class ConfirmVentaRecaudoScreen extends ConsumerWidget {
                                         const SizedBox( height: 20.0),
                                         ElevatedButton(
                                             onPressed: (){
-                                              if(resultado.codigo != '500'){
+                                              if(resultado.codigo != 500){
                                                 ref.read(ventaResponseProvider.notifier).update((state) =>resultado.data!);
                                                 route.go('/venta_recaudos_result');
                                               }else{
@@ -160,10 +169,33 @@ class ConfirmVentaRecaudoScreen extends ConsumerWidget {
                               },
                             );
                             // Puedes realizar más operaciones con el resultado si es necesario
-                          })
-                              .catchError((error) {
-                            // Manejar los errores si ocurre algún problema con la petición
-                            print('Error: $error');
+                          }).catchError((error) {
+                                ref.read(progressProvider.notifier).update((state) => false);
+                                showModalBottomSheet(
+                                  isDismissible: false,
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return SizedBox(
+                                      height: 200,
+                                      child: Center(
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(vertical: 30),
+                                              child: Text('$error'),
+                                            ),
+                                            const SizedBox( height: 20.0),
+                                            ElevatedButton(
+                                                onPressed: (){
+                                                  route.go('/recaudos');
+                                                },
+                                                child: const Text('Aceptar'))
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
                           });
                         }
                     ),
@@ -224,10 +256,34 @@ class ConfirmVentaRecaudoScreen extends ConsumerWidget {
                               },
                             );
                             // Puedes realizar más operaciones con el resultado si es necesario
-                          })
-                              .catchError((error) {
+                          }).catchError((error) {
+                            ref.read(progressProvider.notifier).update((state) => false);
+                            showModalBottomSheet(
+                              isDismissible: false,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return SizedBox(
+                                  height: 200,
+                                  child: Center(
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 30),
+                                          child: Text('$error'),
+                                        ),
+                                        const SizedBox( height: 20.0),
+                                        ElevatedButton(
+                                            onPressed: (){
+                                              route.go('/recaudos');
+                                            },
+                                            child: const Text('Aceptar'))
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
                             // Manejar los errores si ocurre algún problema con la petición
-                            print('Error: $error');
                           });
                         }
                     ),
@@ -242,7 +298,7 @@ class ConfirmVentaRecaudoScreen extends ConsumerWidget {
                         ),
                         child: const Text('Atras'),
                         onPressed: () {
-                          route.go('/recargas_paquetes');
+                          route.go('/recaudos');
                         }
                     ),
                   ],

@@ -6,6 +6,7 @@ import 'package:movilcomercios/src/providers/cartera_provider.dart';
 import 'package:tuple/tuple.dart';
 import '../../app_router/app_router.dart';
 import '../../internet_services/common/login_api_conection.dart';
+import '../../providers/shared_providers.dart';
 
 
 class CarteraScreen extends ConsumerStatefulWidget {
@@ -26,6 +27,7 @@ class _CarteraScreenState extends ConsumerState {
       locale: 'es-Co', decimalDigits: 0,symbol: '',
     );
     final facturasSeleccionadas = ref.watch(facturasSeleccionadasProvider);
+
     return Scaffold(
       appBar: AppBar(
           title: const Text('Cartera'),
@@ -48,7 +50,13 @@ class _CarteraScreenState extends ConsumerState {
                       height: 60.0, // Cambia la altura aquí según tus necesidades
                       child: GestureDetector(
                         onTap: (){
-                          router.go('/pago_facturas');
+                          if(facturasSeleccionadas.isNotEmpty){
+                            router.go('/pago_facturas');
+                          }else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('No hay facturas seleccionadas.')),
+                            );
+                          }
                         },
                         child: Card(
                           color: Colors.amber,
@@ -78,20 +86,26 @@ class _CarteraScreenState extends ConsumerState {
                             child: GestureDetector(
                               onTap: (){
                                 setState(() {
-                                  final itemIndex = facturasSeleccionadas.indexOf(list[index]);
-                                  if (itemIndex != -1) {
-                                    // Si el elemento ya está en la lista, quítalo
-                                    ref.read(facturasSeleccionadasProvider.notifier).update(
-                                          (state) => List<Cartera>.from(state)..remove(list[index]),
-                                    );
-                                  } else {
-                                    // Si el elemento no está en la lista, agrégalo
-                                    ref.read(facturasSeleccionadasProvider.notifier).update(
-                                          (state) => [...state, list[index]],
+                                  if(list[index].estadoPago != 'Pago en revision'){
+                                    final itemIndex = facturasSeleccionadas.indexOf(list[index]);
+                                    if (itemIndex != -1) {
+                                      // Si el elemento ya está en la lista, quítalo
+                                      ref.read(facturasSeleccionadasProvider.notifier).update(
+                                            (state) => List<Cartera>.from(state)..remove(list[index]),
+                                      );
+                                    } else {
+                                      // Si el elemento no está en la lista, agrégalo
+                                      ref.read(facturasSeleccionadasProvider.notifier).update(
+                                            (state) => [...state, list[index]],
+                                      );
+                                    }
+                                    // Cambiar el estado de 'seleccionado' para la visualización
+                                    list[index].seleccionado = !list[index].seleccionado;
+                                  }else{
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Esta factura aun esta en revision.')),
                                     );
                                   }
-                                  // Cambiar el estado de 'seleccionado' para la visualización
-                                  list[index].seleccionado = !list[index].seleccionado;
                                 });
                               },
                               child: Card(

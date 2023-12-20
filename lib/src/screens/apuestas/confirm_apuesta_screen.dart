@@ -1,12 +1,11 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:movilcomercios/src/providers/ventas_provider.dart';
 import '../../app_router/app_router.dart';
 import '../../internet_services/common/login_api_conection.dart';
 import '../../internet_services/recargas/venta_api_conection.dart';
 import '../../models/recargas/ws_recargas.dart';
-import '../../providers/lista_ventas_provider.dart';
+import '../../providers/shared_providers.dart';
 
 class ConfirmVentaApuestasScreen extends ConsumerWidget {
   const ConfirmVentaApuestasScreen({super.key});

@@ -1,32 +1,27 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:movilcomercios/src/internet_services/recaudos/consulta_convenios_conection.dart';
-import 'package:movilcomercios/src/providers/lista_ventas_provider.dart';
+import 'package:movilcomercios/src/models/recaudos/factura.dart';
+import 'package:movilcomercios/src/screens/common/custom_text_filed.dart';
 import '../../app_router/app_router.dart';
-import '../../providers/ventas_provider.dart';
+import '../../internet_services/common/login_api_conection.dart';
+import '../../models/recaudos/convenios.dart';
+import '../../providers/shared_providers.dart';
 
-class VentaRecaudoScreen extends ConsumerWidget {
+
+class VentaRecaudoScreen extends ConsumerStatefulWidget {
   const VentaRecaudoScreen({super.key});
 
   @override
-  Widget build(BuildContext context,ref) {
-    return const Scaffold(
-      body: SafeArea(
-        child: RecaudoView(),
-      ),
-    );
-  }
+  ConsumerState createState() => _VentaRecaudoScreenState();
 }
 
-class RecaudoView extends ConsumerWidget {
-  const RecaudoView({
-    super.key,
-  });
-
+class _VentaRecaudoScreenState extends ConsumerState<VentaRecaudoScreen> {
   @override
-  Widget build(BuildContext context,ref) {
+  Widget build(BuildContext context) {
     final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
       locale: 'es-Co', decimalDigits: 0,symbol: '',
     );
@@ -44,19 +39,19 @@ class RecaudoView extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          empresaSeleccionada.nom_empresa.toString(),
-          style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
-        ),
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 12.0),
-          child: CircleAvatar(
-            radius: 40,
-            child: Image.asset(
-              empresaSeleccionada.logo_empresa ?? '',
-            ),
+          title: Text(
+            empresaSeleccionada.nom_empresa.toString(),
+            style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
           ),
-        )
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: CircleAvatar(
+              radius: 40,
+              child: Image.asset(
+                empresaSeleccionada.logo_empresa ?? '',
+              ),
+            ),
+          )
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -69,7 +64,7 @@ class RecaudoView extends ConsumerWidget {
                 },
                 child: Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(15.0),
                     child: Text(
                       convenioSeleccionado.nombre != null?convenioSeleccionado.nombre.toString():'Toque aqui para seleccionar un convenio',
                     ),
@@ -77,137 +72,159 @@ class RecaudoView extends ConsumerWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0,horizontal: 20.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    TextField(
-                      decoration: const InputDecoration(
-                        labelText: 'Referencia de pago', // Texto descriptivo o etiqueta
-                      ),
-                      style: const TextStyle(fontSize: 30),
-                      controller: referencia,
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox( // Añade un espacio entre la Card y el ListView
-                      height: 20.0,
-                    ),
-                    FractionallySizedBox(
-                      widthFactor: 1,
-                      child: ElevatedButton(
-                          onPressed:(){
-                            if(convenioSeleccionado != null && referencia.text.isNotEmpty){
-                              consultaReferencia(convenioSeleccionado.id.toString(), referencia.text).then((factura){
-                                valorVenta.text = formatter.format(factura.valorPago.toString());
-                                isTextFieldEnabled = factura.pagoParcial == 1?true:false;
-                                ref.read(facturaSeleccionadaProvider.notifier).update((state) => factura);
-                              });
-                            }else {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text('Datos incompletos'),
-                                    content: const Text('Por favor, llene todos los datos.'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop(); // Cierra el dialog
-                                        },
-                                        child: const Text('Ok entiendo!'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            }
-                          },
-                          child: const Text('Consultar')
-                      ),
-                    ),
-                    TextField(
-                      decoration:InputDecoration(
-                        helperText:isTextFieldEnabled?'Si permite pago parcial':'Solo pago total',
-                        helperStyle: const TextStyle(color: Colors.blueAccent),
-                        labelText: 'Valor a pagar', // Texto descriptivo o etiqueta
-                      ),
-                      style: const TextStyle(fontSize: 30),
-                      controller: valorVenta,
-                      enabled: isTextFieldEnabled,
-                      keyboardType: TextInputType.number,
-                    ),
-                    TextField(
-                      decoration: const InputDecoration(
-                        labelText: 'Numero de telefono', // Texto descriptivo o etiqueta
-                      ),
-                      style: const TextStyle(fontSize: 30),
-                      controller: telefono,
-                      inputFormatters: [phoneMask],
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox( // Añade un espacio entre la Card y el ListView
-                      height: 40.0,
-                    ),
-              ButtonBar(
-                      alignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        TextButton(
-                            style: TextButton.styleFrom(
-                              padding: const EdgeInsets.all(16.0),
-                              textStyle: const TextStyle(fontSize: 20),
-                            ),
-                            child: const Text('Continuar'),
-                            onPressed: () {
-                              if( valorVenta.text.isNotEmpty && telefono.text.isNotEmpty){
-                                  ref.read(valorSeleccionadoProvider.notifier).update((state) => int.parse(valorVenta.text.replaceAll('.', '')));
-                                  ref.read(telefonoSeleccionadoProvider.notifier).update((state) => telefono.text);
-                                  route.go('/confirm_venta_recaudo');
-                              }
-                              else {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text('Datos incompletos'),
-                                      content: const Text('Por favor, llene todos los datos.'),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop(); // Cierra el dialog
-                                          },
-                                          child: const Text('Ok entiendo!'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              }
-                            }
-                        ),
-                        TextButton(
-                            style: TextButton.styleFrom(
-                              padding: const EdgeInsets.all(16.0),
-                              textStyle: const TextStyle(fontSize: 20),
-                            ),
-                            child: const Text('Cancelar'),
-                            onPressed: () {
-                              ref.read(telefonoSeleccionadoProvider.notifier).update((state) => '');
-                              route.go('/empresas');
-                            },
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
+            const Padding(
+              padding: EdgeInsets.all(10.0),
+              child: MyForm(),
             ),
           ],
-        ),
+        )
       ),
     );
   }
 }
 
+class MyForm extends ConsumerStatefulWidget {
+  const MyForm({super.key});
+
+  @override
+  ConsumerState createState() => _MyFormState();
+}
+
+class _MyFormState extends ConsumerState<MyForm> {
+  final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
+    locale: 'es-Co', decimalDigits: 0,symbol: '',
+  );
+  TextEditingController valorController = TextEditingController();
+  TextEditingController referenciaController = TextEditingController();
+  TextEditingController telefonoController = TextEditingController();
+  bool isTextFieldEnabled = true;
+  final _formKey = GlobalKey<FormState>();
+  String referencia = '';
+  String telefono = '';
 
 
+  consultarReferencia(Convenio convenio) {
+    setState(() {
+      if(convenio != null && referenciaController.text.isNotEmpty){
+        ref.read(progressProvider.notifier).update((state) => true);
+        consultaReferencia(convenio.id.toString(), referenciaController.text).then((factura){
+          ref.read(progressProvider.notifier).update((state) => false);
+          valorController.text = formatter.format(factura.valorPago.toString());
+          isTextFieldEnabled = factura.pagoParcial == 1?true:false;
+          ref.read(facturaSeleccionadaProvider.notifier).update((state) => factura);
+        });
+      }else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Datos incompletos'),
+              content: const Text('Por favor, llene todos los datos.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Cierra el dialog
+                  },
+                  child: const Text('Ok entiendo!'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    });
+  }
+
+  pagar(GoRouter router) {
+    if (_formKey.currentState!.validate()) {
+        ref.read(valorSeleccionadoProvider.notifier).update((state) => int.parse(valorController.text.replaceAll('.', '')));
+        ref.read(telefonoSeleccionadoProvider.notifier).update((state) => telefonoController.text);
+        router.go('/confirm_venta_recaudo');
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Llene todos los campos.')),
+      );
+    }
+  }
+
+  cancelar(GoRouter router){
+    ref.read(valorSeleccionadoProvider.notifier).update((state) => 0);
+    ref.read(telefonoSeleccionadoProvider.notifier).update((state) => '');
+    ref.read(facturaSeleccionadaProvider.notifier).update((state) => FacturaReacudo());
+    ref.read(convenioSeleccionadoProvider.notifier).update((state) => Convenio());
+    router.go('/home');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final router  = ref.watch(appRouteProvider);
+    final convenioSeleccionado = ref.watch(convenioSeleccionadoProvider);
+    bool isProgress = ref.watch(progressProvider);
+
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          MrnFieldBox(
+            label: 'Referencia',
+            controller: referenciaController,
+            kbType: TextInputType.number,
+            onValue: (String value) {
+              setState(() {
+                referencia = value;
+              });
+            },
+          ),
+          const SizedBox(height: 20,),
+          isProgress ? const Center(child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+              Text('Un momento por favor....')
+            ],
+          )) :
+          FractionallySizedBox(
+            widthFactor: 1,
+            child: ElevatedButton(
+              onPressed:() => consultarReferencia(convenioSeleccionado),
+              child: const Text('Consultar'),
+            ),
+          ),
+          const SizedBox(height: 20,),
+          MrnFieldBox(
+            label: 'Valor a pagar',
+            controller: valorController,
+            kbType: TextInputType.number,
+            size: 25,
+            align: TextAlign.right,
+          ),
+          const SizedBox(height: 20,),
+          MrnFieldBox(
+            label: 'Número de teléfono',
+            kbType: TextInputType.number,
+            controller: telefonoController,
+            size: 25,
+            align: TextAlign.right,
+          ),
+          const SizedBox(height: 30,),
+          FractionallySizedBox(
+            widthFactor: 1,
+            child: ElevatedButton(
+              onPressed:()=>  pagar(router),
+              child: const Text('Continuar'),
+            ),
+          ),
+          const SizedBox(height: 10,),
+          FractionallySizedBox(
+            widthFactor: 1,
+            child: ElevatedButton(
+              onPressed:()=> cancelar(router),
+              child: const Text('Cancelar'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -1,0 +1,25 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../models/common/lista_ventas.dart';
+import '../models/common/transaccion.dart';
+import '../models/common/ultimas_ventas.dart';
+import '../models/recargas/paquetes.dart';
+import '../models/saldos/cartera.dart';
+import '../models/saldos/ultimas_solicitudes.dart';
+
+final carteraSeleccionadaProvider = StateProvider<Cartera>((ref) => Cartera());
+final facturasSeleccionadasProvider = StateProvider<List<Cartera>>((ref) => []);
+final backUrlImgProvider = StateProvider<String>((ref) => '');
+final fwdUrlImgProvider = StateProvider<String>((ref) => '');
+final categoriaSeleccionadaProvider = StateProvider<String>((ref) => '');
+final empresaSeleccionadaProvider = StateProvider<ListaVentas>((ref) => ListaVentas());
+final ultimaSolicitudSeleccionadaProvider = StateProvider<UltimasSolicitudes>((ref) => UltimasSolicitudes());
+final ultimaVentaSeleccionadaProvider = StateProvider<UltimasVentas>((ref) => UltimasVentas());
+final valorSeleccionadoProvider = StateProvider((ref) =>0);
+final telefonoSeleccionadoProvider = StateProvider((ref) =>'');
+final emailSeleccionadoProvider = StateProvider((ref) =>'');
+final documentoSeleccionadoProvider = StateProvider((ref) =>'');
+final referenciaSeleccionadoProvider = StateProvider((ref) =>'');
+final paqueteSeleccionadoProvider = StateProvider<Paquetes>((ref) =>Paquetes());
+final ventaResponseProvider = StateProvider<Transaccion>((ref) =>Transaccion());
+final entidadSeleccionadaProvider = StateProvider<String>((ref) =>'');

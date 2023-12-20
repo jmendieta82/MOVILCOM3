@@ -1,8 +1,8 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:movilcomercios/src/providers/ultimas_ventas_provider.dart';
 import '../../app_router/app_router.dart';
+import '../../providers/shared_providers.dart';
 
 class DetalleUltimasVentasScreen extends ConsumerWidget {
   const DetalleUltimasVentasScreen({super.key});

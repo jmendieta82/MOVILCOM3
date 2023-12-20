@@ -5,6 +5,7 @@ import 'package:tuple/tuple.dart';
 import '../../app_router/app_router.dart';
 import '../../internet_services/common/login_api_conection.dart';
 import '../../models/common/ultimas_ventas.dart';
+import '../../providers/shared_providers.dart';
 import '../../providers/ultimas_ventas_provider.dart';
 
 class ListUltimasVentasScreen extends ConsumerWidget {

@@ -1,8 +1,18 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:movilcomercios/src/internet_services/common/login_api_conection.dart';
+import 'package:movilcomercios/src/internet_services/saldos/pagar_saldo_api_connection.dart';
+import 'package:movilcomercios/src/internet_services/saldos/solicitud_saldo_api_conection.dart';
+import 'package:tuple/tuple.dart';
 import '../../app_router/app_router.dart';
+import '../../internet_services/saldos/cartera_api_connection.dart';
+import '../../models/saldos/cartera.dart';
 import '../../providers/cartera_provider.dart';
+import '../../providers/shared_providers.dart';
+import '../common/custom_text_filed.dart';
 
 class PagoFacturasScreen extends ConsumerStatefulWidget {
   const PagoFacturasScreen({super.key});
@@ -10,7 +20,6 @@ class PagoFacturasScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState createState() => _PagoFacturasScreenState();
 }
-
 class _PagoFacturasScreenState extends ConsumerState {
   @override
   Widget build(BuildContext context) {
@@ -20,7 +29,12 @@ class _PagoFacturasScreenState extends ConsumerState {
       locale: 'es-Co', decimalDigits: 0,symbol: '',
     );
     final facturasSeleccionadas = ref.watch(facturasSeleccionadasProvider);
+    final usuarioConectado = ref.watch(usuarioConectadoProvider);
+    final imagenSeleccionada = ref.watch(imagenProvider);
+    final entidadSeleccionada = ref.watch(entidadSeleccionadaProvider);
+    final imagen64Seleccionada = ref.watch(imagen64Provider);
     final router  = ref.watch(appRouteProvider);
+    bool isProgress = ref.watch(progressProvider);
     final total = facturasSeleccionadas.fold(0, (previousValue, cartera) => previousValue + (cartera.valor ?? 0));
     final TextEditingController totalAbonoController = TextEditingController(
         text:formatter.format(total.toString())
@@ -80,12 +94,61 @@ class _PagoFacturasScreenState extends ConsumerState {
                 ),
               ),
               const SizedBox(height: 20),
-              TextField(
+              MrnFieldBox(
+                label: 'Total abono',
+                kbType: TextInputType.number,
                 controller: totalAbonoController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Total abono',
-                  border: OutlineInputBorder(),
+                size: 25,
+                align: TextAlign.right,
+              ),
+              const SizedBox(height: 20),
+              Container(
+                margin: const EdgeInsets.only(top: 20), // Margen superior de 20
+                width: 100,
+                height: 300,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black, width: 1), // Borde del contenedor
+                ),
+                child:Center(
+                  child : imagenSeleccionada.isNotEmpty?
+                  Image.file(
+                      File(imagenSeleccionada),
+                      width: double.infinity, // Ajusta la imagen al ancho del contenedor
+                      height: double.infinity, // Ajusta la imagen al alto del contenedor
+                      fit: BoxFit.contain, // Ajusta la imagen al tamaño del contenedor manteniendo la proporción
+                  ):GestureDetector(
+                    onTap: (){
+                      ref.read(backUrlImgProvider.notifier).update((state) => '/pago_facturas');
+                      ref.read(fwdUrlImgProvider.notifier).update((state) => '/pago_facturas');
+                      router.go('/image_soporte');
+                    },
+                    child: const Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.camera_alt,
+                          size: 50, // Tamaño del icono
+                          color: Colors.grey, // Color del icono
+                        ),
+                        Text('Tomar foto de comprobante.',style: TextStyle(color: Colors.grey),)
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              if(imagenSeleccionada.isNotEmpty)
+              GestureDetector(
+                onTap: (){
+                  ref.read(backUrlImgProvider.notifier).update((state) => '/pago_facturas');
+                  ref.read(fwdUrlImgProvider.notifier).update((state) => '/pago_facturas');
+                  router.go('/image_soporte');
+                },
+                child: const Icon(
+                  Icons.flip_camera_ios_outlined,
+                  size: 50, // Tamaño del icono
+                  color: Colors.grey, // Color del icono
                 ),
               ),
               const SizedBox(height: 20),
@@ -94,6 +157,7 @@ class _PagoFacturasScreenState extends ConsumerState {
                 onChanged: (newValue) {
                   setState(() {
                     selectedEntity = newValue;
+                    ref.read(entidadSeleccionadaProvider.notifier).update((state) => newValue.toString());
                   });
                 },
                 items: entities.map((entity) {
@@ -107,30 +171,56 @@ class _PagoFacturasScreenState extends ConsumerState {
                   border: OutlineInputBorder(),
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.only(top: 20), // Margen superior de 20
-                width: 100,
-                height: 300,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black, width: 1), // Borde del contenedor
-                ),
-                child: Center(
-                  child: Image.asset(
-                    'assets/splash.png', // Ruta de la imagen
-                    width: double.infinity, // Ajusta la imagen al ancho del contenedor
-                    height: double.infinity, // Ajusta la imagen al alto del contenedor
-                    fit: BoxFit.contain, // Ajusta la imagen al tamaño del contenedor manteniendo la proporción
-                  ),
-                  /*Icon(
-                    Icons.camera_alt,
-                    size: 50, // Tamaño del icono
-                    color: Colors.grey, // Color del icono
-                  ),*/
-                ),
-              ),
               const SizedBox(height: 20),
+              isProgress ? const Center(child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  Text('Un momento por favor....')
+                ],
+              )) :
               ElevatedButton(
                   onPressed:(){
+                    final obj = {
+                      'abono':int.parse(totalAbonoController.text.replaceAll('.', '')),
+                      'facturas':jsonEncode(facturasSeleccionadas),
+                      'usuario_id':usuarioConectado.id,
+                      'soporte':imagen64Seleccionada,
+                      'entidad':selectedEntity,
+                      'app_ver':3,
+                    };
+                    if(totalAbonoController.text.isNotEmpty && imagen64Seleccionada.isNotEmpty && entidadSeleccionada.isNotEmpty){
+                      ref.read(progressProvider.notifier).update((state) => true);
+                      pagarSaldo(obj).then((respponse){
+                        ref.read(progressProvider.notifier).update((state) => false);
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('MRN Pagos'),
+                              content:Text(respponse.mensaje.toString()),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: ()async {
+                                    ref.read(imagenProvider.notifier).update((state) => '');
+                                    ref.read(imagen64Provider.notifier).update((state) => '');
+                                    ref.read(facturasSeleccionadasProvider.notifier).update((state) => []);
+                                    ref.invalidate(carteraListProvider);
+                                    router.go('/cartera');
+                                    Navigator.of(context).pop(); // Cierra el dialog
+                                  },
+                                  child: const Text('Ok entiendo!'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      });
+                    }else{
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Faltan datos.')),
+                      );
+                    }
                   },
                   child: const Text('Pagar')
               )

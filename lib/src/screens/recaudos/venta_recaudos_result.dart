@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app_router/app_router.dart';
 import '../../internet_services/recaudos/consulta_convenios_conection.dart';
 import '../../models/recaudos/factura.dart';
-import '../../providers/ventas_provider.dart';
+import '../../providers/shared_providers.dart';
 import 'package:intl/intl.dart';
 
 class VentaRecaudosResultScreen extends ConsumerWidget {

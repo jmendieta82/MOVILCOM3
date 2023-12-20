@@ -8,4 +8,3 @@ final ultimasVentasListProvider = FutureProvider.family<List<UltimasVentas>,Tupl
   return ref.watch(ultimasVentsaProvider).getUltimasVentasList(tuple.item1,tuple.item2);
 });
 
-final ultimaVentaSeleccionadaProvider = StateProvider<UltimasVentas>((ref) => UltimasVentas());

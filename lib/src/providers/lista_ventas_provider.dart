@@ -9,5 +9,3 @@ final listaVentaListProvider = FutureProvider.family<List<ListaVentas>,Tuple2>((
   return ref.watch(listaVentasProvider).getListaVentasList(tuple.item1,tuple.item2);
 });
 
-final categoriaSeleccionadaProvider = StateProvider<String>((ref) => '');
-final empresaSeleccionadaProvider = StateProvider<ListaVentas>((ref) => ListaVentas());

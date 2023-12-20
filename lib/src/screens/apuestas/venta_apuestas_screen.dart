@@ -4,12 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:movilcomercios/src/internet_services/common/login_api_conection.dart';
-import 'package:movilcomercios/src/providers/lista_ventas_provider.dart';
 import 'package:tuple/tuple.dart';
 import '../../app_router/app_router.dart';
 import '../../internet_services/recargas/paquetes_api_connection.dart';
 import '../../models/recargas/paquetes.dart';
-import '../../providers/ventas_provider.dart';
+import '../../providers/shared_providers.dart';
+import '../common/custom_text_filed.dart';
 
 class VentaApuestasScreen extends ConsumerWidget {
   const VentaApuestasScreen({super.key});
@@ -84,32 +84,26 @@ class _ApuestasViewState extends ConsumerState<ApuestasView> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Esta en venta', // Texto descriptivo o etiqueta
-                    ),
-                    style: const TextStyle(fontSize: 30),
-                    inputFormatters: <TextInputFormatter>[formatter],
+                  MrnFieldBox(
+                    label: 'Esta en venta',
                     controller: valorVenta,
-                    keyboardType: TextInputType.number,
+                    kbType: TextInputType.number,
+                    size: 25,
+                    align: TextAlign.right,
                   ),
-                  TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Numero de documento', // Texto descriptivo o etiqueta
-                    ),
-                    style: const TextStyle(fontSize: 30),
+                  MrnFieldBox(
+                    label: 'Numero de documento',
                     controller: documento,
-                    keyboardType: TextInputType.number,
+                    kbType: TextInputType.number,
+                    size: 25,
+                    align: TextAlign.right,
                   ),
-                  TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Numero de telefono',
-                    ),
-                    style: const TextStyle(fontSize: 30),
-
-                    keyboardType: TextInputType.phone,
-                    inputFormatters: [phoneMask],
+                  MrnFieldBox(
+                    label: 'Numero de telefono',
                     controller: numeroDestino,
+                    kbType: TextInputType.number,
+                    size: 25,
+                    align: TextAlign.right,
                   ),
                   const SizedBox( // Añade un espacio entre la Card y el ListView
                     height: 40.0,
@@ -117,10 +111,9 @@ class _ApuestasViewState extends ConsumerState<ApuestasView> {
                   ButtonBar(
                     alignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      TextButton(
+                      ElevatedButton(
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.all(16.0),
-                            textStyle: const TextStyle(fontSize: 20),
                           ),
                           child: const Text('Continuar'),
                           onPressed: () {
@@ -158,10 +151,9 @@ class _ApuestasViewState extends ConsumerState<ApuestasView> {
                                 loading: () => const Center(child: CircularProgressIndicator(),));
                           }
                       ),
-                      TextButton(
+                      ElevatedButton(
                         style: TextButton.styleFrom(
                           padding: const EdgeInsets.all(16.0),
-                          textStyle: const TextStyle(fontSize: 20),
                         ),
                         child: const Text('Cancelar'),
                         onPressed: () {

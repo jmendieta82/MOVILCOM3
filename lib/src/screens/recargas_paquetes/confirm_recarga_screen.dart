@@ -1,12 +1,12 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:movilcomercios/src/providers/ventas_provider.dart';
+import 'package:movilcomercios/src/internet_services/common/bolsa_api_connection.dart';
 import '../../app_router/app_router.dart';
 import '../../internet_services/common/login_api_conection.dart';
 import '../../internet_services/recargas/venta_api_conection.dart';
 import '../../models/recargas/ws_recargas.dart';
-import '../../providers/lista_ventas_provider.dart';
+import '../../providers/shared_providers.dart';
 
 
 class ConfirmRecargasPaquetesScreen extends ConsumerWidget {
@@ -124,8 +124,9 @@ class ConfirmRecargasPaquetesScreen extends ConsumerWidget {
                                         const SizedBox( height: 20.0),
                                         ElevatedButton(
                                             onPressed: (){
-                                              if(resultado.codigo != '500'){
+                                              if(resultado.codigo != 500){
                                                 ref.read(ventaResponseProvider.notifier).update((state) =>resultado.data!);
+                                                ref.invalidate(bolsaActualProvider);
                                                 route.go('/venta_result');
                                               }else{
                                                 route.go('/recargas_paquetes');
@@ -180,6 +181,7 @@ class ConfirmRecargasPaquetesScreen extends ConsumerWidget {
                                           onPressed: (){
                                             if(resultado.codigo != '500'){
                                               ref.read(ventaResponseProvider.notifier).update((state) =>resultado.data!);
+                                              ref.invalidate(bolsaActualProvider);
                                               route.go('/venta_result');
                                             }else{
                                               route.go('/recargas_paquetes');

@@ -6,46 +6,46 @@ class DioExceptionCustom implements Exception{
   DioExceptionCustom.fromDioError(DioError dioError){
     switch(dioError.type){
       case DioExceptionType.cancel:
-        errorMessage = "Request to the server was cancelled.";
+        errorMessage = "La consulta al servidor ha sido cancelada";
         break;
       case DioExceptionType.connectionTimeout:
-        errorMessage = "Connection timed out.";
+        errorMessage = "Intento de conexion fallida.";
         break;
       case DioExceptionType.receiveTimeout:
-        errorMessage = "Receiving timeout occurred.";
+        errorMessage = "Tiempo de espera agotado, intenta mas tarde.";
         break;
       case DioExceptionType.sendTimeout:
-        errorMessage = "Request send timeout.";
+        errorMessage = "Tiempo de espera agotado, intenta mas tarde.";
         break;
       case DioExceptionType.badResponse:
         errorMessage = _handleStatusCode(dioError.response?.statusCode);
         break;
       case DioExceptionType.unknown:
         if (dioError.message!.contains('SocketException')) {
-          errorMessage = 'No Internet.';
+          errorMessage = 'Sin conexion';
           break;
         }
-        errorMessage = 'Unexpected error occurred.';
+        errorMessage = 'Ha ocurrido un error inesperado';
         break;
       default:
-        errorMessage = 'Something went wrong';
+        errorMessage = 'Algo ha ido mal.';
         break;
     }
   }
   String _handleStatusCode(int? statusCode) {
     switch (statusCode) {
       case 400:
-        return 'User already exist ';
+        return 'El usuario ya existe';
       case 401:
-        return 'Authentication failed.';
+        return 'Fallo de autenticacion';
       case 403:
-        return 'The authenticated user is not allowed to access the specified API endpoint.';
+        return 'Este usuario no tiene permiso para este recurso.';
       case 404:
-        return 'The requested resource does not exist.';
+        return 'El recurso solicitado no existe';
       case 500:
-        return 'Internal server error.';
+        return 'Error interno del servidor';
       default:
-        return 'Oops something went wrong!';
+        return 'Oops algo ha ido mal.!';
     }
   }
 

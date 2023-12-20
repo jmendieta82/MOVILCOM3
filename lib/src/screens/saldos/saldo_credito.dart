@@ -2,8 +2,9 @@ import 'package:currency_text_input_formatter/currency_text_input_formatter.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movilcomercios/src/internet_services/saldos/solicitud_saldo_api_conection.dart';
-
 import '../../app_router/app_router.dart';
+import '../../providers/shared_providers.dart';
+import '../common/custom_text_filed.dart';
 
 class SolicitudCreditoScreen extends ConsumerStatefulWidget {
   const SolicitudCreditoScreen({super.key});
@@ -79,14 +80,12 @@ class _CreditRequestScreenState extends ConsumerState<SolicitudCreditoScreen> {
                     ),
                     const SizedBox(height: 20),
                     const SelectMetodoPagoView(),
-                    TextField(
-                      style: const TextStyle(fontSize: 25),
-                      textAlign: TextAlign.right,
-                      keyboardType: TextInputType.number,
+                    MrnFieldBox(
+                      label: 'Valor',
                       controller: valorRecarga,
-                      decoration: const InputDecoration(
-                        labelText: 'Valor',
-                      ),
+                      kbType: TextInputType.number,
+                      size: 25,
+                      align: TextAlign.right,
                     ),
                   ],
                 ),
@@ -96,6 +95,8 @@ class _CreditRequestScreenState extends ConsumerState<SolicitudCreditoScreen> {
               ElevatedButton(
                 onPressed: () {
                   if(metodoSeleccionado == 'Contado'){
+                    ref.read(backUrlImgProvider.notifier).update((state) => '/solicitud_credito');
+                    ref.read(fwdUrlImgProvider.notifier).update((state) => '/resumen_solicitud');
                     router.go('/image_soporte');
                   }else{
                     router.go('/resumen_solicitud');

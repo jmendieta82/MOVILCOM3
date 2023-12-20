@@ -1,7 +1,7 @@
 import 'package:movilcomercios/src/models/common/transaccion.dart';
 
 class VentaResponse {
-  String? codigo;
+  dynamic codigo;
   String? mensaje;
   Transaccion? data;
 
@@ -10,7 +10,7 @@ class VentaResponse {
   VentaResponse.fromJson(Map<String, dynamic> json) {
     codigo = json['codigo'];
     mensaje = json['mensaje'];
-    data = Transaccion.fromJson(json['data']);
+    data = json['data']!= ''?Transaccion.fromJson(json['data']):data = null;
   }
 
   Map<String, dynamic> toJson() {

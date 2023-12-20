@@ -31,9 +31,12 @@ class _ConveniosScreenState extends ConsumerState {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: TextField(
+            child:
+            TextField(
               decoration: const InputDecoration(
-                labelText: 'Nombre de convenio', // Texto descriptivo o etiqueta
+                labelText: 'Nombre de convenio',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,// Texto descriptivo o etiqueta
               ),
               controller: convenio,
               keyboardType: TextInputType.text,

@@ -5,10 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:movilcomercios/src/app_router/app_router.dart';
+import 'package:movilcomercios/src/providers/cartera_provider.dart';
 import '../../internet_services/saldos/solicitud_saldo_api_conection.dart';
+import '../../providers/shared_providers.dart';
 
 class ImageScreen extends ConsumerStatefulWidget {
-  const ImageScreen({super.key});
+
+  const ImageScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   ConsumerState createState() => _ImageScreenState();
@@ -17,6 +22,8 @@ class ImageScreen extends ConsumerStatefulWidget {
 class _ImageScreenState extends ConsumerState<ImageScreen> {
   @override
   Widget build(BuildContext context) {
+    final backUrl = ref.watch(backUrlImgProvider);
+    final fwdUrl = ref.watch(fwdUrlImgProvider);
     final router = ref.watch(appRouteProvider);
     final imagenSeleccionada = ref.watch(imagenProvider);
     return Scaffold(
@@ -24,7 +31,7 @@ class _ImageScreenState extends ConsumerState<ImageScreen> {
         title: const Text('Imagen de soporte'),
         leading: IconButton(
             onPressed: () async {
-              router.go('/solicitud_credito');
+              router.go(backUrl);
             },
             icon: const Icon(Icons.arrow_back_ios_outlined)
         ),
@@ -52,42 +59,44 @@ class _ImageScreenState extends ConsumerState<ImageScreen> {
           )
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          imagenSeleccionada.isNotEmpty?
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Image.file(File(imagenSeleccionada)),
-            ):
-          const Text('Tome la foto de su comprobante de pago para continuar.',textAlign: TextAlign.center,),
-          const SizedBox(height: 20.0),
-          ElevatedButton(
-            onPressed: imagenSeleccionada.isNotEmpty
-                ? () {router.go('/resumen_solicitud');}
-                : () {
-              // Mostrar un mensaje emergente si no hay imagen seleccionada
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Debe tomar la foto del soporte'),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text('Entendido!'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-            child: const Text('Continuar'),
-          )
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            imagenSeleccionada.isNotEmpty?
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Image.file(File(imagenSeleccionada)),
+              ):
+            const Text('Tome la foto de su comprobante de pago para continuar.',textAlign: TextAlign.center,),
+            const SizedBox(height: 20.0),
+            ElevatedButton(
+              onPressed: imagenSeleccionada.isNotEmpty
+                  ? () {router.go(fwdUrl);}
+                  : () {
+                // Mostrar un mensaje emergente si no hay imagen seleccionada
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Debe tomar la foto del soporte'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('Entendido!'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: const Text('Continuar'),
+            )
+          ],
+        ),
       ),
     );
   }

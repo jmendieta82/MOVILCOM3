@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app_router/app_router.dart';
 import '../../models/recargas/paquetes.dart';
-import '../../providers/ventas_provider.dart';
+import '../../providers/shared_providers.dart';
 import 'package:intl/intl.dart';
 
 class VentaRecargasPaquetesResultScreen extends ConsumerWidget {

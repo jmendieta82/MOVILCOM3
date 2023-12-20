@@ -4,12 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:movilcomercios/src/internet_services/common/login_api_conection.dart';
-import 'package:movilcomercios/src/providers/lista_ventas_provider.dart';
 import 'package:tuple/tuple.dart';
 import '../../app_router/app_router.dart';
 import '../../internet_services/recargas/paquetes_api_connection.dart';
 import '../../models/recargas/paquetes.dart';
-import '../../providers/ventas_provider.dart';
+import '../../providers/shared_providers.dart';
 
 class VentaPinesScreen extends ConsumerWidget {
   const VentaPinesScreen({super.key});

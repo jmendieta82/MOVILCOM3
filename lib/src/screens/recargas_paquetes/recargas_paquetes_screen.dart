@@ -1,15 +1,14 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:movilcomercios/src/internet_services/common/login_api_conection.dart';
-import 'package:movilcomercios/src/providers/lista_ventas_provider.dart';
 import 'package:tuple/tuple.dart';
 import '../../app_router/app_router.dart';
 import '../../internet_services/recargas/paquetes_api_connection.dart';
 import '../../models/recargas/paquetes.dart';
-import '../../providers/ventas_provider.dart';
+import '../../providers/shared_providers.dart';
+import '../common/custom_text_filed.dart';
 
 class RecargasPaquetesScreen extends ConsumerWidget {
   const RecargasPaquetesScreen({super.key});
@@ -83,7 +82,6 @@ class RecargasPaquetesScreen extends ConsumerWidget {
     );
   }
 }
-
 class RecargasView extends ConsumerWidget {
   const RecargasView({
     super.key,
@@ -152,24 +150,19 @@ class RecargasView extends ConsumerWidget {
                   const SizedBox( // Añade un espacio entre la Card y el ListView
                     height: 20.0,
                   ),
-                  TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Valor de la recarga', // Texto descriptivo o etiqueta
-                    ),
-                    style: const TextStyle(fontSize: 30),
-                    inputFormatters: <TextInputFormatter>[formatter],
+                  MrnFieldBox(
+                    label: 'Valor de la recarga',
                     controller: valorVenta,
-                    keyboardType: TextInputType.number,
+                    kbType: TextInputType.number,
+                    size: 25,
+                    align: TextAlign.right,
                   ),
-                  TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Numero de telefono',
-                    ),
-                    style: const TextStyle(fontSize: 30),
-      
-                    keyboardType: TextInputType.phone,
-                    inputFormatters: [phoneMask],
+                  MrnFieldBox(
+                    label: 'Numero de telefono',
                     controller: numeroDestino,
+                    kbType: TextInputType.number,
+                    size: 25,
+                    align: TextAlign.right,
                   ),
                   const SizedBox( // Añade un espacio entre la Card y el ListView
                     height: 40.0,
@@ -177,10 +170,9 @@ class RecargasView extends ConsumerWidget {
                   ButtonBar(
                     alignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      TextButton(
+                      ElevatedButton(
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.all(16.0),
-                            textStyle: const TextStyle(fontSize: 20),
                           ),
                           child: const Text('Continuar'),
                           onPressed: () {
@@ -215,10 +207,9 @@ class RecargasView extends ConsumerWidget {
       
                           }
                       ),
-                      TextButton(
+                      ElevatedButton(
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.all(16.0),
-                            textStyle: const TextStyle(fontSize: 20),
                           ),
                           child: const Text('Cancelar'),
                           onPressed: () {
@@ -237,7 +228,6 @@ class RecargasView extends ConsumerWidget {
     );
   }
 }
-
 class PaquetesView extends ConsumerWidget {
   const PaquetesView({
     super.key,
@@ -261,15 +251,10 @@ class PaquetesView extends ConsumerWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(15.0),
-            child: Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  textAlign: TextAlign.justify,
-                  paqueteSeleccionado.nomProducto.toString(),
-                  style: const TextStyle(fontSize: 20,color: Colors.black54),
-                ),
-              ),
+            child: Text(
+              textAlign: TextAlign.justify,
+              paqueteSeleccionado.nomProducto.toString(),
+              style: const TextStyle(fontSize: 20,color: Colors.black54),
             )
           ),
           Padding(
@@ -278,15 +263,12 @@ class PaquetesView extends ConsumerWidget {
              children: [
                Text('\$ ${formatter.format(paqueteSeleccionado.valorProducto.toString())}',
                style: const TextStyle(fontSize: 40,fontWeight: FontWeight.bold,color: Colors.black54),),
-               TextField(
-                 decoration: const InputDecoration(
-                   labelText: 'Numero de telefono',
-                 ),
-                 style: const TextStyle(fontSize: 30),
-
-                 keyboardType: TextInputType.phone,
-                 inputFormatters: [phoneMask],
+               MrnFieldBox(
+                 label: 'Numero de telefono',
                  controller: numeroDestino,
+                 kbType: TextInputType.number,
+                 size: 25,
+                 align: TextAlign.right,
                ),
                const SizedBox( // Añade un espacio entre la Card y el ListView
                  height: 40.0,
@@ -349,6 +331,32 @@ class PaquetesView extends ConsumerWidget {
     );
   }
 }
+/*class SeleccionarPaquetesScreen extends ConsumerWidget {
+  const SeleccionarPaquetesScreen({super.key});
+
+  @override
+  Widget build(BuildContext context,ref) {
+    final empresaSeleccionada = ref.watch(empresaSeleccionadaProvider);
+    final route  = ref.watch(appRouteProvider);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          empresaSeleccionada.nom_empresa.toString(),
+          style: const TextStyle(fontSize: 20),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              route.go('/')
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}*/
+
 void _mostrarModal(BuildContext context, AsyncValue<List<Paquetes>> data,WidgetRef ref) {
   final empresaSeleccionada = ref.watch(empresaSeleccionadaProvider);
 
@@ -364,25 +372,25 @@ void _mostrarModal(BuildContext context, AsyncValue<List<Paquetes>> data,WidgetR
           ),
           Card(
             elevation: 0,// Añade un espacio entre la Card y el ListView
-           child: Padding(
-             padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-             child: Row(
-               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-               children: [
-                 CircleAvatar(
-                   radius: 30,
-                   backgroundImage: AssetImage(empresaSeleccionada.logo_empresa ?? ''),
-                 ),
-                 Text(empresaSeleccionada.nom_empresa.toString(),style: const TextStyle(fontSize: 20),),
-                 IconButton(
-                   icon: const Icon(Icons.close),
-                   onPressed: () {
-                     Navigator.of(context).pop(); // Cierra el modal al presionar el botón
-                   },
-                 ),
-               ],
-             ),
-           ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: AssetImage(empresaSeleccionada.logo_empresa ?? ''),
+                  ),
+                  Text(empresaSeleccionada.nom_empresa.toString(),style: const TextStyle(fontSize: 20),),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Cierra el modal al presionar el botón
+                    },
+                  ),
+                ],
+              ),
+            ),
           ),
           Expanded(
             child: data.when(

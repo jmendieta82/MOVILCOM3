@@ -9,8 +9,8 @@ class DioClient {
 
   final Dio _dio = Dio(
       BaseOptions(
-          //baseUrl: "http://192.168.1.103:8000/",
-          baseUrl: "https://api-produccion-recargas-mrn.click/",
+          baseUrl: "http://192.168.1.102:8000/",
+          //baseUrl: "https://api-produccion-recargas-mrn.click/",
           connectTimeout: const Duration(seconds: 60),
           receiveTimeout: const Duration(seconds: 60),
           responseType: ResponseType.json,
@@ -19,6 +19,9 @@ class DioClient {
   );
   void setAuthToken(String token) {
     _dio.options.headers['Authorization'] = 'Token $token';
+  }
+  void setUrl(String url) {
+    _dio.options.baseUrl = url;
   }
   ///Get Method
   Future<List<dynamic>> get(
@@ -73,7 +76,10 @@ class DioClient {
             // Utilizar decodedData como un mapa
             return decodedData;
           }
-        }else{
+        }else if (responseData is Map<String, dynamic>) {
+          // Si es un mapa (JSON), devolverlo
+          return responseData;
+        } else{
           return response.data;
         }
         throw "Response data is not in the expected format";

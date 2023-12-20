@@ -6,6 +6,7 @@ import 'package:tuple/tuple.dart';
 import '../../internet_services/common/login_api_conection.dart';
 import '../../models/common/lista_ventas.dart';
 import '../../providers/lista_ventas_provider.dart';
+import '../../providers/shared_providers.dart';
 
 class EmpresaScreen extends ConsumerWidget {
   const EmpresaScreen({super.key});

@@ -20,7 +20,7 @@ class UltimasSolicitudesScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Ultimas ventas'),
+          title: const Text('Ultimas solicitudes.'),
           leading: IconButton(
               onPressed: (){
                 router.go('/saldos');

@@ -1,5 +1,4 @@
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movilcomercios/src/app_router/app_router.dart';
@@ -8,9 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuple/tuple.dart';
 import '../../internet_services/common/login_api_conection.dart';
 import '../../providers/lista_ventas_provider.dart';
+import '../../providers/shared_providers.dart';
 import 'footer_screen.dart';
 import 'menu.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class InicioScreen extends ConsumerWidget {
   const InicioScreen({super.key});
@@ -106,7 +105,27 @@ class InicioScreen extends ConsumerWidget {
           body: SafeArea(
             child: Column(
               children: [
-                Center(
+                const SizedBox( // Añade un espacio entre la Card y el ListView
+                  height: 15.0,
+                ),
+                CardCarousel(cardTitles: cardTitles, route: routes,),
+                const Padding(
+                  padding: EdgeInsets.only(right: 16.0),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      'Deslice para más opciones',
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+                const Expanded(
+                    child: ListaVentasView(),
+                ),
+                /*Center(
                   child: CarouselSlider.builder(
                     itemCount: imageList.length,
                     options: CarouselOptions(
@@ -132,27 +151,7 @@ class InicioScreen extends ConsumerWidget {
                       );
                     },
                   ),
-                ),
-                const SizedBox( // Añade un espacio entre la Card y el ListView
-                  height: 15.0,
-                ),
-                CardCarousel(cardTitles: cardTitles, route: routes,),
-                const Padding(
-                  padding: EdgeInsets.only(right: 16.0),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      'Deslice para más opciones',
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                ),
-                const Expanded(
-                    child: ListaVentasView(),
-                ),
+                ),*/
                 const SizedBox( // Añade un espacio entre la Card y el ListView
                   height: 15.0,
                 ),
@@ -164,15 +163,13 @@ class InicioScreen extends ConsumerWidget {
     );
   }
 }
-
-Future<void> _launchURL(String url) async {
+/*Future<void> _launchURL(String url) async {
   if (await canLaunchUrl(url as Uri)) {
     await launchUrl(url as Uri);
   } else {
     throw 'Could not launch $url';
   }
-}
-
+}*/
 
 class ListaVentasView extends ConsumerWidget {
   const ListaVentasView({super.key});
@@ -206,7 +203,7 @@ class ListaVentasView extends ConsumerWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: GridView.count(
-                      crossAxisCount: 3, // Número de elementos en cada fila
+                      crossAxisCount: 2, // Número de elementos en cada fila
                       mainAxisSpacing: 10.0, // Espacio vertical entre las tarjetas
                       crossAxisSpacing: 5.0, // Espacio horizontal entre las tarjetas
                       children: categorias.keys.map((categoria) {
@@ -219,23 +216,41 @@ class ListaVentasView extends ConsumerWidget {
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Text(
-                                    categoria,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF2863F1),
-                                    ),
-                                  ),
-                                  Text(
-                                    '${categorias[categoria]?.length} empresas',
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      color: Color(0xFF182130),
-                                    ),
+                                  const SizedBox(width: 10), // Espacio entre la imagen y el texto
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Center(
+                                        child: Container(
+                                          width: 70, // Ajusta el ancho de la imagen según tus necesidades
+                                          height: 70, // Ajusta la altura de la imagen según tus necesidades
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: AssetImage('assets/${categorias[categoria]?[0].img_categoria}'),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        categoria=='Recargas y Paquetes'?'Recargas':categoria,
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF182130),
+                                        ),
+                                      ),
+                                      Text(
+                                        '${categorias[categoria]?.length} empresas',
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Color(0xFF182130),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
