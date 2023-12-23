@@ -7,6 +7,7 @@ class MrnFieldBox extends StatelessWidget {
   final String? label;
   final double? size;
   final TextAlign align;
+  final Widget? icon;
 
   const MrnFieldBox({
     super.key,
@@ -15,6 +16,7 @@ class MrnFieldBox extends StatelessWidget {
     this.kbType,
     this.label,
     this.size,
+    this.icon,
     this.align = TextAlign.left
   });
 
@@ -26,6 +28,7 @@ class MrnFieldBox extends StatelessWidget {
       border: const OutlineInputBorder(),
       floatingLabelBehavior: FloatingLabelBehavior.always,
       labelText: label,
+      suffixIcon: icon
     );
 
     return Column(

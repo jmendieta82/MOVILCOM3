@@ -3,7 +3,7 @@ class FacturaReacudo {
   String? estado;
   String? referencia;
   String? nconvenio;
-  int? valorPago;
+  dynamic valorPago;
   String? idPre;
   int? pagoParcial;
 

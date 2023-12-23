@@ -1,5 +1,6 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -112,6 +113,9 @@ class _MyFormState extends ConsumerState<MyForm> {
           valorController.text = formatter.format(factura.valorPago.toString());
           isTextFieldEnabled = factura.pagoParcial == 1?true:false;
           ref.read(facturaSeleccionadaProvider.notifier).update((state) => factura);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(factura.reply.toString())),
+          );
         });
       }else {
         showDialog(
@@ -160,6 +164,32 @@ class _MyFormState extends ConsumerState<MyForm> {
     final router  = ref.watch(appRouteProvider);
     final convenioSeleccionado = ref.watch(convenioSeleccionadoProvider);
     bool isProgress = ref.watch(progressProvider);
+    Future<void> scanBarcode() async {
+      try {
+        String barcode = await FlutterBarcodeScanner.scanBarcode(
+          '#ff6666', // Color del fondo de la pantalla de escaneo
+          'Cancelar', // Texto del botón de cancelar
+          true, // Muestra la linterna
+          ScanMode.BARCODE, // Modo de escaneo: código de barras
+        );
+
+        if (barcode != '-1') {
+          setState(() {
+            referenciaController.text = barcode.toString();
+          });
+          print('Código de barras escaneado: $barcode');
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Escaneo cancelado.')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al escanear el código de barras: $e')),
+        );
+      }
+    }
+
 
     return Form(
       key: _formKey,
@@ -175,6 +205,12 @@ class _MyFormState extends ConsumerState<MyForm> {
                 referencia = value;
               });
             },
+            icon: IconButton(
+              icon: const Icon(Icons.qr_code_scanner), // Icono que se muestra al final del TextField
+              onPressed: () {
+                scanBarcode();
+              },
+            ),
           ),
           const SizedBox(height: 20,),
           isProgress ? const Center(child: Column(

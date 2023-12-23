@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:movilcomercios/src/internet_services/dio/dio_exception.dart';
 
@@ -6,11 +7,11 @@ import 'package:movilcomercios/src/internet_services/dio/dio_exception.dart';
 class DioClient {
   DioClient._();
   static final instance = DioClient._();
+  //static const urlMRN = "http://192.168.1.100:8000/";
+  static const urlMRN = "https://api-produccion-recargas-mrn.click/";
 
   final Dio _dio = Dio(
       BaseOptions(
-          baseUrl: "http://192.168.1.102:8000/",
-          //baseUrl: "https://api-produccion-recargas-mrn.click/",
           connectTimeout: const Duration(seconds: 60),
           receiveTimeout: const Duration(seconds: 60),
           responseType: ResponseType.json,
@@ -20,9 +21,35 @@ class DioClient {
   void setAuthToken(String token) {
     _dio.options.headers['Authorization'] = 'Token $token';
   }
-  void setUrl(String url) {
-    _dio.options.baseUrl = url;
+  getBaseUrl(){
+    return _dio.options.baseUrl;
   }
+  void setUrl(String url, {String token = ''}){
+     _dio.options.baseUrl = urlMRN + url;
+     if (token.isNotEmpty) {
+       _dio.options.headers['Authorization'] = 'Token $token';
+     } else {
+       _dio.options.headers.remove('Authorization');
+     }
+  }
+  void setUrlConceptoMovilLogin(String url, {String token = ''}){
+    _dio.options.baseUrl = 'https://150.136.18.204';
+    _dio.options.headers = {
+      'Content-Type': 'application/json',
+      'URL': urlMRN + url,
+      'UUID': 'uuid',
+      'Brand-Device': 'manufacturer',
+      'Model-Device': 'model',
+      'Type-Device': 'platform',
+      'Sponsor-Authorization': "\$2b\$10\$5hBiWZcdxXo6sQjy5equ1eUl/axKYblXTJ0Y0UG4lmiDtbRd846P2",
+    };
+    if (token.isNotEmpty) {
+      _dio.options.headers['Authorization'] = 'Token $token';
+    } else {
+      _dio.options.headers.remove('Authorization');
+    }
+  }
+
   ///Get Method
   Future<List<dynamic>> get(
       String path, {
@@ -69,6 +96,7 @@ class DioClient {
         onReceiveProgress: onReceiveProgress,
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
+        print(response.data);
         final dynamic responseData = response.data;
         if (responseData is String) {
           final decodedData = jsonDecode(responseData);

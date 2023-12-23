@@ -28,16 +28,15 @@ Future<FacturaReacudo> consultaReferencia(String convenio,String referencia) asy
   final data = {
     "idcomercio": '113935',
     "claveventa": '1379',
-    "tipoConsulta":"consultaValorConvRef",
-    "data":{
-      "idConv":convenio,
-      "extConvenio":referencia
-    },
+    "tipoConsulta":referencia.length<12?"consultaValorConvRef":"verifyBillEan",
+    "data":referencia.length<12?{"idConv":convenio, "extConvenio":referencia}
+    :{"eanbill":referencia},
     "idTrx":"1",
     "end_point":"preConsulta"
   };
   final response = await DioClient.instance.post('consulta_convenios_practi',data:data);
   final Map<String, dynamic> factura = response['data'];
+  print(factura);
   return FacturaReacudo.fromJson(factura);
 
 }

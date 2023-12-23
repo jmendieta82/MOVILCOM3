@@ -241,7 +241,7 @@ class ConfirmVentaRecaudoScreen extends ConsumerWidget {
                                         const SizedBox( height: 20.0),
                                         ElevatedButton(
                                             onPressed: (){
-                                              if(resultado.codigo != '500'){
+                                              if(resultado.codigo != 500){
                                                 ref.read(ventaResponseProvider.notifier).update((state) =>resultado.data!);
                                                 route.go('/venta_recaudos_result');
                                               }else{
@@ -268,7 +268,7 @@ class ConfirmVentaRecaudoScreen extends ConsumerWidget {
                                     child: Column(
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 30),
+                                          padding: const EdgeInsets.all(10),
                                           child: Text('$error'),
                                         ),
                                         const SizedBox( height: 20.0),
