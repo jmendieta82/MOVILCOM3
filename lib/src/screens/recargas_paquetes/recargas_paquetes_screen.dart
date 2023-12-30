@@ -16,15 +16,12 @@ class RecargasPaquetesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context,ref) {
     final empresaSeleccionada = ref.watch(empresaSeleccionadaProvider);
-    final usuarioConectado = ref.watch(usuarioConectadoProvider);
-    final Tuple3 params = Tuple3(
-        usuarioConectado.token.toString(),
-        empresaSeleccionada.proveedor_id,
-        empresaSeleccionada.empresa_id);
-    final data = ref.watch(paquetesListProvider(params));
+    final route  = ref.watch(appRouteProvider);
+    final selectedTab = ref.watch(selectedTabProvider);
 
     return DefaultTabController(
       length: 2,
+      initialIndex: selectedTab == 0?0:selectedTab,
       child: Scaffold(
         body: SafeArea(
           child: Column(
@@ -53,7 +50,8 @@ class RecargasPaquetesScreen extends ConsumerWidget {
                     onTap: (index) {
                       // Aquí puedes agregar la lógica que deseas cuando se toca un tab
                      if(index == 1) {
-                       _mostrarModal(context,data,ref);
+                       route.go('/paquetes');
+                       ref.read(fwdUrlImgProvider.notifier).update((state) => '/recargas_paquetes');
                      }
                      },
                     labelStyle: const TextStyle(
@@ -214,6 +212,7 @@ class RecargasView extends ConsumerWidget {
                           child: const Text('Cancelar'),
                           onPressed: () {
                             ref.read(telefonoSeleccionadoProvider.notifier).update((state) => '');
+                            ref.read(selectedTabProvider.notifier).update((state) => 0);
                             route.go('/empresas');
                           },
                       ),
@@ -249,14 +248,21 @@ class PaquetesView extends ConsumerWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
+          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.all(15.0),
-            child: Text(
-              textAlign: TextAlign.justify,
-              paqueteSeleccionado.nomProducto.toString(),
-              style: const TextStyle(fontSize: 20,color: Colors.black54),
+            child: GestureDetector(
+              onTap: () {route.go('/paquetes');},
+              child: Text(
+                textAlign: TextAlign.justify,
+                paqueteSeleccionado.nomProducto != null?
+                paqueteSeleccionado.nomProducto.toString():
+                'Toque aqui para seleccionar un producto',
+                style: const TextStyle(fontSize: 16,color: Colors.black54),
+              ),
             )
           ),
+          const Divider(),
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: Column(
@@ -318,6 +324,7 @@ class PaquetesView extends ConsumerWidget {
                      child: const Text('Cancelar'),
                      onPressed: () {
                        ref.read(telefonoSeleccionadoProvider.notifier).update((state) => '');
+                       ref.read(selectedTabProvider.notifier).update((state) => 0);
                        route.go('/empresas');
                      },
                    ),
@@ -330,96 +337,4 @@ class PaquetesView extends ConsumerWidget {
       ),
     );
   }
-}
-/*class SeleccionarPaquetesScreen extends ConsumerWidget {
-  const SeleccionarPaquetesScreen({super.key});
-
-  @override
-  Widget build(BuildContext context,ref) {
-    final empresaSeleccionada = ref.watch(empresaSeleccionadaProvider);
-    final route  = ref.watch(appRouteProvider);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          empresaSeleccionada.nom_empresa.toString(),
-          style: const TextStyle(fontSize: 20),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () {
-              route.go('/')
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}*/
-
-void _mostrarModal(BuildContext context, AsyncValue<List<Paquetes>> data,WidgetRef ref) {
-  final empresaSeleccionada = ref.watch(empresaSeleccionadaProvider);
-
-  showModalBottomSheet(
-    isScrollControlled: true, // Muestra el modal en pantalla completa
-    isDismissible: true, // Permite cerrar el modal tocando fuera de él
-    context: context,
-    builder: (BuildContext context) {
-      return Column(
-        children: [
-          const SizedBox( // Añade un espacio entre la Card y el ListView
-            height: 50.0,
-          ),
-          Card(
-            elevation: 0,// Añade un espacio entre la Card y el ListView
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundImage: AssetImage(empresaSeleccionada.logo_empresa ?? ''),
-                  ),
-                  Text(empresaSeleccionada.nom_empresa.toString(),style: const TextStyle(fontSize: 20),),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop(); // Cierra el modal al presionar el botón
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            child: data.when(
-                data: (data){
-                  List<Paquetes> list = data.where((element) => element.nomProducto != 'Tiempo al aire').toList();
-                  return ListView.builder(
-                      itemCount: list.length,
-                      shrinkWrap: true,
-                      itemBuilder: (_,index){
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Card(
-                            child: ListTile(
-                              title: Text(list[index].nomProducto.toString()),
-                              onTap: () {
-                                ref.read(paqueteSeleccionadoProvider.notifier).update((state) => list[index]);
-                                Navigator.of(context).pop(); // Cierra el modal al presionar el botón
-                              },
-                            ),
-                          ),
-                        );
-                      }
-                  );
-                },
-                error: (err,s) => Text(err.toString()),
-                loading: () => const Center(child: CircularProgressIndicator(),)),
-          ),
-        ],
-      );
-    },
-  );
 }

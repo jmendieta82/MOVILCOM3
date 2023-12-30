@@ -2,6 +2,7 @@ import 'package:currency_text_input_formatter/currency_text_input_formatter.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movilcomercios/src/providers/bolsa_provider.dart';
+import 'package:tuple/tuple.dart';
 import '../../internet_services/common/login_api_conection.dart';
 
 class BolsaScreen extends ConsumerWidget {
@@ -10,7 +11,11 @@ class BolsaScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context,ref) {
     final usuarioConectado = ref.watch(usuarioConectadoProvider);
-    final bolsa = ref.watch(bolsaProvider(usuarioConectado.token.toString()));
+    final Tuple2 params = Tuple2(
+        usuarioConectado.token.toString(),
+        usuarioConectado.nodoId.toString(),
+    );
+    final bolsa = ref.watch(bolsaProvider(params));
     final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
       locale: 'es-Co', decimalDigits: 0,symbol: '',
     );
@@ -33,13 +38,17 @@ class BolsaScreen extends ConsumerWidget {
                   children: [
                     Column(
                           children: [
-                            Text("\$$saldoDisponible",style: const TextStyle(fontSize: 20,color: Color(0xFF2863F1)),),
-                            const Text('Disponible',style: TextStyle(fontSize: 13,color: Color(0xFF182130))),
+                            Text("\$$saldoDisponible",style: const
+                            TextStyle(fontSize: 20,color: Color(0xFF182130),
+                              fontWeight: FontWeight.bold
+                            ),),
+                            const Text('Disponible',style: TextStyle(fontSize: 13,color: Color(0xFF182130),)),
                           ],
                         ),
                     Column(
                       children: [
-                        Text("\$$utilidad",style: const TextStyle(fontSize: 20,color: Color(0xFF2863F1)),),
+                        Text("\$$utilidad",style: const TextStyle(fontSize: 20,color: Color(0xFF182130),
+                            fontWeight: FontWeight.bold),),
                         const Text('Ganancias',style: TextStyle(fontSize: 13,color: Color(0xFF182130)),)
                       ],
                     ),

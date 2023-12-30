@@ -22,7 +22,7 @@ class _MyAppState extends ConsumerState<MyApp> {
         theme: ThemeData(
           textTheme: GoogleFonts.ubuntuTextTheme(),
           appBarTheme: const AppBarTheme(
-            toolbarHeight: 100,// Altura del AppBar, // Aplicar la fuente Ubuntu a toda la aplicación
+            toolbarHeight: 85,// Altura del AppBar, // Aplicar la fuente Ubuntu a toda la aplicación
           ),
         ),
         debugShowCheckedModeBanner: false,

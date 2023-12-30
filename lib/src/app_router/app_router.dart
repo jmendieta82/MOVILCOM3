@@ -20,6 +20,7 @@ import 'package:movilcomercios/src/screens/saldos/saldos_screen.dart';
 import 'package:movilcomercios/src/screens/saldos/ultimas_solicitudes_screen.dart';
 import '../screens/apuestas/confirm_apuesta_screen.dart';
 import '../screens/common/about_us.dart';
+import '../screens/common/paquetes_screen.dart';
 import '../screens/common/ultimas_ventas_screen.dart';
 import '../screens/pines/confirm_pin_screen.dart';
 import '../screens/recargas_paquetes/confirm_recarga_screen.dart';
@@ -60,6 +61,7 @@ final appRouteProvider  = Provider<GoRouter>((ref){
         GoRoute(path: '/ultimas_solicitudes', builder: (context,state) => const UltimasSolicitudesScreen()),
         GoRoute(path: '/cartera', builder: (context,state) => const CarteraScreen()),
         GoRoute(path: '/pago_facturas', builder: (context,state) => const PagoFacturasScreen()),
+        GoRoute(path: '/paquetes', builder: (context,state) => const PaquetesScreen()),
       ]
   );
 });

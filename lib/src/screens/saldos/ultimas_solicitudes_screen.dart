@@ -1,3 +1,4 @@
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movilcomercios/src/models/saldos/ultimas_solicitudes.dart';
@@ -17,7 +18,9 @@ class UltimasSolicitudesScreen extends ConsumerWidget {
     Tuple2 params = Tuple2(usuarioConectado.token, usuarioConectado.nodoId);
     final data  = ref.watch(ultimasSolicitudesListProvider(params));
     final router  = ref.watch(appRouteProvider);
-
+    final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
+      locale: 'es-Co', decimalDigits: 0,symbol: '',
+    );
     return Scaffold(
       appBar: AppBar(
           title: const Text('Ultimas solicitudes.'),
@@ -47,6 +50,7 @@ class UltimasSolicitudesScreen extends ConsumerWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     _buildListItem('Transaccion',list[index].id.toString()),
+                                    _buildListItem('Valor','\$${formatter.format(list[index].valor.toString())}'),
                                     _buildListItem('Metodo de pago',list[index].tipo_transaccion.toString()),
                                     if(list[index].fecha_aprobacion != null)
                                     _buildListItem('Aprobacion',list[index].fecha_aprobacion.toString()),

@@ -116,6 +116,10 @@ class _MyFormState extends ConsumerState<MyForm> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(factura.reply.toString())),
           );
+        }).catchError((error) {
+          ref.read(progressProvider.notifier).update((state) => false);
+          // Manejar los errores si ocurre algún problema con la petición
+          Text(error);
         });
       }else {
         showDialog(
@@ -150,7 +154,6 @@ class _MyFormState extends ConsumerState<MyForm> {
       );
     }
   }
-
   cancelar(GoRouter router){
     ref.read(valorSeleccionadoProvider.notifier).update((state) => 0);
     ref.read(telefonoSeleccionadoProvider.notifier).update((state) => '');
@@ -163,6 +166,7 @@ class _MyFormState extends ConsumerState<MyForm> {
   Widget build(BuildContext context) {
     final router  = ref.watch(appRouteProvider);
     final convenioSeleccionado = ref.watch(convenioSeleccionadoProvider);
+    final facturaSeleccionada = ref.watch(facturaSeleccionadaProvider);
     bool isProgress = ref.watch(progressProvider);
     Future<void> scanBarcode() async {
       try {
@@ -189,7 +193,6 @@ class _MyFormState extends ConsumerState<MyForm> {
         );
       }
     }
-
 
     return Form(
       key: _formKey,
@@ -233,8 +236,11 @@ class _MyFormState extends ConsumerState<MyForm> {
             controller: valorController,
             kbType: TextInputType.number,
             size: 25,
+            enabled: facturaSeleccionada.pagoParcial == 1,
             align: TextAlign.right,
           ),
+          Text(facturaSeleccionada.pagoParcial == 1?'Permite pago parcial':'Pago total',
+          style: const TextStyle(color: Colors.redAccent)),
           const SizedBox(height: 20,),
           MrnFieldBox(
             label: 'Número de teléfono',

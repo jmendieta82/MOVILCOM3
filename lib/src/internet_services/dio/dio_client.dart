@@ -7,8 +7,8 @@ import 'package:movilcomercios/src/internet_services/dio/dio_exception.dart';
 class DioClient {
   DioClient._();
   static final instance = DioClient._();
-  //static const urlMRN = "http://192.168.1.100:8000/";
-  static const urlMRN = "https://api-produccion-recargas-mrn.click/";
+  static const urlMRN = "http://192.168.1.100:8000/";
+  //static const urlMRN = "https://api-produccion-recargas-mrn.click/";
 
   final Dio _dio = Dio(
       BaseOptions(
@@ -18,12 +18,26 @@ class DioClient {
           contentType: 'application/json',
           )
   );
+
+  Future<bool> checkInternetConnection() async {
+    try {
+      Dio dio = Dio();
+      dio.options.connectTimeout = const Duration(seconds: 5); // Timeout de conexión de 5 segundos
+      dio.options.receiveTimeout = const Duration(seconds: 5); // Timeout de recepción de 5 segundos
+      Response response = await dio.get('https://www.google.com');
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
+
   void setAuthToken(String token) {
     _dio.options.headers['Authorization'] = 'Token $token';
   }
   getBaseUrl(){
     return _dio.options.baseUrl;
   }
+
   void setUrl(String url, {String token = ''}){
      _dio.options.baseUrl = urlMRN + url;
      if (token.isNotEmpty) {

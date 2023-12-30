@@ -3,7 +3,14 @@ import 'package:movilcomercios/src/models/saldos/saldo_response.dart';
 import '../dio/dio_client.dart';
 
 Future<SaldoResponse> solicitudSaldo(obj) async {
-  final response = await DioClient.instance.post('solicitar_saldo', data: obj);
+  DioClient conexion = DioClient.instance;
+  bool isConnected = await conexion.checkInternetConnection();
+  if(isConnected){
+    conexion.setUrl('solicitar_saldo');
+  }else{
+    conexion.setUrlConceptoMovilLogin('solicitar_saldo');
+  }
+  final response = await conexion.post('', data: obj);
   return SaldoResponse.fromJson(response);
 }
 

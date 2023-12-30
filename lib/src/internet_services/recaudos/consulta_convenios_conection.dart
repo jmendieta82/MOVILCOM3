@@ -5,6 +5,13 @@ import '../../models/recaudos/convenios.dart';
 import '../dio/dio_client.dart';
 
 Future<List<Convenio>> getConveniosList(parametro) async {
+  DioClient conexion = DioClient.instance;
+  bool isConnected = await conexion.checkInternetConnection();
+  if(isConnected){
+    conexion.setUrl('consulta_convenios_practi');
+  }else{
+    conexion.setUrlConceptoMovilLogin('consulta_convenios_practi');
+  }
   final data = {
     'idcomercio': '113935',
     'claveventa': '1379',
@@ -13,7 +20,7 @@ Future<List<Convenio>> getConveniosList(parametro) async {
     'idTrx':'1',
     'end_point': 'preConsulta'
   };
-  final response = await DioClient.instance.post('consulta_convenios_practi',data:data);
+  final response = await conexion.post('',data:data);
   final Map<String, dynamic> convenios = jsonDecode(response['data']['convenios']);
   List<Convenio> listaConvenios = [];
   for (var element in convenios.values) {
@@ -25,6 +32,13 @@ Future<List<Convenio>> getConveniosList(parametro) async {
 }
 
 Future<FacturaReacudo> consultaReferencia(String convenio,String referencia) async {
+  DioClient conexion = DioClient.instance;
+  bool isConnected = await conexion.checkInternetConnection();
+  if(isConnected){
+    conexion.setUrl('consulta_convenios_practi');
+  }else{
+    conexion.setUrlConceptoMovilLogin('consulta_convenios_practi');
+  }
   final data = {
     "idcomercio": '113935',
     "claveventa": '1379',
@@ -34,7 +48,7 @@ Future<FacturaReacudo> consultaReferencia(String convenio,String referencia) asy
     "idTrx":"1",
     "end_point":"preConsulta"
   };
-  final response = await DioClient.instance.post('consulta_convenios_practi',data:data);
+  final response = await conexion.post('',data:data);
   final Map<String, dynamic> factura = response['data'];
   print(factura);
   return FacturaReacudo.fromJson(factura);

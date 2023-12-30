@@ -7,6 +7,7 @@ import '../../internet_services/common/login_api_conection.dart';
 import '../../internet_services/recargas/venta_api_conection.dart';
 import '../../models/recargas/ws_recargas.dart';
 import '../../providers/shared_providers.dart';
+import '../../providers/ultimas_ventas_provider.dart';
 
 
 class ConfirmRecargasPaquetesScreen extends ConsumerWidget {
@@ -127,8 +128,10 @@ class ConfirmRecargasPaquetesScreen extends ConsumerWidget {
                                               if(resultado.codigo != 500){
                                                 ref.read(ventaResponseProvider.notifier).update((state) =>resultado.data!);
                                                 ref.invalidate(bolsaActualProvider);
+                                                ref.invalidate(ultimasVentasListProvider);
                                                 route.go('/venta_result');
                                               }else{
+                                                ref.invalidate(ultimasVentasListProvider);
                                                 route.go('/recargas_paquetes');
                                               }
                                             },
@@ -179,11 +182,13 @@ class ConfirmRecargasPaquetesScreen extends ConsumerWidget {
                                       const SizedBox( height: 20.0),
                                       ElevatedButton(
                                           onPressed: (){
-                                            if(resultado.codigo != '500'){
+                                            if(resultado.codigo != 500){
                                               ref.read(ventaResponseProvider.notifier).update((state) =>resultado.data!);
                                               ref.invalidate(bolsaActualProvider);
+                                              ref.invalidate(ultimasVentasListProvider);
                                               route.go('/venta_result');
                                             }else{
+                                              ref.invalidate(ultimasVentasListProvider);
                                               route.go('/recargas_paquetes');
                                             }
                                           },

@@ -82,7 +82,8 @@ class PinesView extends ConsumerWidget {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: (){
-                _mostrarModal(context, data, ref);
+                route.go('/paquetes');
+                ref.read(fwdUrlImgProvider.notifier).update((state) => '/pines');
               },
               child: Card(
                 child: Padding(
@@ -193,69 +194,3 @@ class PinesView extends ConsumerWidget {
   }
 }
 
-void _mostrarModal(BuildContext context, AsyncValue<List<Paquetes>> data,WidgetRef ref) {
-  final empresaSeleccionada = ref.watch(empresaSeleccionadaProvider);
-
-  showModalBottomSheet(
-    isScrollControlled: true, // Muestra el modal en pantalla completa
-    isDismissible: true, // Permite cerrar el modal tocando fuera de él
-    context: context,
-    builder: (BuildContext context) {
-      return Column(
-        children: [
-          const SizedBox( // Añade un espacio entre la Card y el ListView
-            height: 50.0,
-          ),
-          Card(
-            elevation: 0,// Añade un espacio entre la Card y el ListView
-           child: Padding(
-             padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-             child: Row(
-               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-               children: [
-                 CircleAvatar(
-                   radius: 30,
-                   backgroundImage: AssetImage(empresaSeleccionada.logo_empresa ?? ''),
-                 ),
-                 Text(empresaSeleccionada.nom_empresa.toString(),style: const TextStyle(fontSize: 20),),
-                 IconButton(
-                   icon: const Icon(Icons.close),
-                   onPressed: () {
-                     Navigator.of(context).pop(); // Cierra el modal al presionar el botón
-                   },
-                 ),
-               ],
-             ),
-           ),
-          ),
-          Expanded(
-            child: data.when(
-                data: (data){
-                  List<Paquetes> list = data.where((element) => element.nomProducto != 'Tiempo al aire').toList();
-                  return ListView.builder(
-                      itemCount: list.length,
-                      shrinkWrap: true,
-                      itemBuilder: (_,index){
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Card(
-                            child: ListTile(
-                              title: Text(list[index].nomProducto.toString()),
-                              onTap: () {
-                                ref.read(paqueteSeleccionadoProvider.notifier).update((state) => list[index]);
-                                Navigator.of(context).pop(); // Cierra el modal al presionar el botón
-                              },
-                            ),
-                          ),
-                        );
-                      }
-                  );
-                },
-                error: (err,s) => Text(err.toString()),
-                loading: () => const Center(child: CircularProgressIndicator(),)),
-          ),
-        ],
-      );
-    },
-  );
-}

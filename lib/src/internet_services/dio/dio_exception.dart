@@ -37,7 +37,7 @@ class DioExceptionCustom implements Exception{
       case 400:
         return 'El usuario ya existe';
       case 401:
-        return 'Fallo de autenticacion';
+        return 'Usuario y/o contraseña incorrectos.';
       case 403:
         return 'Este usuario no tiene permiso para este recurso.';
       case 404:

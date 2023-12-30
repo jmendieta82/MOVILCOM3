@@ -67,10 +67,19 @@ class _ImageScreenState extends ConsumerState<ImageScreen> {
             imagenSeleccionada.isNotEmpty?
               Padding(
                 padding: const EdgeInsets.all(15.0),
-                child: Image.file(File(imagenSeleccionada)),
+                child:Center(
+                  child: SizedBox(
+                    width: 300, // Ancho deseado
+                    height: 400, // Alto deseado
+                    child: Image.file(
+                      File(imagenSeleccionada),
+                      fit: BoxFit.cover, // Puedes usar diferentes BoxFit según lo necesites
+                    ),
+                  ),
+                ),
               ):
             const Text('Tome la foto de su comprobante de pago para continuar.',textAlign: TextAlign.center,),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 40.0),
             ElevatedButton(
               onPressed: imagenSeleccionada.isNotEmpty
                   ? () {router.go(fwdUrl);}

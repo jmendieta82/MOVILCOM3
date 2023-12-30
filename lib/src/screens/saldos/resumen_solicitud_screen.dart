@@ -5,6 +5,9 @@ import 'package:movilcomercios/src/app_router/app_router.dart';
 import 'package:movilcomercios/src/internet_services/common/login_api_conection.dart';
 import 'package:movilcomercios/src/internet_services/saldos/solicitud_saldo_api_conection.dart';
 
+import '../../internet_services/common/bolsa_api_connection.dart';
+import '../../internet_services/saldos/credito_api_connection.dart';
+
 class ResumenSolicitudScreen extends ConsumerWidget {
   const ResumenSolicitudScreen({super.key});
 
@@ -74,11 +77,13 @@ class ResumenSolicitudScreen extends ConsumerWidget {
                           const SizedBox(height: 40),
                           TextButton(
                             onPressed: () {
-                              ref.read(metodoSeleccionadoProvider.notifier).update((state) => '');
+                              ref.read(metodoSeleccionadoProvider.notifier).update((state) => 'Contado');
                               ref.read(valorSolicitudProvider.notifier).update((state) => '');
                               ref.read(imagenProvider.notifier).update((state) => '');
                               ref.read(imagen64Provider.notifier).update((state) => '');
                               ref.read(respuestaSaldoPovider.notifier).update((state) => []);
+                              ref.invalidate(bolsaActualProvider);
+                              ref.invalidate(creditoActualProvider);
                               router.go('/saldos');
                             },
                             child: const Text('Aceptar'),
@@ -103,10 +108,10 @@ class ResumenSolicitudScreen extends ConsumerWidget {
                       final obj = {
                         'usuario':usuarioConectado.id,
                         'nodo':usuarioConectado.nodoId,
-                        'valor':int.parse(valorSeleccionado),
+                        'valor':int.parse(valorSeleccionado.replaceAll('.', '')),
                         'medioSolicitud':'App',
                         'tipo_transaccion':metodoSeleccionado=='Contado'?'SSC':'SSCR',
-                        'saldo_pendiente_pago':metodoSeleccionado=='Contado'?'0':valorSeleccionado,
+                        'saldo_pendiente_pago':metodoSeleccionado=='Contado'?'0':valorSeleccionado.replaceAll('.', ''),
                         'soporte':metodoSeleccionado=='Contado'?imagen64Seleccionada:'',
                       };
                       ref.read(progressProvider.notifier).update((state) => true);

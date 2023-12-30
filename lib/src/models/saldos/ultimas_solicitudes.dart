@@ -8,6 +8,7 @@ class UltimasSolicitudes {
   String?created_at;
   String?tipoServicio;
   String?estado;
+  int?valor;
   String?estadoPago;
 
 
@@ -19,6 +20,7 @@ class UltimasSolicitudes {
     this.created_at,
     this.tipoServicio,
     this.estado,
+    this.valor,
     this.estadoPago,
   });
 
@@ -30,6 +32,7 @@ class UltimasSolicitudes {
     created_at= json["created_at"];
     tipoServicio= json["tipoServicio"] == 'CV'?'Comision por venta':'Comision anticipada';
     estado= json["estado"];
+    valor= json["valor"];
     estadoPago= json["estadoPago"];
   }
 
@@ -41,6 +44,7 @@ class UltimasSolicitudes {
     "created_at": created_at,
     "tipoServicio":tipoServicio,
     "estado": estado,
+    "valor": valor,
     "estadoPago": estadoPago,
   };
 }

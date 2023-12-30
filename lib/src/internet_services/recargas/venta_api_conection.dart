@@ -8,9 +8,15 @@ Future<VentaResponse> ventaRecarga(MSData obj) async {
 }
 
 Future<VentaResponse> ventaRecaudo(obj) async {
+  DioClient conexion = DioClient.instance;
+  bool isConnected = await conexion.checkInternetConnection();
+  if(isConnected){
+    conexion.setUrl('pago_factura_practi');
+  }else{
+    conexion.setUrlConceptoMovilLogin('pago_factura_practi');
+  }
   try{
-    final response = await DioClient.instance.post('pago_factura_practi', data: obj);
-    print(response);
+    final response = await conexion.post('', data: obj);
     return VentaResponse.fromJson(response);
   }catch(error){
     throw Exception('Error en la solicitud: $error');

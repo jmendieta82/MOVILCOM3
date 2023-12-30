@@ -6,6 +6,7 @@ import 'package:movilcomercios/src/internet_services/common/login_api_conection.
 import '../../app_router/app_router.dart';
 import '../../internet_services/recargas/venta_api_conection.dart';
 import '../../providers/shared_providers.dart';
+import '../../providers/ultimas_ventas_provider.dart';
 
 
 class ConfirmVentaRecaudoScreen extends ConsumerWidget {
@@ -156,8 +157,10 @@ class ConfirmVentaRecaudoScreen extends ConsumerWidget {
                                             onPressed: (){
                                               if(resultado.codigo != 500){
                                                 ref.read(ventaResponseProvider.notifier).update((state) =>resultado.data!);
+                                                ref.invalidate(ultimasVentasListProvider);
                                                 route.go('/venta_recaudos_result');
                                               }else{
+                                                ref.invalidate(ultimasVentasListProvider);
                                                 route.go('/recaudos');
                                               }
                                             },
@@ -243,8 +246,10 @@ class ConfirmVentaRecaudoScreen extends ConsumerWidget {
                                             onPressed: (){
                                               if(resultado.codigo != 500){
                                                 ref.read(ventaResponseProvider.notifier).update((state) =>resultado.data!);
+                                                ref.invalidate(ultimasVentasListProvider);
                                                 route.go('/venta_recaudos_result');
                                               }else{
+                                                ref.invalidate(ultimasVentasListProvider);
                                                 route.go('/recaudos');
                                               }
                                             },

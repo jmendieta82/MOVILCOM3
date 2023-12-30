@@ -37,11 +37,13 @@ class DetalleUltimasVentasScreen extends ConsumerWidget {
                     _buildListItem('',transaccion.nomProducto.toString()),
                     _buildListItem('Codigo de aprobacion',transaccion.codigoTransaccionExterna.toString()),
                     _buildListItem('Venta desde',transaccion.ventaDesde.toString()),
-                    _buildListItem('Operador',transaccion.nomEmpresa.toString()),
+                    transaccion.convenioPago == null?
+                    _buildListItem('Operador',transaccion.nomEmpresa.toString())
+                    :_buildListItem('Convenio',transaccion.convenioPago.toString()),
                     _buildListItem('Saldo anterior','\$${formatter.format(transaccion.ultimoSaldo.toString())}'),
                     _buildListItem('Valor venta','\$${formatter.format(transaccion.valor.toString())}'),
                     _buildListItem('Nuevo saldo','\$${formatter.format(transaccion.saldoActual.toString())}'),
-                    _buildListItem('Ganancia','\$${formatter.format(transaccion.ganancia.toString())}'),
+                    _buildListItem('Ganancia','\$${transaccion.ganancia.toString()}'),
                     _buildListItem('Telefono',transaccion.numeroDestino.toString()),
                     _buildListItem('Codigo resultado',transaccion.codigoResultado.toString()),
                     _buildListItem('',transaccion.resultado.toString()),

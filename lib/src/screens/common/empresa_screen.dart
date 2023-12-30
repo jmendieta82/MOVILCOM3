@@ -5,6 +5,7 @@ import 'package:movilcomercios/src/app_router/app_router.dart';
 import 'package:tuple/tuple.dart';
 import '../../internet_services/common/login_api_conection.dart';
 import '../../models/common/lista_ventas.dart';
+import '../../models/recargas/paquetes.dart';
 import '../../providers/lista_ventas_provider.dart';
 import '../../providers/shared_providers.dart';
 
@@ -54,9 +55,14 @@ class EmpresaScreen extends ConsumerWidget {
                         switch (empresa.nom_categoria){
                           case 'Recargas y Paquetes':
                             router.go('/recargas_paquetes');
+                            ref.read(paqueteSeleccionadoProvider.notifier).update((state) =>Paquetes());
+                            ref.read(fwdUrlImgProvider.notifier).update((state) =>'');
+                            ref.read(selectedTabProvider.notifier).update((state) =>0);
                             break;
                           case 'Pines':
                             router.go('/pines');
+                            ref.read(paqueteSeleccionadoProvider.notifier).update((state) =>Paquetes());
+                            ref.read(fwdUrlImgProvider.notifier).update((state) =>'');
                             break;
                           case 'Apuestas':
                             router.go('/apuestas');

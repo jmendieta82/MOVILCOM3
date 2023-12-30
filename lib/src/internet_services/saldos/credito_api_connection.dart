@@ -6,8 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class CreditoApiConection{
 
   Future<Credito> getCredito(String token,int nodoId) async {
-    DioClient.instance.setAuthToken(token);
-    final response = await DioClient.instance.get('creditos/?nodo=$nodoId');
+    DioClient conexion = DioClient.instance;
+    bool isConnected = await conexion.checkInternetConnection();
+    if(isConnected){
+      conexion.setUrl('creditos/?nodo=$nodoId',token:token);
+    }else{
+      conexion.setUrlConceptoMovilLogin('creditos/?nodo=$nodoId',token:token);
+    }
+    final response = await conexion.get('');
     return (response).map((e) => Credito.fromJson(e)).toList().first;
   }
 }

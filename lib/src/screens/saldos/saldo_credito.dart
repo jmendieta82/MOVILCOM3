@@ -84,21 +84,23 @@ class _CreditRequestScreenState extends ConsumerState<SolicitudCreditoScreen> {
                       label: 'Valor',
                       controller: valorRecarga,
                       kbType: TextInputType.number,
+                      formatters: [formatter],
                       size: 25,
                       align: TextAlign.right,
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 30),
-              const SizedBox(height: 30,),
+              const SizedBox(height: 60),
               ElevatedButton(
                 onPressed: () {
                   if(metodoSeleccionado == 'Contado'){
                     ref.read(backUrlImgProvider.notifier).update((state) => '/solicitud_credito');
                     ref.read(fwdUrlImgProvider.notifier).update((state) => '/resumen_solicitud');
+                    ref.read(valorSolicitudProvider.notifier).update((state) => valorRecarga.text );
                     router.go('/image_soporte');
                   }else{
+                    ref.read(valorSolicitudProvider.notifier).update((state) => valorRecarga.text );
                     router.go('/resumen_solicitud');
                   }
                 },

@@ -6,6 +6,7 @@ import 'package:movilcomercios/src/models/common/lista_ventas.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuple/tuple.dart';
 import '../../internet_services/common/login_api_conection.dart';
+import '../../internet_services/dio/dio_client.dart';
 import '../../providers/lista_ventas_provider.dart';
 import '../../providers/shared_providers.dart';
 import 'footer_screen.dart';
@@ -87,26 +88,60 @@ class InicioScreen extends ConsumerWidget {
             ],
             backgroundColor: Colors.transparent, // Hace el fondo del AppBar transparente
             elevation: 0, // Quita la sombra del AppBar
-            title: const Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    height: 100, // Altura deseada
-                    width: 100, // Anchura deseada
-                    child: Image(
-                      image: AssetImage('assets/nuevo_logo.png'),
-                    ),
-                  ),
-                )
-              ],
+            title: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: SizedBox(
+                height: 80, // Altura deseada
+                width: 80, // Anchura deseada
+                child: Image(
+                  image: AssetImage('assets/nuevo_logo.png'),
+                ),
+              ),
             ),
           ),
           body: SafeArea(
             child: Column(
               children: [
+                FutureBuilder<bool>(
+                  future: DioClient.instance.checkInternetConnection(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      // Muestra un indicador de carga mientras se realiza la verificación de la conexión
+                      return const SizedBox.shrink();//const LinearProgressIndicator();
+                    } else {
+                      if (snapshot.hasData && !snapshot.data!) {
+                        // Muestra esto si la verificación de la conexión se completó y no hay conexión
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          color: Colors.yellow.shade100,
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: Icon(
+                                  Icons.error,
+                                  size: 20, // Define el tamaño del icono aquí
+                                ),
+                              ),
+                              Text(
+                                'Se están usando datos patrocinados.',
+                                style: TextStyle(fontSize: 10),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        // No muestra nada si hay conexión o si hay un error en la verificación
+                        return const SizedBox.shrink();
+                      }
+                    }
+                  },
+                ),
                 const SizedBox( // Añade un espacio entre la Card y el ListView
-                  height: 15.0,
+                  height: 10.0,
                 ),
                 CardCarousel(cardTitles: cardTitles, route: routes,),
                 const Padding(

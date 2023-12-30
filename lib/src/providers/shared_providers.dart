@@ -23,3 +23,4 @@ final referenciaSeleccionadoProvider = StateProvider((ref) =>'');
 final paqueteSeleccionadoProvider = StateProvider<Paquetes>((ref) =>Paquetes());
 final ventaResponseProvider = StateProvider<Transaccion>((ref) =>Transaccion());
 final entidadSeleccionadaProvider = StateProvider<String>((ref) =>'');
+final selectedTabProvider = StateProvider<int>((ref) =>0);

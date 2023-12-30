@@ -5,8 +5,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ListaVentasApiConection{
 
   Future<List<ListaVentas>> getListaVentasList(String token,int nodoId) async {
-    DioClient.instance.setAuthToken(token);
-    final response = await DioClient.instance.get("comision_app_list/?nodo=$nodoId");
+    DioClient conexion = DioClient.instance;
+    bool isConnected = await conexion.checkInternetConnection();
+    if(isConnected){
+      conexion.setUrl('comision_app_list/?nodo=$nodoId',token:token);
+    }else{
+      conexion.setUrlConceptoMovilLogin('comision_app_list/?nodo=$nodoId',token:token);
+    }
+    final response = await conexion.get('');
     final data =  (response).map((e) => ListaVentas.fromJson(e)).toList();
     return data;
   }

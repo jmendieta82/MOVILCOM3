@@ -82,10 +82,9 @@ class _SaldosScreenState extends ConsumerState<SaldosScreen> {
                         Expanded(
                           child: ListView(
                             children: [
+                              _buildListItem('Monto autorizado','\$${formatter.format(data.montoAutorizado.toString())}',Colors.grey),
                               _buildListItem('Monto utilizado','\$${formatter.format(data.montoUtilizado.toString())}',Colors.blue),
                               _buildListItem('Monto disponible','\$${formatter.format(data.montoDisponible.toString())}',Colors.green),
-                              _buildListItem('Monto autorizado','\$${formatter.format(data.montoAutorizado.toString())}',Colors.grey),
-
                             ],
                           ),
                         ),

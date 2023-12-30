@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class MrnFieldBox extends StatelessWidget {
   final ValueChanged<String>? onValue;
@@ -8,6 +9,9 @@ class MrnFieldBox extends StatelessWidget {
   final double? size;
   final TextAlign align;
   final Widget? icon;
+  final bool enabled;
+  final String? placeholder;
+  final List<TextInputFormatter>? formatters;
 
   const MrnFieldBox({
     super.key,
@@ -17,7 +21,10 @@ class MrnFieldBox extends StatelessWidget {
     this.label,
     this.size,
     this.icon,
-    this.align = TextAlign.left
+    this.align = TextAlign.left,
+    this.formatters,
+    this.enabled = true,
+    this.placeholder
   });
 
   @override
@@ -28,7 +35,8 @@ class MrnFieldBox extends StatelessWidget {
       border: const OutlineInputBorder(),
       floatingLabelBehavior: FloatingLabelBehavior.always,
       labelText: label,
-      suffixIcon: icon
+      suffixIcon: icon,
+      hintText: placeholder
     );
 
     return Column(
@@ -48,7 +56,9 @@ class MrnFieldBox extends StatelessWidget {
             fontSize: size??size,
           ),
           textAlign: align,
+          enabled: enabled,
           keyboardType: kbType,
+          inputFormatters: formatters ?? [],
           focusNode: focusNode,
           controller: controller,
           decoration: inputDecoration,

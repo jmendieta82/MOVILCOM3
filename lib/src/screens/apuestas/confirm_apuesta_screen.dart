@@ -1,6 +1,7 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:movilcomercios/src/providers/ultimas_ventas_provider.dart';
 import '../../app_router/app_router.dart';
 import '../../internet_services/common/login_api_conection.dart';
 import '../../internet_services/recargas/venta_api_conection.dart';
@@ -154,16 +155,13 @@ class ConfirmVentaApuestasScreen extends ConsumerWidget {
                                         const SizedBox(height: 20.0),
                                         ElevatedButton(
                                             onPressed: () {
-                                              if (resultado.codigo != '500') {
-                                                ref
-                                                    .read(ventaResponseProvider
-                                                        .notifier)
-                                                    .update((state) =>
-                                                        resultado.data!);
-                                                route.go(
-                                                    '/venta_apuestas_result');
+                                              if (resultado.codigo != 500) {
+                                                ref.read(ventaResponseProvider.notifier).update((state) =>resultado.data!);
+                                                ref.invalidate(ultimasVentasListProvider);
+                                                route.go('/venta_apuestas_result');
                                               } else {
                                                 route.go('/apuestas');
+                                                ref.invalidate(ultimasVentasListProvider);
                                               }
                                             },
                                             child: const Text('Aceptar'))
@@ -216,7 +214,7 @@ class ConfirmVentaApuestasScreen extends ConsumerWidget {
                                       const SizedBox(height: 20.0),
                                       ElevatedButton(
                                           onPressed: () {
-                                            if (resultado.codigo != '500') {
+                                            if (resultado.codigo != 500) {
                                               ref
                                                   .read(ventaResponseProvider
                                                       .notifier)
@@ -224,8 +222,10 @@ class ConfirmVentaApuestasScreen extends ConsumerWidget {
                                                       resultado.data!);
                                               route
                                                   .go('/venta_apuestas_result');
+                                              ref.invalidate(ultimasVentasListProvider);
                                             } else {
                                               route.go('/apuestas');
+                                              ref.invalidate(ultimasVentasListProvider);
                                             }
                                           },
                                           child: const Text('Aceptar'))
