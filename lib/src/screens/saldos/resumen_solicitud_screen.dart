@@ -7,6 +7,7 @@ import 'package:movilcomercios/src/internet_services/saldos/solicitud_saldo_api_
 
 import '../../internet_services/common/bolsa_api_connection.dart';
 import '../../internet_services/saldos/credito_api_connection.dart';
+import '../../providers/ultimas_solicitudes_provider.dart';
 
 class ResumenSolicitudScreen extends ConsumerWidget {
   const ResumenSolicitudScreen({super.key});
@@ -70,7 +71,7 @@ class ResumenSolicitudScreen extends ConsumerWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.check_circle_outline,size: 50,color: Colors.green, ),
+                          //const Icon(Icons.check_circle_outline,size: 50,color: Colors.green, ),
                           const SizedBox(height: 10),
                           Text(respuestaSaldo[0],textAlign: TextAlign.center,style: const TextStyle(fontSize: 20),),
                           Text(respuestaSaldo[1]),
@@ -83,6 +84,7 @@ class ResumenSolicitudScreen extends ConsumerWidget {
                               ref.read(imagen64Provider.notifier).update((state) => '');
                               ref.read(respuestaSaldoPovider.notifier).update((state) => []);
                               ref.invalidate(bolsaActualProvider);
+                              ref.invalidate(ultimasSolicitudesListProvider);
                               ref.invalidate(creditoActualProvider);
                               router.go('/saldos');
                             },

@@ -91,18 +91,25 @@ class _CreditRequestScreenState extends ConsumerState<SolicitudCreditoScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 60),
+              const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
-                  if(metodoSeleccionado == 'Contado'){
-                    ref.read(backUrlImgProvider.notifier).update((state) => '/solicitud_credito');
-                    ref.read(fwdUrlImgProvider.notifier).update((state) => '/resumen_solicitud');
-                    ref.read(valorSolicitudProvider.notifier).update((state) => valorRecarga.text );
-                    router.go('/image_soporte');
+                  if(valorRecarga.text != '0'){
+                    if(metodoSeleccionado == 'Contado'){
+                      ref.read(backUrlImgProvider.notifier).update((state) => '/solicitud_credito');
+                      ref.read(fwdUrlImgProvider.notifier).update((state) => '/resumen_solicitud');
+                      ref.read(valorSolicitudProvider.notifier).update((state) => valorRecarga.text );
+                      router.go('/image_soporte');
+                    }else{
+                      ref.read(valorSolicitudProvider.notifier).update((state) => valorRecarga.text );
+                      router.go('/resumen_solicitud');
+                    }
                   }else{
-                    ref.read(valorSolicitudProvider.notifier).update((state) => valorRecarga.text );
-                    router.go('/resumen_solicitud');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Faltan datos.')),
+                    );
                   }
+
                 },
                 child: const Text('Continuar'),
               ),

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:movilcomercios/src/app_router/app_router.dart';
-import 'package:movilcomercios/src/providers/cartera_provider.dart';
+import 'package:image/image.dart' as img;
 import '../../internet_services/saldos/solicitud_saldo_api_conection.dart';
 import '../../providers/shared_providers.dart';
 
@@ -37,25 +37,39 @@ class _ImageScreenState extends ConsumerState<ImageScreen> {
         ),
         actions: [
           IconButton(
-              onPressed: () async {
-                final ImagePicker picker = ImagePicker();
-                try {
-                  final XFile? photo = await picker.pickImage(source: ImageSource.camera);
-                  if (photo != null) {
-                    final Uint8List imageBytes = await photo.readAsBytes();
-                    final String base64Image = base64Encode(imageBytes);
-                    // Realiza las operaciones deseadas con base64Image
-                    final String iamgen64 = 'data:image/jpeg;base64,$base64Image';
-                    ref.read(imagenProvider.notifier).update((state) => photo.path);
-                    ref.read(imagen64Provider.notifier).update((state) => iamgen64);
-                  } else {
-                    print('No se seleccionó ninguna imagen');
-                  }
-                } catch (error) {
-                  print(error);
+            onPressed: () async {
+              final ImagePicker picker = ImagePicker();
+              try {
+                final XFile? photo = await picker.pickImage(source: ImageSource.camera);
+                if (photo != null) {
+                  final Uint8List imageBytes = await photo.readAsBytes();
+
+                  // Convierte la imagen a un objeto Image de la librería image
+                  img.Image? image = img.decodeImage(imageBytes);
+
+                  // Redimensiona la imagen a un tamaño más pequeño (por ejemplo, 800x600)
+                  image = img.copyResize(image!, width: 800, height: 600);
+
+                  // Convierte la imagen redimensionada de nuevo a bytes
+                  final Uint8List resizedBytes = img.encodeJpg(image!);
+
+                  // Convierte los bytes de la imagen redimensionada a base64
+                  final String base64Image = base64Encode(resizedBytes);
+
+                  // Realiza las operaciones deseadas con base64Image
+                  final String iamgen64 = 'data:image/jpeg;base64,$base64Image';
+                  ref.read(imagenProvider.notifier).update((state) => photo.path);
+                  ref.read(imagen64Provider.notifier).update((state) => iamgen64);
+                } else {
+                  print('No se seleccionó ninguna imagen');
                 }
-              },
-              icon: const Icon(Icons.camera_alt_rounded)
+              } catch (error) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(error.toString())),
+                );
+              }
+            },
+            icon: const Icon(Icons.camera_alt_rounded),
           )
         ],
       ),
@@ -79,7 +93,7 @@ class _ImageScreenState extends ConsumerState<ImageScreen> {
                 ),
               ):
             const Text('Tome la foto de su comprobante de pago para continuar.',textAlign: TextAlign.center,),
-            const SizedBox(height: 40.0),
+            const SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: imagenSeleccionada.isNotEmpty
                   ? () {router.go(fwdUrl);}

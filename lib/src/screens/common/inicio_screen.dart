@@ -54,37 +54,122 @@ class InicioScreen extends ConsumerWidget {
           extendBody: true, // Extiende el cuerpo de la Scaffold
           appBar: AppBar(
             actions: [
-              IconButton(
-                  onPressed:()async{
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Cerrar sesión'),
-                          content: const Text('¿Estás seguro de que quieres cerrar sesión?'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop(); // Cierra el diálogo
-                              },
-                              child: const Text('Cancelar'),
-                            ),
-                            TextButton(
-                              onPressed: () async {
-                                SharedPreferences prefs = await SharedPreferences.getInstance();
-                                prefs.setString('username', '');
-                                prefs.setString('password', '');
-                                route.go('/');
-                                Navigator.of(context).pop(); // Cierra el diálogo
-                              },
-                              child: const Text('Aceptar'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  icon: const Icon(Icons.logout_outlined),)
+              PopupMenuButton<String>(
+                onSelected: (String choice) {
+                  // Maneja la opción seleccionada
+                  switch (choice){
+                    case 'ventas':
+                      route.go('/ultimas_ventas');
+                      break;
+                    case 'saldos':
+                      route.go('/saldos');
+                      break;
+                    case 'reportes':
+                      route.go('/reportes');
+                      break;
+                    case 'distribuidor':
+                      route.go('/construccion');
+                      break;
+                    case 'nosotros':
+                      route.go('/about_us');
+                      break;
+                    case 'salir':
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Cerrar sesión'),
+                            content: const Text('¿Estás seguro de que quieres cerrar sesión?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // Cierra el diálogo
+                                },
+                                child: const Text('Cancelar'),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                                  prefs.setString('username', '');
+                                  prefs.setString('password', '');
+                                  route.go('/');
+                                  Navigator.of(context).pop(); // Cierra el diálogo
+                                },
+                                child: const Text('Aceptar'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                      break;
+                  }
+                },
+                icon: const Icon(Icons.menu), // Cambia el ícono por el que desees
+                itemBuilder: (BuildContext context) {
+                  return <PopupMenuEntry<String>>[
+                    const PopupMenuItem<String>(
+                      value: 'ventas',
+                      child: Row(
+                        children: [
+                          Icon(Icons.list),
+                          SizedBox(width: 10),
+                          Text('Ultimas ventas'),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'saldos',
+                      child: Row(
+                        children: [
+                          Icon(Icons.monetization_on),
+                          SizedBox(width: 10),
+                          Text('Gestion de saldo'),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'reportes',
+                      child: Row(
+                        children: [
+                          Icon(Icons.query_stats),
+                          SizedBox(width: 10),
+                          Text('Reportes'),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'distribuidor',
+                      child: Row(
+                        children: [
+                          Icon(Icons.diversity_3),
+                          SizedBox(width: 10),
+                          Text('Mi distribuidor'),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'nosotros',
+                      child: Row(
+                        children: [
+                          Icon(Icons.face),
+                          SizedBox(width: 10),
+                          Text('MRN Colombia'),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'salir',
+                      child: Row(
+                        children: [
+                          Icon(Icons.logout),
+                          SizedBox(width: 10),
+                          Text('Salir'),
+                        ],
+                      ),
+                    ),
+                  ];
+                },
+              ),
             ],
             backgroundColor: Colors.transparent, // Hace el fondo del AppBar transparente
             elevation: 0, // Quita la sombra del AppBar
@@ -142,20 +227,6 @@ class InicioScreen extends ConsumerWidget {
                 ),
                 const SizedBox( // Añade un espacio entre la Card y el ListView
                   height: 10.0,
-                ),
-                CardCarousel(cardTitles: cardTitles, route: routes,),
-                const Padding(
-                  padding: EdgeInsets.only(right: 16.0),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      'Deslice para más opciones',
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
                 ),
                 const Expanded(
                     child: ListaVentasView(),

@@ -2,16 +2,17 @@ import 'package:currency_text_input_formatter/currency_text_input_formatter.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:movilcomercios/src/models/saldos/ultimas_solicitudes.dart';
+import 'package:movilcomercios/src/providers/shared_providers.dart';
 import 'package:tuple/tuple.dart';
 import '../../app_router/app_router.dart';
 import '../../internet_services/common/login_api_conection.dart';
-import '../../providers/ultimas_solicitudes_provider.dart';
+import '../../models/common/ultimas_ventas.dart';
+import '../../providers/detalle_reporte_ventas_provider.dart';
 
 
-class UltimasSolicitudesScreen extends ConsumerWidget {
+class DetalleReporteVentasScreen extends ConsumerWidget {
 
-  const UltimasSolicitudesScreen({super.key});
+  const DetalleReporteVentasScreen({super.key});
 
   @override
   Widget build(BuildContext context,ref) {
@@ -30,25 +31,31 @@ class UltimasSolicitudesScreen extends ConsumerWidget {
       return formattedTime;
     }
     final usuarioConectado = ref.watch(usuarioConectadoProvider);
-    Tuple2 params = Tuple2(usuarioConectado.token, usuarioConectado.nodoId);
-    final data  = ref.watch(ultimasSolicitudesListProvider(params));
+    final fInicial = ref.watch(fechaInicial);
+    final fFinal = ref.watch(fechaFinal);
+    Tuple4 params = Tuple4(
+        usuarioConectado.token,
+        usuarioConectado.nodoId,
+        fInicial,fFinal,
+    );
+    final data  = ref.watch(detalleReporteVentasListProvider(params));
     final router  = ref.watch(appRouteProvider);
     final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
       locale: 'es-Co', decimalDigits: 0,symbol: '',
     );
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Ultimas solicitudes.'),
+          title: const Text('Detalle reporte de ventas'),
           leading: IconButton(
               onPressed: (){
-                router.go('/saldos');
+                router.go('/reporte_ventas');
               },
               icon: const Icon(Icons.arrow_back_ios))
       ),
       body: SizedBox(
         child: data.when(
             data: (data){
-              List<UltimasSolicitudes> list  = data.map((e) => e).toList();
+              List<UltimasVentas> list  = data.map((e) => e).toList();
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -64,16 +71,19 @@ class UltimasSolicitudesScreen extends ConsumerWidget {
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    _buildListItem('Transaccion',list[index].id.toString()),
-                                    _buildListItem('Valor','\$${formatter.format(list[index].valor.toString())}'),
-                                    _buildListItem('Metodo de pago',list[index].tipo_transaccion.toString()),
-                                    if(list[index].fecha_aprobacion != null)
-                                    _buildListItem('Aprobacion',formatDate(list[index].fecha_aprobacion.toString())),
-                                    if(list[index].hora_aprobacion != null)
-                                    _buildListItem('Hora',formatTime(list[index].hora_aprobacion.toString())),
-                                    _buildListItem('Tipo de comision',list[index].tipoServicio.toString()),
-                                    _buildListItem('Estado de solicitud',list[index].estado.toString()),
-                                    _buildListItem('Estado de pago',list[index].estadoPago.toString()),
+                                    _buildListItem('',list[index].nomProducto.toString()),
+                                    _buildListItem('Codigo de aprobacion',list[index].codigoTransaccionExterna.toString()),
+                                    _buildListItem('Venta desde',list[index].ventaDesde.toString()),
+                                    list[index].convenioPago == null?
+                                    _buildListItem('Operador',list[index].nomEmpresa.toString())
+                                        :_buildListItem('Convenio',list[index].convenioPago.toString()),
+                                    _buildListItem('Saldo anterior','\$${formatter.format(list[index].ultimoSaldo.toString())}'),
+                                    _buildListItem('Valor venta','\$${formatter.format(list[index].valor.toString())}'),
+                                    _buildListItem('Nuevo saldo','\$${formatter.format(list[index].saldoActual.toString())}'),
+                                    _buildListItem('Ganancia','\$${list[index].ganancia.toString()}'),
+                                    _buildListItem('Telefono',list[index].numeroDestino.toString()),
+                                    _buildListItem('Codigo resultado',list[index].codigoResultado.toString()),
+                                    _buildListItem('',list[index].resultado.toString()),
                                   ],
                                 ),
                               ),

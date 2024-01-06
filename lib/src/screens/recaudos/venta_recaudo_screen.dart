@@ -36,7 +36,6 @@ class _VentaRecaudoScreenState extends ConsumerState<VentaRecaudoScreen> {
     final empresaSeleccionada = ref.watch(empresaSeleccionadaProvider);
     final convenioSeleccionado = ref.watch(convenioSeleccionadoProvider);
     final route  = ref.watch(appRouteProvider);
-    bool isTextFieldEnabled = true;
 
     return Scaffold(
       appBar: AppBar(
@@ -118,8 +117,9 @@ class _MyFormState extends ConsumerState<MyForm> {
           );
         }).catchError((error) {
           ref.read(progressProvider.notifier).update((state) => false);
-          // Manejar los errores si ocurre algún problema con la petición
-          Text(error);
+          ScaffoldMessenger.of(context).showSnackBar(
+             SnackBar(content: Text(error.toString())),
+          );
         });
       }else {
         showDialog(
@@ -159,6 +159,7 @@ class _MyFormState extends ConsumerState<MyForm> {
     ref.read(telefonoSeleccionadoProvider.notifier).update((state) => '');
     ref.read(facturaSeleccionadaProvider.notifier).update((state) => FacturaReacudo());
     ref.read(convenioSeleccionadoProvider.notifier).update((state) => Convenio());
+    ref.invalidate(conveniosListProvider);
     router.go('/home');
   }
 
@@ -181,7 +182,7 @@ class _MyFormState extends ConsumerState<MyForm> {
           setState(() {
             referenciaController.text = barcode.toString();
           });
-          print('Código de barras escaneado: $barcode');
+          //print('Código de barras escaneado: $barcode');
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Escaneo cancelado.')),

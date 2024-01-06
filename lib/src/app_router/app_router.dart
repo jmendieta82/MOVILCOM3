@@ -12,6 +12,11 @@ import 'package:movilcomercios/src/screens/recaudos/confirm_recaudo_screen.dart'
 import 'package:movilcomercios/src/screens/recaudos/info_reacudo_screen.dart';
 import 'package:movilcomercios/src/screens/recaudos/venta_recaudo_screen.dart';
 import 'package:movilcomercios/src/screens/recaudos/venta_recaudos_result.dart';
+import 'package:movilcomercios/src/screens/reportes/detalle_reporte_ventas_screen.dart';
+import 'package:movilcomercios/src/screens/reportes/reporte_comisiones_screen.dart';
+import 'package:movilcomercios/src/screens/reportes/reporte_saldos_screen.dart';
+import 'package:movilcomercios/src/screens/reportes/reporte_ventas_screen.dart';
+import 'package:movilcomercios/src/screens/reportes/reportes_screen.dart';
 import 'package:movilcomercios/src/screens/saldos/cartera_screen.dart';
 import 'package:movilcomercios/src/screens/saldos/image_screen.dart';
 import 'package:movilcomercios/src/screens/saldos/resumen_solicitud_screen.dart';
@@ -62,6 +67,11 @@ final appRouteProvider  = Provider<GoRouter>((ref){
         GoRoute(path: '/cartera', builder: (context,state) => const CarteraScreen()),
         GoRoute(path: '/pago_facturas', builder: (context,state) => const PagoFacturasScreen()),
         GoRoute(path: '/paquetes', builder: (context,state) => const PaquetesScreen()),
+        GoRoute(path: '/reportes', builder: (context,state) => const ReportesScreen()),
+        GoRoute(path: '/reporte_ventas', builder: (context,state) => const ReporteVentasScreen()),
+        GoRoute(path: '/det_rep_ventas', builder: (context,state) => const DetalleReporteVentasScreen()),
+        GoRoute(path: '/reporte_comisiones', builder: (context,state) => const ReporteComisionesScreen()),
+        GoRoute(path: '/reporte_solicitudes', builder: (context,state) => const ReporteSolicitudesScreen()),
       ]
   );
 });

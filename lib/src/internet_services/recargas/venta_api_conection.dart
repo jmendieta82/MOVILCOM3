@@ -3,7 +3,14 @@ import '../../models/common/venta_response.dart';
 import '../dio/dio_client.dart';
 
 Future<VentaResponse> ventaRecarga(MSData obj) async {
-  final response = await DioClient.instance.post('recargas_ver2_ms', data: obj.toJson());
+  DioClient conexion = DioClient.instance;
+  bool isConnected = await conexion.checkInternetConnection();
+  if(isConnected){
+    conexion.setUrl('recargas_ver2_ms');
+  }else{
+    conexion.setUrlConceptoMovilLogin('recargas_ver2_ms');
+  }
+  final response = await DioClient.instance.post('', data: obj.toJson());
   return VentaResponse.fromJson(response);
 }
 

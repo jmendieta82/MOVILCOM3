@@ -2,8 +2,10 @@ import 'package:currency_text_input_formatter/currency_text_input_formatter.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movilcomercios/src/providers/bolsa_provider.dart';
+import 'package:movilcomercios/src/providers/ultimas_ventas_provider.dart';
 import 'package:tuple/tuple.dart';
 import '../../internet_services/common/login_api_conection.dart';
+import '../../providers/ultimas_solicitudes_provider.dart';
 
 class BolsaScreen extends ConsumerWidget {
   const BolsaScreen({super.key});
@@ -45,6 +47,16 @@ class BolsaScreen extends ConsumerWidget {
                             const Text('Disponible',style: TextStyle(fontSize: 13,color: Color(0xFF182130),)),
                           ],
                         ),
+                    IconButton(
+                        onPressed:(){
+                          ref.invalidate(bolsaProvider);
+                          ref.invalidate(ultimasVentasListProvider);
+                          ref.invalidate(ultimasSolicitudesListProvider);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Informacion actualizada.')),
+                          );
+                        },
+                        icon:const Icon(Icons.refresh)),
                     Column(
                       children: [
                         Text("\$$utilidad",style: const TextStyle(fontSize: 20,color: Color(0xFF182130),

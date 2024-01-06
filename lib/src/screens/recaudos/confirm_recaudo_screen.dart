@@ -136,8 +136,9 @@ class ConfirmVentaRecaudoScreen extends ConsumerWidget {
                             "tipo_red":'Wifi',
                             "app_ver":'3'
                           };
+                          print(obj);
                           ref.read(progressProvider.notifier).update((state) => true);
-                       ventaRecaudo(obj).then((resultado) {
+                            ventaRecaudo(obj).then((resultado) {
                             ref.read(progressProvider.notifier).update((state) => false);
                             showModalBottomSheet(
                               isDismissible: false,

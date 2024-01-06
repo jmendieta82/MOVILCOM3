@@ -35,7 +35,17 @@ class _CarteraScreenState extends ConsumerState {
               onPressed: (){
                 router.go('/saldos');
               },
-              icon: const Icon(Icons.arrow_back_ios))
+              icon: const Icon(Icons.arrow_back_ios)),
+        actions: [
+          IconButton(
+              onPressed: (){
+                ref.invalidate(carteraListProvider);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Informacion actualizada.')),
+                );
+              },
+              icon: const Icon(Icons.refresh))
+        ],
       ),
       body: SizedBox(
         child: data.when(

@@ -6,12 +6,14 @@ import 'package:movilcomercios/src/models/saldos/ultimas_solicitudes.dart';
 import 'package:tuple/tuple.dart';
 import '../../app_router/app_router.dart';
 import '../../internet_services/common/login_api_conection.dart';
+import '../../providers/reporte_saldo_provider.dart';
+import '../../providers/shared_providers.dart';
 import '../../providers/ultimas_solicitudes_provider.dart';
 
 
-class UltimasSolicitudesScreen extends ConsumerWidget {
+class ReporteSolicitudesScreen extends ConsumerWidget {
 
-  const UltimasSolicitudesScreen({super.key});
+  const ReporteSolicitudesScreen({super.key});
 
   @override
   Widget build(BuildContext context,ref) {
@@ -30,18 +32,25 @@ class UltimasSolicitudesScreen extends ConsumerWidget {
       return formattedTime;
     }
     final usuarioConectado = ref.watch(usuarioConectadoProvider);
-    Tuple2 params = Tuple2(usuarioConectado.token, usuarioConectado.nodoId);
-    final data  = ref.watch(ultimasSolicitudesListProvider(params));
+    final fInicial = ref.watch(fechaInicial);
+    final fFinal = ref.watch(fechaFinal);
+    Tuple4 params = Tuple4(
+        usuarioConectado.token,
+        usuarioConectado.nodoId,
+        fInicial,
+        fFinal
+    );
+    final data  = ref.watch(reporteSaldoListProvider(params));
     final router  = ref.watch(appRouteProvider);
     final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
       locale: 'es-Co', decimalDigits: 0,symbol: '',
     );
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Ultimas solicitudes.'),
+          title: const Text('Solicitudes de saldo.'),
           leading: IconButton(
               onPressed: (){
-                router.go('/saldos');
+                router.go('/reportes');
               },
               icon: const Icon(Icons.arrow_back_ios))
       ),
@@ -68,9 +77,9 @@ class UltimasSolicitudesScreen extends ConsumerWidget {
                                     _buildListItem('Valor','\$${formatter.format(list[index].valor.toString())}'),
                                     _buildListItem('Metodo de pago',list[index].tipo_transaccion.toString()),
                                     if(list[index].fecha_aprobacion != null)
-                                    _buildListItem('Aprobacion',formatDate(list[index].fecha_aprobacion.toString())),
+                                      _buildListItem('Aprobacion',formatDate(list[index].fecha_aprobacion.toString())),
                                     if(list[index].hora_aprobacion != null)
-                                    _buildListItem('Hora',formatTime(list[index].hora_aprobacion.toString())),
+                                      _buildListItem('Hora',formatTime(list[index].hora_aprobacion.toString())),
                                     _buildListItem('Tipo de comision',list[index].tipoServicio.toString()),
                                     _buildListItem('Estado de solicitud',list[index].estado.toString()),
                                     _buildListItem('Estado de pago',list[index].estadoPago.toString()),

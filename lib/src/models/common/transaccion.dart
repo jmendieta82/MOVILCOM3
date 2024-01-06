@@ -1,6 +1,6 @@
 class Transaccion{
   int? id;
-  String? nodo;
+  dynamic nodo;
   String? numeroDestino;
   String? created_at;
   int? valor;
