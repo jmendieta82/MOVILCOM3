@@ -39,19 +39,17 @@ class _VentaRecaudoScreenState extends ConsumerState<VentaRecaudoScreen> {
 
     return Scaffold(
       appBar: AppBar(
-          title: Text(
-            empresaSeleccionada.nom_empresa.toString(),
-            style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
-          ),
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: CircleAvatar(
-              radius: 40,
-              child: Image.asset(
-                empresaSeleccionada.logo_empresa ?? '',
-              ),
+        leading: Row(
+          children: [
+            IconButton(
+                onPressed:(){
+                  route.go('/empresas');
+                },
+                icon: const Icon(Icons.arrow_back_ios)
             ),
-          )
+          ],
+        ) ,
+        title: Text(empresaSeleccionada.nom_empresa.toString()),
       ),
       body: SingleChildScrollView(
         child: Column(

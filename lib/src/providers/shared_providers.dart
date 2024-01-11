@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../models/common/lista_ventas.dart';
 import '../models/common/transaccion.dart';
 import '../models/common/ultimas_ventas.dart';

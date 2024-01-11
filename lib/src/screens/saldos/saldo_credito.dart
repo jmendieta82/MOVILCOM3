@@ -39,33 +39,48 @@ class _CreditRequestScreenState extends ConsumerState<SolicitudCreditoScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children:[
-                  TarjetaValorView(
-                      color1: Color(0xFFB87333),
-                      color2: Color(0xFFDAA520),
-                      elevation: 2,
-                      height: 200,
-                      text: '\$20.000',
-                      value : '20000'
-                    ),
-                  TarjetaValorView(
-                    color1: Color(0xFFFFD700),
-                    color2: Color(0xFFFFA500),
-                    elevation: 6,
-                    height: 220,
-                    text: '\$100.000',
-                    value : '100000'
-                  ),
-                  TarjetaValorView(
-                    color1: Color(0xFFC0C0C0),
-                    color2: Color(0xFFDCDCDC),
-                    elevation: 2,
-                    height: 200,
-                    text: '\$50.000',
-                    value : '50000'
-                  ),
+              ButtonBar(
+                alignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  ElevatedButton( child: const Text('\$20.000'), onPressed: () {
+                    ref.read(valorSolicitudProvider.notifier).update((state) => '20000' );
+                  }),
+                  ElevatedButton( child: const Text('\$30.000'), onPressed: () {
+                    ref.read(valorSolicitudProvider.notifier).update((state) => '30000' );
+                  }),
+                ],
+              ),
+              ButtonBar(
+                alignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  ElevatedButton( child: const Text('\$40.000'), onPressed: () {
+                    ref.read(valorSolicitudProvider.notifier).update((state) => '40000' );
+                  }),
+                  ElevatedButton( child: const Text('\$50.000'), onPressed: () {
+                    ref.read(valorSolicitudProvider.notifier).update((state) => '50000' );
+                  }),
+                ],
+              ),
+              ButtonBar(
+                alignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  ElevatedButton( child: const Text('\$60.000'), onPressed: () {
+                    ref.read(valorSolicitudProvider.notifier).update((state) => '60000' );
+                  }),
+                  ElevatedButton( child: const Text('\$70.000'), onPressed: () {
+                    ref.read(valorSolicitudProvider.notifier).update((state) => '70000' );
+                  }),
+                ],
+              ),
+              ButtonBar(
+                alignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  ElevatedButton( child: const Text('\$80.000'), onPressed: () {
+                    ref.read(valorSolicitudProvider.notifier).update((state) => '80000' );
+                  }),
+                  ElevatedButton( child: const Text('\$100.000'), onPressed: () {
+                    ref.read(valorSolicitudProvider.notifier).update((state) => '100000' );
+                  }),
                 ],
               ),
               Padding(

@@ -123,7 +123,7 @@ class InicioScreen extends ConsumerWidget {
                         children: [
                           Icon(Icons.monetization_on),
                           SizedBox(width: 10),
-                          Text('Gestion de saldo'),
+                          Text('Solicitud de saldo'),
                         ],
                       ),
                     ),
@@ -184,51 +184,13 @@ class InicioScreen extends ConsumerWidget {
               ),
             ),
           ),
-          body: SafeArea(
+          body: const SafeArea(
             child: Column(
               children: [
-                FutureBuilder<bool>(
-                  future: DioClient.instance.checkInternetConnection(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      // Muestra un indicador de carga mientras se realiza la verificación de la conexión
-                      return const SizedBox.shrink();//const LinearProgressIndicator();
-                    } else {
-                      if (snapshot.hasData && !snapshot.data!) {
-                        // Muestra esto si la verificación de la conexión se completó y no hay conexión
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                          color: Colors.yellow.shade100,
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.all(4.0),
-                                child: Icon(
-                                  Icons.error,
-                                  size: 20, // Define el tamaño del icono aquí
-                                ),
-                              ),
-                              Text(
-                                'Se están usando datos patrocinados.',
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            ],
-                          ),
-                        );
-                      } else {
-                        // No muestra nada si hay conexión o si hay un error en la verificación
-                        return const SizedBox.shrink();
-                      }
-                    }
-                  },
-                ),
-                const SizedBox( // Añade un espacio entre la Card y el ListView
+                SizedBox( // Añade un espacio entre la Card y el ListView
                   height: 10.0,
                 ),
-                const Expanded(
+                Expanded(
                     child: ListaVentasView(),
                 ),
                 /*Center(
@@ -258,10 +220,10 @@ class InicioScreen extends ConsumerWidget {
                     },
                   ),
                 ),*/
-                const SizedBox( // Añade un espacio entre la Card y el ListView
+                SizedBox( // Añade un espacio entre la Card y el ListView
                   height: 15.0,
                 ),
-                const BolsaScreen(),
+                BolsaScreen(),
               ],
             ),
           )

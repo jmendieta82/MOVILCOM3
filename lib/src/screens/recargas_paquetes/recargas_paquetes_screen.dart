@@ -23,29 +23,23 @@ class RecargasPaquetesScreen extends ConsumerWidget {
       length: 2,
       initialIndex: selectedTab == 0?0:selectedTab,
       child: Scaffold(
+        appBar: AppBar(
+          leading: Row(
+            children: [
+              IconButton(
+                  onPressed:(){
+                    ref.read(selectedTabProvider.notifier).update((state) => 0);
+                    route.go('/empresas');
+                  },
+                  icon: const Icon(Icons.arrow_back_ios)
+              ),
+            ],
+          ) ,
+          title: Text(empresaSeleccionada.nom_empresa.toString()),
+        ),
         body: SafeArea(
           child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Card(
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 8),
-                          child: CircleAvatar(
-                            radius: 30,
-                            backgroundImage: AssetImage(empresaSeleccionada.logo_empresa ?? ''),
-                          ),
-                        ),
-                        Text(
-                          empresaSeleccionada.nom_empresa.toString(),
-                          style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
                 TabBar(
                     onTap: (index) {
                       // Aquí puedes agregar la lógica que deseas cuando se toca un tab
@@ -149,16 +143,17 @@ class RecargasView extends ConsumerWidget {
                     height: 20.0,
                   ),
                   MrnFieldBox(
-                    label: 'Valor de la recarga',
-                    controller: valorVenta,
+                    label: 'Numero de telefono',
+                    controller: numeroDestino,
                     kbType: TextInputType.number,
                     size: 25,
                     align: TextAlign.right,
                   ),
                   MrnFieldBox(
-                    label: 'Numero de telefono',
-                    controller: numeroDestino,
+                    label: 'Valor de la recarga',
+                    controller: valorVenta,
                     kbType: TextInputType.number,
+                    formatters: [formatter],
                     size: 25,
                     align: TextAlign.right,
                   ),
@@ -211,7 +206,7 @@ class RecargasView extends ConsumerWidget {
                           ),
                           child: const Text('Cancelar'),
                           onPressed: () {
-                            ref.read(telefonoSeleccionadoProvider.notifier).update((state) => '');
+                            //ref.read(telefonoSeleccionadoProvider.notifier).update((state) => '');
                             ref.read(selectedTabProvider.notifier).update((state) => 0);
                             route.go('/empresas');
                           },

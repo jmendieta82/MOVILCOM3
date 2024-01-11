@@ -1,6 +1,5 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:movilcomercios/src/internet_services/common/login_api_conection.dart';
@@ -16,8 +15,23 @@ class VentaApuestasScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context,ref) {
-    return const Scaffold(
-      body: SafeArea(
+    final empresaSeleccionada = ref.watch(empresaSeleccionadaProvider);
+    final route  = ref.watch(appRouteProvider);
+    return Scaffold(
+      appBar: AppBar(
+        leading: Row(
+          children: [
+            IconButton(
+                onPressed:(){
+                  route.go('/empresas');
+                },
+                icon: const Icon(Icons.arrow_back_ios)
+            ),
+          ],
+        ) ,
+        title: Text(empresaSeleccionada.nom_empresa.toString()),
+      ),
+      body: const SafeArea(
         child: ApuestasView(),
       ),
     );
@@ -45,10 +59,6 @@ class _ApuestasViewState extends ConsumerState<ApuestasView> {
     );
     TextEditingController documento = TextEditingController();
     TextEditingController numeroDestino = TextEditingController();
-    var phoneMask = MaskTextInputFormatter(
-      mask: '(###) ###-####', // Máscara para el número de teléfono
-      filter: {"#": RegExp(r'[0-9]')}, // Caracteres permitidos en la máscara
-    );
     final route  = ref.watch(appRouteProvider);
     final Tuple3 paramsPaquetes = Tuple3(
         usuarioConectado.token.toString(),
@@ -59,26 +69,6 @@ class _ApuestasViewState extends ConsumerState<ApuestasView> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          const SizedBox( // Añade un espacio entre la Card y el ListView
-            height: 40.0,
-          ),
-          Card(
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 8),
-                  child: CircleAvatar(
-                    radius: 30,
-                    backgroundImage: AssetImage(empresaSeleccionada.logo_empresa ?? ''),
-                  ),
-                ),
-                Text(
-                  empresaSeleccionada.nom_empresa.toString(),
-                  style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0,horizontal: 30.0),
             child: SingleChildScrollView(

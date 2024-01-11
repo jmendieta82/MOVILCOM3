@@ -1,6 +1,7 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:movilcomercios/src/app_router/app_router.dart';
 import 'package:movilcomercios/src/providers/bolsa_provider.dart';
 import 'package:movilcomercios/src/providers/ultimas_ventas_provider.dart';
 import 'package:tuple/tuple.dart';
@@ -21,6 +22,7 @@ class BolsaScreen extends ConsumerWidget {
     final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
       locale: 'es-Co', decimalDigits: 0,symbol: '',
     );
+    final router = ref.watch(appRouteProvider);
     return Card( // Esta es la Card que se mostrará encima del ListView
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -38,15 +40,20 @@ class BolsaScreen extends ConsumerWidget {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                          children: [
-                            Text("\$$saldoDisponible",style: const
-                            TextStyle(fontSize: 20,color: Color(0xFF182130),
-                              fontWeight: FontWeight.bold
-                            ),),
-                            const Text('Disponible',style: TextStyle(fontSize: 13,color: Color(0xFF182130),)),
-                          ],
-                        ),
+                    GestureDetector(
+                      onTap: (){
+                        router.go('/saldos');
+                      },
+                      child: Column(
+                            children: [
+                              Text("\$$saldoDisponible",style: const
+                              TextStyle(fontSize: 20,color: Color(0xFF182130),
+                                fontWeight: FontWeight.bold
+                              ),),
+                              const Text('Disponible',style: TextStyle(fontSize: 13,color: Color(0xFF182130),)),
+                            ],
+                          ),
+                    ),
                     IconButton(
                         onPressed:(){
                           ref.invalidate(bolsaProvider);

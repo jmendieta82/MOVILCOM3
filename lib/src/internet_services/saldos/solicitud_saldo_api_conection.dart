@@ -15,7 +15,7 @@ Future<SaldoResponse> solicitudSaldo(obj) async {
 }
 
 
-final metodoSeleccionadoProvider = StateProvider<String>((ref) => 'Contado');
+final metodoSeleccionadoProvider = StateProvider<String>((ref) => 'Crédito');
 final valorSolicitudProvider = StateProvider<String>((ref) => '');
 final imagen64Provider = StateProvider<String>((ref) => '');
 final imagenProvider = StateProvider<String>((ref) => '');

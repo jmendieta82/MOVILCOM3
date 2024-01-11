@@ -25,6 +25,7 @@ class ConfirmVentaApuestasScreen extends ConsumerWidget {
       decimalDigits: 0,
       symbol: '',
     );
+    bool isProgress = ref.watch(progressProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -114,89 +115,39 @@ class ConfirmVentaApuestasScreen extends ConsumerWidget {
                 ),
                 const SizedBox(
                   // Añade un espacio entre la Card y el ListView
-                  height: 40.0,
+                  height: 20.0,
                 ),
-                ButtonBar(
-                  alignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    TextButton(
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.all(16.0),
-                        ),
-                        child: const Text('Vender con saldo'),
-                        onPressed: () async {
-                          final obj = MSData(
-                              nodo: usuarioConectado.nodoId.toString(),
-                              usuario_mrn: usuarioConectado.id.toString(),
-                              producto_venta: paqueteSeleccionado.id.toString(),
-                              producto:
-                                  paqueteSeleccionado.codigoProducto.toString(),
-                              valor: paqueteSeleccionado.valorProducto != 0
-                                  ? paqueteSeleccionado.valorProducto
-                                  : valorSeleccionado,
-                              celular: telefonoSeleccionado.replaceAll(
-                                  RegExp(r'[^0-9]'), ''),
-                              documento: documentoSeleccionado);
-                          ventaRecarga(obj).then((resultado) {
-                            showModalBottomSheet(
-                              isDismissible: false,
-                              context: context,
-                              builder: (BuildContext context) {
-                                return SizedBox(
-                                  height: 200,
-                                  child: Center(
-                                    child: Column(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 30),
-                                          child: Text('${resultado.mensaje}'),
-                                        ),
-                                        const SizedBox(height: 20.0),
-                                        ElevatedButton(
-                                            onPressed: () {
-                                              if (resultado.codigo != 500) {
-                                                ref.read(ventaResponseProvider.notifier).update((state) =>resultado.data!);
-                                                ref.invalidate(ultimasVentasListProvider);
-                                                route.go('/venta_apuestas_result');
-                                              } else {
-                                                route.go('/apuestas');
-                                                ref.invalidate(ultimasVentasListProvider);
-                                              }
-                                            },
-                                            child: const Text('Aceptar'))
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                            // Puedes realizar más operaciones con el resultado si es necesario
-                          }).catchError((error) {
-                            // Manejar los errores si ocurre algún problema con la petición
-                            Text(error);
-                          });
-                        }),
-                    TextButton(
+                isProgress ? const Center(child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    Text('Un momento por favor....')
+                  ],
+                )) :
+                FractionallySizedBox(
+                  widthFactor: 0.8,
+                  child: ElevatedButton(
                       style: TextButton.styleFrom(
                         padding: const EdgeInsets.all(16.0),
+                        backgroundColor: Colors.blueAccent
                       ),
-                      child: const Text('Vender con ganancias'),
-                      onPressed: () {
+                      child: const Text('Vender con saldo',style: TextStyle(color: Colors.white),),
+                      onPressed: () async {
                         final obj = MSData(
                             nodo: usuarioConectado.nodoId.toString(),
                             usuario_mrn: usuarioConectado.id.toString(),
                             producto_venta: paqueteSeleccionado.id.toString(),
                             producto:
-                                paqueteSeleccionado.codigoProducto.toString(),
+                            paqueteSeleccionado.codigoProducto.toString(),
                             valor: paqueteSeleccionado.valorProducto != 0
                                 ? paqueteSeleccionado.valorProducto
                                 : valorSeleccionado,
                             celular: telefonoSeleccionado.replaceAll(
                                 RegExp(r'[^0-9]'), ''),
-                            documento: documentoSeleccionado,
-                            venta_ganancias: true);
+                            documento: documentoSeleccionado);
+                        ref.read(progressProvider.notifier).update((state) => true);
                         ventaRecarga(obj).then((resultado) {
+                          ref.read(progressProvider.notifier).update((state) => false);
                           showModalBottomSheet(
                             isDismissible: false,
                             context: context,
@@ -215,14 +166,9 @@ class ConfirmVentaApuestasScreen extends ConsumerWidget {
                                       ElevatedButton(
                                           onPressed: () {
                                             if (resultado.codigo != 500) {
-                                              ref
-                                                  .read(ventaResponseProvider
-                                                      .notifier)
-                                                  .update((state) =>
-                                                      resultado.data!);
-                                              route
-                                                  .go('/venta_apuestas_result');
+                                              ref.read(ventaResponseProvider.notifier).update((state) =>resultado.data!);
                                               ref.invalidate(ultimasVentasListProvider);
+                                              route.go('/venta_apuestas_result');
                                             } else {
                                               route.go('/apuestas');
                                               ref.invalidate(ultimasVentasListProvider);
@@ -237,26 +183,106 @@ class ConfirmVentaApuestasScreen extends ConsumerWidget {
                           );
                           // Puedes realizar más operaciones con el resultado si es necesario
                         }).catchError((error) {
+                          ref.read(progressProvider.notifier).update((state) => false);
                           // Manejar los errores si ocurre algún problema con la petición
                           Text(error);
                         });
-                      },
-                    ),
-                  ],
+                      }),
                 ),
-                ButtonBar(
-                  alignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    TextButton(
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.all(16.0),
-                        ),
-                        child: const Text('Atras'),
-                        onPressed: () {
-                          route.go('/recargas_paquetes');
-                        }),
+                const SizedBox(
+                  // Añade un espacio entre la Card y el ListView
+                  height: 20.0,
+                ),
+                isProgress ? const Center(child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    Text('Un momento por favor....')
                   ],
-                )
+                )) :
+                FractionallySizedBox(
+                  widthFactor: 0.8,
+                  child: ElevatedButton(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.all(16.0),
+                    ),
+                    child: const Text('Vender con ganancias',style: TextStyle(color: Colors.white)),
+                    onPressed: () {
+                      final obj = MSData(
+                          nodo: usuarioConectado.nodoId.toString(),
+                          usuario_mrn: usuarioConectado.id.toString(),
+                          producto_venta: paqueteSeleccionado.id.toString(),
+                          producto:
+                          paqueteSeleccionado.codigoProducto.toString(),
+                          valor: paqueteSeleccionado.valorProducto != 0
+                              ? paqueteSeleccionado.valorProducto
+                              : valorSeleccionado,
+                          celular: telefonoSeleccionado.replaceAll(
+                              RegExp(r'[^0-9]'), ''),
+                          documento: documentoSeleccionado,
+                          venta_ganancias: true);
+                      ref.read(progressProvider.notifier).update((state) => true);
+                      ventaRecarga(obj).then((resultado) {
+                        ref.read(progressProvider.notifier).update((state) => false);
+                        showModalBottomSheet(
+                          isDismissible: false,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return SizedBox(
+                              height: 200,
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 30),
+                                      child: Text('${resultado.mensaje}'),
+                                    ),
+                                    const SizedBox(height: 20.0),
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          if (resultado.codigo != 500) {
+                                            ref
+                                                .read(ventaResponseProvider
+                                                .notifier)
+                                                .update((state) =>
+                                            resultado.data!);
+                                            route
+                                                .go('/venta_apuestas_result');
+                                            ref.invalidate(ultimasVentasListProvider);
+                                          } else {
+                                            route.go('/apuestas');
+                                            ref.invalidate(ultimasVentasListProvider);
+                                          }
+                                        },
+                                        child: const Text('Aceptar'))
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                        // Puedes realizar más operaciones con el resultado si es necesario
+                      }).catchError((error) {
+                        ref.read(progressProvider.notifier).update((state) => false);
+                        // Manejar los errores si ocurre algún problema con la petición
+                        Text(error);
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  // Añade un espacio entre la Card y el ListView
+                  height: 20.0,
+                ),
+                ElevatedButton(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.all(16.0),
+                    ),
+                    child: const Text('Atras'),
+                    onPressed: () {
+                      route.go('/recargas_paquetes');
+                    }),
               ],
             ),
           ),

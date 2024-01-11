@@ -14,6 +14,7 @@ import 'package:movilcomercios/src/screens/recaudos/venta_recaudo_screen.dart';
 import 'package:movilcomercios/src/screens/recaudos/venta_recaudos_result.dart';
 import 'package:movilcomercios/src/screens/reportes/detalle_reporte_ventas_screen.dart';
 import 'package:movilcomercios/src/screens/reportes/reporte_comisiones_screen.dart';
+import 'package:movilcomercios/src/screens/reportes/reporte_pagos_screen.dart';
 import 'package:movilcomercios/src/screens/reportes/reporte_saldos_screen.dart';
 import 'package:movilcomercios/src/screens/reportes/reporte_ventas_screen.dart';
 import 'package:movilcomercios/src/screens/reportes/reportes_screen.dart';
@@ -72,6 +73,7 @@ final appRouteProvider  = Provider<GoRouter>((ref){
         GoRoute(path: '/det_rep_ventas', builder: (context,state) => const DetalleReporteVentasScreen()),
         GoRoute(path: '/reporte_comisiones', builder: (context,state) => const ReporteComisionesScreen()),
         GoRoute(path: '/reporte_solicitudes', builder: (context,state) => const ReporteSolicitudesScreen()),
+        GoRoute(path: '/reporte_pagos', builder: (context,state) => const ReportePagosScreen()),
       ]
   );
 });

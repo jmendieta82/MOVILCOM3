@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 class MrnFieldBox extends StatelessWidget {
   final ValueChanged<String>? onValue;
+  final ValueChanged<String>? onValueChange;
   final TextEditingController? controller;
   final TextInputType? kbType;
   final String? label;
@@ -24,7 +25,8 @@ class MrnFieldBox extends StatelessWidget {
     this.align = TextAlign.left,
     this.formatters,
     this.enabled = true,
-    this.placeholder
+    this.placeholder,
+    this.onValueChange
   });
 
   @override
@@ -66,6 +68,10 @@ class MrnFieldBox extends StatelessWidget {
             focusNode.requestFocus();
             onValue!(value);
           },
+          /*onChanged: (value) {
+            focusNode.requestFocus();
+            onValueChange!(value);
+          },*/
         ),
       ],
     );

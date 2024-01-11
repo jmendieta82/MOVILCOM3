@@ -37,7 +37,7 @@ class ReportesScreen extends ConsumerWidget {
         title: const Text('Reportes'),
           leading: IconButton(
               onPressed: (){
-                router.go('/reportes');
+                router.go('/home');
               },
               icon: const Icon(Icons.arrow_back_ios))
       ),
@@ -45,6 +45,29 @@ class ReportesScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
+            Card(
+              color: Colors.blue[50],
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    const Center(child: Icon(Icons.info)),
+                    const SizedBox(width: 10),
+                    Flexible( // Usamos Flexible para que el texto se ajuste al espacio disponible
+                      child: RichText(
+                        text: const TextSpan(
+                          text: 'Para realizar una consulta por favor seleccione una fecha de inicio y una fecha de fin, enseguida seleccione el reporte que desee ver. ',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Color(0xFF182130),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             MrnFieldBox(
               controller: fInicio,
               label: 'Fecha inicial',
@@ -95,7 +118,7 @@ class ReportesScreen extends ConsumerWidget {
                       icono: Icon(Icons.request_quote,size: 30,color: Color(0xFF182130),),
                     ),
                     MenuCard(
-                      ruta: '/construccion',
+                      ruta: '/reporte_pagos',
                       titulo: 'Pagos de saldos',
                       icono: Icon(Icons.currency_exchange,size: 30,color: Color(0xFF182130),),
                     )

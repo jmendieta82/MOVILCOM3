@@ -15,10 +15,25 @@ class VentaPinesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context,ref) {
-    return const DefaultTabController(
+    final empresaSeleccionada = ref.watch(empresaSeleccionadaProvider);
+    final route  = ref.watch(appRouteProvider);
+    return DefaultTabController(
       length: 2,
       child: Scaffold(
-        body: SafeArea(
+        appBar: AppBar(
+          leading: Row(
+            children: [
+              IconButton(
+                  onPressed:(){
+                    route.go('/empresas');
+                  },
+                  icon: const Icon(Icons.arrow_back_ios)
+              ),
+            ],
+          ) ,
+          title: Text(empresaSeleccionada.nom_empresa.toString()),
+        ),
+        body: const SafeArea(
           child: PinesView(),
         ),
       ),
@@ -58,26 +73,6 @@ class PinesView extends ConsumerWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          const SizedBox( // Añade un espacio entre la Card y el ListView
-            height: 40.0,
-          ),
-          Card(
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 8),
-                  child: CircleAvatar(
-                    radius: 30,
-                    backgroundImage: AssetImage(empresaSeleccionada.logo_empresa ?? ''),
-                  ),
-                ),
-                Text(
-                  empresaSeleccionada.nom_empresa.toString(),
-                  style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(

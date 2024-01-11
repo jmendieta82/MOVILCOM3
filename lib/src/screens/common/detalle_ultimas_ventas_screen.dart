@@ -40,9 +40,17 @@ class DetalleUltimasVentasScreen extends ConsumerWidget {
                     transaccion.convenioPago == null?
                     _buildListItem('Operador',transaccion.nomEmpresa.toString())
                     :_buildListItem('Convenio',transaccion.convenioPago.toString()),
-                    _buildListItem('Saldo anterior','\$${formatter.format(transaccion.ultimoSaldo.toString())}'),
+
+                    transaccion.ventaDesde == 'Saldo'?
+                    _buildListItem('Saldo anterior','\$${formatter.format(transaccion.ultimoSaldo.toString())}')
+                    :_buildListItem('Saldo anterior','\$${formatter.format(transaccion.ultimo_saldo_ganancias.toString())}'),
+
                     _buildListItem('Valor venta','\$${formatter.format(transaccion.valor.toString())}'),
-                    _buildListItem('Nuevo saldo','\$${formatter.format(transaccion.saldoActual.toString())}'),
+
+                    transaccion.ventaDesde == 'Saldo'?
+                    _buildListItem('Nuevo saldo','\$${formatter.format(transaccion.saldoActual.toString())}'):
+                    _buildListItem('Nuevo saldo','\$${formatter.format(transaccion.saldo_actual_ganancias.toString())}'),
+
                     _buildListItem('Ganancia','\$${transaccion.ganancia.toString()}'),
                     _buildListItem('Telefono',transaccion.numeroDestino.toString()),
                     _buildListItem('Codigo resultado',transaccion.codigoResultado.toString()),
@@ -67,29 +75,34 @@ class DetalleUltimasVentasScreen extends ConsumerWidget {
   }
 }
 Widget _buildListItem(String name, String value) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4.0,horizontal: 20.0),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (name.isNotEmpty)
-          Expanded(
-            flex: 3,
-            child: Text(
-              name,
-              textAlign: TextAlign.start,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+  return Column(
+    children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 20.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (name.isNotEmpty)
+              Expanded(
+                flex: 3,
+                child: Text(
+                  name,
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            const SizedBox(width: 8.0), // Ajusta el espacio entre los textos
+            Expanded(
+              flex: 2,
+              child: Text(
+                value,
+                textAlign: TextAlign.end,
+              ),
             ),
-          ),
-        const SizedBox(width: 8.0), // Ajusta el espacio entre los textos
-        Expanded(
-          flex: 2,
-          child: Text(
-            value,
-            textAlign: TextAlign.end,
-          ),
+          ],
         ),
-      ],
-    ),
+      ),
+      const Divider(), // Línea divisoria entre elementos
+    ],
   );
 }

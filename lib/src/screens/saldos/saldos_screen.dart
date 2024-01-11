@@ -40,6 +40,59 @@ class _SaldosScreenState extends ConsumerState<SaldosScreen> {
     return Scaffold(
       appBar: AppBar(
           title: const Text('Gestion de Saldos'),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (String choice) {
+              // Maneja la opción seleccionada
+              switch (choice){
+                case 'Solicitud de credito':
+                  route.go('/solicitud_credito');
+                  break;
+                case 'Ultimas solicitudes':
+                  route.go('/ultimas_solicitudes');
+                  break;
+                case 'Cartera':
+                  route.go('/cartera');
+                  break;
+              }
+            },
+            icon: const Icon(Icons.menu), // Cambia el ícono por el que desees
+            itemBuilder: (BuildContext context) {
+              return <PopupMenuEntry<String>>[
+                const PopupMenuItem<String>(
+                  value: 'Solicitud de credito',
+                  child: Row(
+                    children: [
+                      Icon(Icons.monetization_on),
+                      SizedBox(width: 10),
+                      Text('Solicitud de credito'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'Ultimas solicitudes',
+                  child: Row(
+                    children: [
+                      Icon(Icons.credit_score),
+                      SizedBox(width: 10),
+                      Text('Ultimas solicitudes'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'Cartera',
+                  child: Row(
+                    children: [
+                      Icon(Icons.account_balance_wallet),
+                      SizedBox(width: 10),
+                      Text('Cartera'),
+                    ],
+                  ),
+                ),
+              ];
+            },
+          ),
+        ],
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: (){route.go('/home');},
@@ -48,20 +101,6 @@ class _SaldosScreenState extends ConsumerState<SaldosScreen> {
       body:Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          CardCarousel(cardTitles: cardTitles, route: routes,),
-          const Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                'Deslice para más opciones',
-                style: TextStyle(
-                  fontSize: 12.0,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-          ),
           Expanded(
             child: credito.when(
                 data:(data){
