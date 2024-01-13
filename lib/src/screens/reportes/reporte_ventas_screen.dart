@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movilcomercios/src/internet_services/common/login_api_conection.dart';
 import 'package:movilcomercios/src/providers/shared_providers.dart';
-import 'package:tuple/tuple.dart';
 import '../../app_router/app_router.dart';
-import '../../providers/reporte_ventas_provider.dart';
+import '../../internet_services/reportes/reporte_ventas_api_connection.dart';
+import '../common/custom_text_filed.dart';
 
 
 class ReporteVentasScreen extends ConsumerStatefulWidget {
@@ -17,59 +17,144 @@ class ReporteVentasScreen extends ConsumerStatefulWidget {
 }
 
 class _ReporteVentasScreenState extends ConsumerState<ReporteVentasScreen> {
+  TextEditingController txtfInicio = TextEditingController();
+  TextEditingController txtfFinal = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
       locale: 'es-Co', decimalDigits: 0,symbol: '',
     );
     final usuarioConectado = ref.watch(usuarioConectadoProvider);
-    final fInicial = ref.watch(fechaInicial);
-    final fFinal = ref.watch(fechaFinal);
-    Tuple4 params = Tuple4(
-        usuarioConectado.token,
-        usuarioConectado.nodoId,
-        fInicial,
-        fFinal
-    );
-    final data = ref.watch(reporteVentasDataProvider(params));
     final router  = ref.watch(appRouteProvider);
+    Future<String?> selectDate(BuildContext context) async {
+      final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2101),
+        locale: const Locale('es', 'ES'), // Establecer el idioma a español
+      );
+      if (picked != null) {
+        return picked.toString().split(' ')[0];
+      }
+      return null;
+    }
+
+    final tVentas = ref.watch(totalVentas);
+    final tGanancias = ref.watch(totalGanancias);
+    bool isProgress = ref.watch(progressProvider);
+
+    Future<void> fetchData() async {
+      if(txtfInicio.text.isNotEmpty && txtfFinal.text.isNotEmpty){
+        ref.read(progressProvider.notifier).update((state) => true);
+        try {
+          final value = await getReporteVentas(usuarioConectado.token!, usuarioConectado.nodoId!, txtfInicio.text, txtfFinal.text);
+          ref.read(progressProvider.notifier).update((state) => false);
+          ref.read(totalVentas.notifier).update((state) => value.total_valor!);
+          ref.read(totalGanancias.notifier).update((state) => value.total_ganancia!);
+
+        } catch (error) {
+          ref.read(progressProvider.notifier).update((state) => false);
+          // Manejar el error si es necesario
+          print(error.toString());
+        }
+      }else{
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Seleccione las dos fechas.'),
+            ));
+      }
+
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reporte Ventas'),
           leading: IconButton(
               onPressed: (){
-                ref.invalidate(reporteVentasDataProvider);
-                ref.read(fechaInicial.notifier).update((state) => '');
-                ref.read(fechaFinal.notifier).update((state) => '');
                 router.go('/reportes');
               },
               icon: const Icon(Icons.arrow_back_ios))
       ),
       body: Padding(
         padding: EdgeInsets.all(8.0),
-        child: data.when(
-          data: (data){
-            return Column(
-              children:[
-                const SizedBox(height: 10,),
-                MenuCard(
-                  ruta: '/det_rep_ventas',
-                  titulo: '\$${formatter.format(data.total_valor.toString())}',
-                  subtitulo: 'Total ventas',
+        child: Column(
+          children:[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: MrnFieldBox(
+                controller: txtfInicio,
+                label: 'Fecha inicial',
+                kbType: TextInputType.text,
+                icon: IconButton(
+                  icon: const Icon(Icons.calendar_month), // Icono que se muestra al final del TextField
+                  onPressed: () async {
+                    final selectedDate = await selectDate(context);
+                    if (selectedDate != null) {
+                      txtfInicio.text = selectedDate;
+                    }
+                  },
                 ),
-                const SizedBox(height: 10,),
-                MenuCard(
-                  ruta: '/det_rep_ventas',
-                  titulo: '\$${formatter.format(data.total_ganancia.toString())}',
-                  subtitulo: 'Total ganancias',
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: MrnFieldBox(
+                controller: txtfFinal,
+                label: 'Fecha final',
+                kbType: TextInputType.text,
+                icon: IconButton(
+                  icon: const Icon(Icons.calendar_month), // Icono que se muestra al final del TextField
+                  onPressed: () async {
+                    final selectedDate = await selectDate(context);
+                    if (selectedDate != null) {
+                      txtfFinal.text = selectedDate;
+                    }
+                  },
                 ),
-                const SizedBox(height: 10,),
+              ),
+            ),
+            const SizedBox(height: 20,),
+            isProgress ? const Center(child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                Text('Un momento por favor....')
               ],
-            );
-          },
-          error: (err,s) => Text(err.toString()),
-          loading: () => const Center(child: CircularProgressIndicator(),),
-        )
+            )) :
+            FractionallySizedBox(
+              widthFactor: 0.8,
+              child: ElevatedButton(
+                  onPressed:fetchData,
+                  child: const Text('Consultar')
+              ),
+            ),
+            FractionallySizedBox(
+              widthFactor: 0.8,
+              child: ElevatedButton(
+                  onPressed:(){
+                    ref.read(totalVentas.notifier).update((state) => 0);
+                    ref.read(totalGanancias.notifier).update((state) => 0);
+                    txtfInicio.text = '';
+                    txtfFinal.text = '';
+                  },
+                  child: const Text('Limpiar')
+              ),
+            ),
+            const SizedBox(height: 20,),
+            MenuCard(
+              ruta: '/det_rep_ventas',
+              titulo: '\$${formatter.format(tVentas.toString())}',
+              subtitulo: 'Total ventas',
+            ),
+            const SizedBox(height: 10,),
+            MenuCard(
+              ruta: '/det_rep_ventas',
+              titulo: '\$${formatter.format(tGanancias.toString())}',
+              subtitulo: 'Total ganancias',
+            ),
+            const SizedBox(height: 10,),
+          ],
+        ),
       ),
     );
   }

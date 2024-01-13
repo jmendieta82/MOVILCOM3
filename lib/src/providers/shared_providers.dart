@@ -3,6 +3,7 @@ import '../models/common/lista_ventas.dart';
 import '../models/common/transaccion.dart';
 import '../models/common/ultimas_ventas.dart';
 import '../models/recargas/paquetes.dart';
+import '../models/reportes/reporte_pagos.dart';
 import '../models/saldos/cartera.dart';
 import '../models/saldos/ultimas_solicitudes.dart';
 
@@ -27,3 +28,5 @@ final totalVentas = StateProvider<int>((ref) =>0);
 final totalGanancias = StateProvider<int>((ref) =>0);
 final fechaInicial = StateProvider<String>((ref) =>'');
 final fechaFinal = StateProvider<String>((ref) =>'');
+final listaPagosProvider = StateProvider<List<ReportePagos>>((ref) => []);
+final listaSolicitudesProvider = StateProvider<List<UltimasSolicitudes>>((ref) => []);

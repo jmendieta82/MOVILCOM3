@@ -10,27 +10,8 @@ class ReportesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context,ref) {
-    Future<String?> selectDate(BuildContext context) async {
-      final picked = await DatePicker.showSimpleDatePicker(
-      context,
-      // initialDate: DateTime(2020),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2090),
-      dateFormat: "dd-MMMM-yyyy",
-      titleText: 'Seleccione una fecha',
-      locale: DateTimePickerLocale.es,
-      cancelText: 'Cancelar',
-      looping: true,
-      );
-      if (picked != null) {
-        return picked.toString().split(' ')[0];
-      }
-      return null;
-    }
-    final router  = ref.watch(appRouteProvider);
-    TextEditingController fInicio = TextEditingController();
-    TextEditingController fFinal = TextEditingController();
 
+    final router  = ref.watch(appRouteProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -45,59 +26,6 @@ class ReportesScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            Card(
-              color: Colors.blue[50],
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    const Center(child: Icon(Icons.info)),
-                    const SizedBox(width: 10),
-                    Flexible( // Usamos Flexible para que el texto se ajuste al espacio disponible
-                      child: RichText(
-                        text: const TextSpan(
-                          text: 'Para realizar una consulta por favor seleccione una fecha de inicio y una fecha de fin, enseguida seleccione el reporte que desee ver. ',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Color(0xFF182130),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            MrnFieldBox(
-              controller: fInicio,
-              label: 'Fecha inicial',
-              kbType: TextInputType.text,
-              icon: IconButton(
-                icon: const Icon(Icons.calendar_month), // Icono que se muestra al final del TextField
-                onPressed: () async {
-                  final selectedDate = await selectDate(context);
-                  if (selectedDate != null) {
-                    fInicio.text = selectedDate;
-                    ref.read(fechaInicial.notifier).update((state) => selectedDate);
-                  }
-                },
-              ),
-            ),
-            MrnFieldBox(
-              controller: fFinal,
-              label: 'Fecha final',
-              kbType: TextInputType.text,
-              icon: IconButton(
-                icon: const Icon(Icons.calendar_month), // Icono que se muestra al final del TextField
-                onPressed: () async {
-                  final selectedDate = await selectDate(context);
-                  if (selectedDate != null) {
-                    fFinal.text = selectedDate;
-                    ref.read(fechaFinal.notifier).update((state) => selectedDate);
-                  }
-                },
-              ),
-            ),
             const SizedBox(height: 30),
             Expanded(
               child: ListView(
@@ -149,21 +77,9 @@ class MenuCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context,ref) {
     final route  = ref.watch(appRouteProvider);
-    final fInicial  = ref.watch(fechaInicial);
-    final fFinal  = ref.watch(fechaFinal);
     return GestureDetector(
     onTap: () {
-          if(titulo == 'Comisiones'){
-            route.go(ruta);
-          }else{
-            if(fInicial.isNotEmpty && fFinal.isNotEmpty){
-              route.go(ruta);
-            }else{
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Seleccione las dos fechas')),
-              );
-            }
-          }
+          route.go(ruta);
       },
         child: Card(
           child: Padding(

@@ -1,103 +1,173 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-import 'package:tuple/tuple.dart';
+import 'package:movilcomercios/src/internet_services/reportes/reporte_pagos_api_connection.dart';
 import '../../app_router/app_router.dart';
 import '../../internet_services/common/login_api_conection.dart';
-import '../../models/reportes/reporte_pagos.dart';
-import '../../providers/reporte_pagos_provider.dart';
 import '../../providers/shared_providers.dart';
+import '../common/custom_text_filed.dart';
 
 
-class ReportePagosScreen extends ConsumerWidget {
-
+class ReportePagosScreen extends ConsumerStatefulWidget {
   const ReportePagosScreen({super.key});
 
   @override
-  Widget build(BuildContext context,ref) {
-    String formatDate(dateString) {
-      final DateFormat inputFormat = DateFormat('yyyy-MM-dd');
-      final DateFormat outputFormat = DateFormat('dd/MM/yyyy');
-      final DateTime parsedDate = inputFormat.parse(dateString);
-      final String formattedDate = outputFormat.format(parsedDate);
-      return formattedDate;
-    }
-    String formatTime(dateString) {
-      final DateFormat inputFormat = DateFormat('HH:mm:ss.SSSZ');
-      final DateFormat outputFormat = DateFormat('hh:mm a');
-      final DateTime parsedDate = inputFormat.parse(dateString);
-      final String formattedTime = outputFormat.format(parsedDate);
-      return formattedTime;
-    }
+  ConsumerState createState() => _ReportePagosScreenState();
+}
+
+class _ReportePagosScreenState extends ConsumerState<ReportePagosScreen> {
+  TextEditingController txtfInicio = TextEditingController();
+  TextEditingController txtfFinal = TextEditingController();
+  
+  @override
+  Widget build(BuildContext context) {
     final usuarioConectado = ref.watch(usuarioConectadoProvider);
-    final fInicial = ref.watch(fechaInicial);
-    final fFinal = ref.watch(fechaFinal);
-    Tuple4 params = Tuple4(
-        usuarioConectado.token,
-        usuarioConectado.nodoId,
-        fInicial,
-        fFinal
-    );
-    final data  = ref.watch(reportePagosListProvider(params));
     final router  = ref.watch(appRouteProvider);
     final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
       locale: 'es-Co', decimalDigits: 0,symbol: '',
     );
+    Future<String?> selectDate(BuildContext context) async {
+      final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2101),
+        locale: const Locale('es', 'ES'), // Establecer el idioma a español
+      );
+      if (picked != null) {
+        return picked.toString().split(' ')[0];
+      }
+      return null;
+    }
+    final listaPagos = ref.watch(listaPagosProvider);
+    bool isProgress = ref.watch(progressProvider);
+    Future<void> fetchData() async {
+      if(txtfInicio.text.isNotEmpty && txtfFinal.text.isNotEmpty){
+        ref.read(progressProvider.notifier).update((state) => true);
+        try {
+          final value = await getReportePagos(usuarioConectado.token!, usuarioConectado.nodoId!, txtfInicio.text, txtfFinal.text);
+          ref.read(progressProvider.notifier).update((state) => false);
+          ref.read(listaPagosProvider.notifier).update((state) => value);
+
+        } catch (error) {
+          ref.read(progressProvider.notifier).update((state) => false);
+          // Manejar el error si es necesario
+          print(error.toString());
+        }
+      }else{
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Seleccione las dos fechas.'),
+        ));
+      }
+
+    }
+
     return Scaffold(
       appBar: AppBar(
           title: const Text('Reporte Pagos'),
           leading: IconButton(
-              onPressed: (){
-                ref.invalidate(reportePagosListProvider);
-                router.go('/reportes');
-              },
+              onPressed: (){router.go('/reportes');},
               icon: const Icon(Icons.arrow_back_ios))
       ),
       body: SizedBox(
-        child: data.when(
-            data: (data){
-              List<ReportePagos> list  = data.map((e) => e).toList();
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: ListView.builder(
-                        itemCount: list.length,
-                        shrinkWrap: true,
-                        itemBuilder: (_,index){
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Card(
-                              child: ListTile(
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    _buildListItem('Transaccion',list[index].transaccion.toString()),
-                                    _buildListItem('Fecha',list[index].created_at.toString()),
-                                    _buildListItem('Valor factura','\$${formatter.format(list[index].valor.toString())}'),
-                                    _buildListItem('Valor abono','\$${formatter.format(list[index].abono.toString())}'),
-                                    _buildListItem('Saldo pendiente','\$${formatter.format(list[index].saldo_pendiente.toString())}'),
-                                    _buildListItem('Entidad',list[index].entidad.toString()),
-                                    _buildListItem('Recibo',list[index].numero_recibo.toString()),
-                                    _buildListItem('Estado',list[index].estadoPago.toString()),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-                    ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MrnFieldBox(
+                  controller: txtfInicio,
+                  label: 'Fecha inicial',
+                  kbType: TextInputType.text,
+                  icon: IconButton(
+                    icon: const Icon(Icons.calendar_month), // Icono que se muestra al final del TextField
+                    onPressed: () async {
+                      final selectedDate = await selectDate(context);
+                      if (selectedDate != null) {
+                        txtfInicio.text = selectedDate;
+                      }
+                    },
                   ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MrnFieldBox(
+                  controller: txtfFinal,
+                  label: 'Fecha final',
+                  kbType: TextInputType.text,
+                  icon: IconButton(
+                    icon: const Icon(Icons.calendar_month), // Icono que se muestra al final del TextField
+                    onPressed: () async {
+                      final selectedDate = await selectDate(context);
+                      if (selectedDate != null) {
+                        txtfFinal.text = selectedDate;
+                      }
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20,),
+              FractionallySizedBox(
+                widthFactor: 0.8,
+                child: ElevatedButton(
+                    onPressed:fetchData,
+                    child: const Text('Consultar')
+                ),
+              ),
+              FractionallySizedBox(
+                widthFactor: 0.8,
+                child: ElevatedButton(
+                    onPressed:(){
+                      ref.read(listaPagosProvider.notifier).update((state) => []);
+                      txtfInicio.text = '';
+                      txtfFinal.text = '';
+                    },
+                    child: const Text('Limpiar')
+                ),
+              ),
+              isProgress ? const Center(child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  Text('Un momento por favor....')
                 ],
-              );
-            },
-            error: (err,s) => Text(err.toString()),
-            loading: () => const Center(child: CircularProgressIndicator(),)),
+              )) :
+              Expanded(
+                child: ListView.builder(
+                  itemCount: listaPagos.length,
+                  shrinkWrap: true,
+                  itemBuilder: (_, index) {
+                    final reportePago = listaPagos[index];
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Card(
+                        child: ExpansionTile(
+                          title: _buildListItem('Transaccion', reportePago.transaccion.toString()),
+                          subtitle: _buildListItem('Valor abono', '\$${formatter.format(reportePago.abono.toString())}'),
+                          children: [
+                            _buildListItem('Fecha', reportePago.created_at.toString()),
+                            _buildListItem('Valor factura', '\$${formatter.format(reportePago.valor.toString())}'),
+                            _buildListItem('Valor abono', '\$${formatter.format(reportePago.abono.toString())}'),
+                            _buildListItem('Saldo pendiente', '\$${formatter.format(reportePago.saldo_pendiente.toString())}'),
+                            _buildListItem('Entidad', reportePago.entidad.toString()),
+                            _buildListItem('Recibo', reportePago.numero_recibo.toString()),
+                            _buildListItem('Estado', reportePago.estadoPago.toString()),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+              ),
+            ],
+          )
+
       ),
     );
   }
 }
+
 Widget _buildListItem(String name, String value) {
   return Row(
     crossAxisAlignment: CrossAxisAlignment.start,
