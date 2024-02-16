@@ -146,6 +146,7 @@ class _ReportePagosScreenState extends ConsumerState<ReportePagosScreen> {
                           subtitle: _buildListItem('Valor abono', '\$${formatter.format(reportePago.abono.toString())}'),
                           children: [
                             _buildListItem('Fecha', reportePago.created_at.toString()),
+                            _buildListItem('Hora', reportePago.hour_at.toString()),
                             _buildListItem('Valor factura', '\$${formatter.format(reportePago.valor.toString())}'),
                             _buildListItem('Valor abono', '\$${formatter.format(reportePago.abono.toString())}'),
                             _buildListItem('Saldo pendiente', '\$${formatter.format(reportePago.saldo_pendiente.toString())}'),

@@ -18,13 +18,13 @@ class DetalleUltimasVentasScreen extends ConsumerWidget {
       appBar: AppBar(
         title:Text('Transaccion N. ${transaccion.id.toString()}'),
 
-        actions: transaccion.imprime == true?
+        /*actions: transaccion.imprime == true?
         const [
           Padding(
             padding: EdgeInsets.all(8.0),
             child: Icon(Icons.print),
           )
-        ]:[],
+        ]:[],*/
       ),
       body: SafeArea(
         child: Padding(
@@ -37,19 +37,20 @@ class DetalleUltimasVentasScreen extends ConsumerWidget {
                     _buildListItem('',transaccion.nomProducto.toString()),
                     _buildListItem('Codigo de aprobacion',transaccion.codigoTransaccionExterna.toString()),
                     _buildListItem('Venta desde',transaccion.ventaDesde.toString()),
+                    _buildListItem('Fecha',transaccion.createdAt.toString()),
                     transaccion.convenioPago == null?
                     _buildListItem('Operador',transaccion.nomEmpresa.toString())
                     :_buildListItem('Convenio',transaccion.convenioPago.toString()),
 
                     transaccion.ventaDesde == 'Saldo'?
                     _buildListItem('Saldo anterior','\$${formatter.format(transaccion.ultimoSaldo.toString())}')
-                    :_buildListItem('Saldo anterior','\$${formatter.format(transaccion.ultimo_saldo_ganancias.toString())}'),
+                    :_buildListItem('Saldo anterior ganancias','\$${formatter.format(transaccion.ultimo_saldo_ganancias.toString())}'),
 
                     _buildListItem('Valor venta','\$${formatter.format(transaccion.valor.toString())}'),
 
                     transaccion.ventaDesde == 'Saldo'?
                     _buildListItem('Nuevo saldo','\$${formatter.format(transaccion.saldoActual.toString())}'):
-                    _buildListItem('Nuevo saldo','\$${formatter.format(transaccion.saldo_actual_ganancias.toString())}'),
+                    _buildListItem('Nuevo saldo ganancias','\$${formatter.format(transaccion.saldo_actual_ganancias.toString())}'),
 
                     _buildListItem('Ganancia','\$${transaccion.ganancia.toString()}'),
                     _buildListItem('Telefono',transaccion.numeroDestino.toString()),

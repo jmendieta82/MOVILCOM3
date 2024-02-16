@@ -17,35 +17,8 @@ class InicioScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context,ref) {
-    final List<String> imageList = [
-      'assets/banner1.png',
-      'assets/banner2.png',
-      'assets/banner3.png',
-      'assets/banner4.png',
-      // Agrega aquí tus URLs de imágenes
-    ];
-    final List<String> urls = [
-      'https://mrncolombia.com/ofertas/',
-      'https://mrncolombia.com/',
-      'https://mrncolombia.com/trabaja-con-nosotros/',
-      'https://mrncolombia.com/trabaja-con-nosotros/',
-      // Agrega aquí las URLs correspondientes a cada imagen
-    ];
-    final List<String> cardTitles = [
-      'Últimas ventas',
-      'Saldos',
-      'Reportes',
-      'Mi Distribuidor',
-      'MRN Colombia'
-    ];
-    final List<String> routes = [
-      '/ultimas_ventas',
-      '/saldos',
-      '/construccion',
-      '/construccion',
-      '/about_us',
-    ];
     final route  = ref.watch(appRouteProvider);
+    final usuarioConectado = ref.watch(usuarioConectadoProvider);
     return DefaultTabController(
       length: 2,
       child: Scaffold
@@ -69,6 +42,9 @@ class InicioScreen extends ConsumerWidget {
                       break;
                     case 'distribuidor':
                       route.go('/construccion');
+                      break;
+                    case 'usuario':
+                      route.go('/perfil_usuario');
                       break;
                     case 'nosotros':
                       route.go('/about_us');
@@ -107,6 +83,16 @@ class InicioScreen extends ConsumerWidget {
                 icon: const Icon(Icons.menu), // Cambia el ícono por el que desees
                 itemBuilder: (BuildContext context) {
                   return <PopupMenuEntry<String>>[
+                    PopupMenuItem<String>(
+                      value: 'usuario',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.person),
+                          const SizedBox(width: 10),
+                          Text(usuarioConectado.username.toString()),
+                        ],
+                      ),
+                    ),
                     const PopupMenuItem<String>(
                       value: 'ventas',
                       child: Row(
@@ -184,42 +170,12 @@ class InicioScreen extends ConsumerWidget {
               ),
             ),
           ),
-          body: const SafeArea(
+          body:const SafeArea(
             child: Column(
               children: [
-                SizedBox( // Añade un espacio entre la Card y el ListView
-                  height: 10.0,
-                ),
                 Expanded(
                     child: ListaVentasView(),
                 ),
-                /*Center(
-                  child: CarouselSlider.builder(
-                    itemCount: imageList.length,
-                    options: CarouselOptions(
-                      autoPlay: true, // Habilita el desplazamiento automático
-                      aspectRatio: 16 / 9, // Proporción de aspecto de las imágenes
-                      viewportFraction: 1, // Porción de la pantalla que ocupa cada imagen
-                      enlargeCenterPage: true, // Agrandar la imagen en el centro
-                      height: 150, // Ajusta la altura del carrusel aquí
-                      autoPlayInterval: const Duration(seconds: 7),// Ajusta el intervalo aquí
-                    ),
-                    itemBuilder: (BuildContext context, int index, _) {
-                      return GestureDetector(
-                        onTap: () {
-                          _launchURL(urls[index]);
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                          child: Image.asset(
-                            imageList[index],
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),*/
                 SizedBox( // Añade un espacio entre la Card y el ListView
                   height: 15.0,
                 ),
@@ -231,14 +187,6 @@ class InicioScreen extends ConsumerWidget {
     );
   }
 }
-/*Future<void> _launchURL(String url) async {
-  if (await canLaunchUrl(url as Uri)) {
-    await launchUrl(url as Uri);
-  } else {
-    throw 'Could not launch $url';
-  }
-}*/
-
 class ListaVentasView extends ConsumerWidget {
   const ListaVentasView({super.key});
 

@@ -6,6 +6,7 @@ import 'package:movilcomercios/src/providers/cartera_provider.dart';
 import 'package:tuple/tuple.dart';
 import '../../app_router/app_router.dart';
 import '../../internet_services/common/login_api_conection.dart';
+import '../../providers/credito_provider.dart';
 import '../../providers/shared_providers.dart';
 
 
@@ -40,6 +41,7 @@ class _CarteraScreenState extends ConsumerState {
           IconButton(
               onPressed: (){
                 ref.invalidate(carteraListProvider);
+                ref.invalidate(creditoProvider);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Informacion actualizada.')),
                 );
@@ -127,7 +129,7 @@ class _CarteraScreenState extends ConsumerState {
                                       _buildListItem('Transaccion',list[index].id.toString()),
                                       _buildListItem('Pagado',formatter.format((valor - saldoPendientePago).toString())),
                                       _buildListItem('Saldo',formatter.format(saldoPendientePago.toString())),
-                                      _buildListItem('Vence',list[index].fecha_pago.toString()),
+                                      _buildListItem('Fecha',list[index].fecha_aprobacion.toString()),
                                       _buildListItem('Estado pago',list[index].estadoPago.toString()),
                                     ],
                                   ),

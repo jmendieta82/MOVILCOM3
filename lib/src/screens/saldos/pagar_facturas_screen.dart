@@ -8,6 +8,7 @@ import 'package:movilcomercios/src/internet_services/saldos/pagar_saldo_api_conn
 import 'package:movilcomercios/src/internet_services/saldos/solicitud_saldo_api_conection.dart';
 import '../../app_router/app_router.dart';
 import '../../providers/cartera_provider.dart';
+import '../../providers/credito_provider.dart';
 import '../../providers/shared_providers.dart';
 import '../common/custom_text_filed.dart';
 
@@ -33,9 +34,7 @@ class _PagoFacturasScreenState extends ConsumerState {
     final router  = ref.watch(appRouteProvider);
     bool isProgress = ref.watch(progressProvider);
     final total = facturasSeleccionadas.fold(0, (previousValue, cartera) => previousValue + (cartera.valor ?? 0));
-    final TextEditingController totalAbonoController = TextEditingController(
-        text:formatter.format(total.toString())
-    );
+    final TextEditingController totalAbonoController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -68,7 +67,7 @@ class _PagoFacturasScreenState extends ConsumerState {
                             children: [
                               _buildListItem('Transaccion', facturasSeleccionadas[index].id.toString()),
                               _buildListItem('Saldo', '\$${formatter.format(facturasSeleccionadas[index].saldo_pendiente_pago.toString())}'),
-                              _buildListItem('Vence', facturasSeleccionadas[index].fecha_pago.toString()),
+                              _buildListItem('Fecha', facturasSeleccionadas[index].fecha_aprobacion.toString()),
                             ],
                           ),
                         ),
@@ -91,12 +90,11 @@ class _PagoFacturasScreenState extends ConsumerState {
                 ),
               ),
               const SizedBox(height: 20),
-              MrnFieldBox(
-                label: 'Total abono',
-                kbType: TextInputType.number,
-                controller: totalAbonoController,
-                size: 25,
-                align: TextAlign.right,
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.only(right: 16.0),
+                  child: Text('Total a pagar: \$${formatter.format(total.toString())}',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
+                ),
               ),
               const SizedBox(height: 20),
               Container(
@@ -149,7 +147,7 @@ class _PagoFacturasScreenState extends ConsumerState {
                 ),
               ),
               const SizedBox(height: 20),
-              DropdownButtonFormField<String>(
+              /*DropdownButtonFormField<String>(
                 value: selectedEntity,
                 onChanged: (newValue) {
                   setState(() {
@@ -167,6 +165,15 @@ class _PagoFacturasScreenState extends ConsumerState {
                   labelText: 'Entidad de recaudo',
                   border: OutlineInputBorder(),
                 ),
+              ),*/
+              const SizedBox(height: 20),
+              MrnFieldBox(
+                label: 'Total abono',
+                kbType: TextInputType.number,
+                controller: totalAbonoController,
+                formatters: [formatter],
+                size: 25,
+                align: TextAlign.right,
               ),
               const SizedBox(height: 20),
               isProgress ? const Center(child: Column(
@@ -183,7 +190,7 @@ class _PagoFacturasScreenState extends ConsumerState {
                       'facturas':jsonEncode(facturasSeleccionadas),
                       'usuario_id':usuarioConectado.id,
                       'soporte':imagen64Seleccionada,
-                      'entidad':selectedEntity,
+                      'entidad':'Ninguna',
                       'app_ver':3,
                     };
                     if(totalAbonoController.text.isNotEmpty && imagen64Seleccionada.isNotEmpty && entidadSeleccionada.isNotEmpty){
@@ -203,6 +210,7 @@ class _PagoFacturasScreenState extends ConsumerState {
                                     ref.read(imagen64Provider.notifier).update((state) => '');
                                     ref.read(facturasSeleccionadasProvider.notifier).update((state) => []);
                                     ref.invalidate(carteraListProvider);
+                                    ref.invalidate(creditoProvider);
                                     router.go('/cartera');
                                     Navigator.of(context).pop(); // Cierra el dialog
                                   },

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:movilcomercios/src/internet_services/dio/dio_exception.dart';
 
@@ -46,8 +45,14 @@ class DioClient {
        _dio.options.headers.remove('Authorization');
      }
   }
-  void setUrlConceptoMovilLogin(String url, {String token = ''}){
-    _dio.options.baseUrl = 'https://150.136.18.204';
+  void setUrlOffLine(String url, {String token = ''}){
+    _dio.options.baseUrl = urlMRN + url;
+    if (token.isNotEmpty) {
+      _dio.options.headers['Authorization'] = 'Token $token';
+    } else {
+      _dio.options.headers.remove('Authorization');
+    }
+   /* _dio.options.baseUrl = 'https://150.136.18.204';
     _dio.options.headers = {
       'Content-Type': 'application/json',
       'URL': urlMRN + url,
@@ -61,7 +66,7 @@ class DioClient {
       _dio.options.headers['Authorization'] = 'Token $token';
     } else {
       _dio.options.headers.remove('Authorization');
-    }
+    }*/
   }
 
   ///Get Method
@@ -131,4 +136,50 @@ class DioClient {
       throw DioExceptionCustom.fromDioError(e);
     }
   }
+
+  ///Put method
+  Future<Map<String, dynamic>> update(
+      String path, {
+        required dynamic data,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+        CancelToken? cancelToken,
+        ProgressCallback? onSendProgress,
+        ProgressCallback? onReceiveProgress,
+      }) async {
+    try {
+      final Response response = await _dio.put(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+        options: options,
+        cancelToken: cancelToken,
+        onSendProgress: onSendProgress,
+        onReceiveProgress: onReceiveProgress,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final dynamic responseData = response.data;
+        if (responseData is String) {
+          final decodedData = jsonDecode(responseData);
+          if (decodedData is Map<String, dynamic>) {
+            // Utilizar decodedData como un mapa
+            return decodedData;
+          }
+        } else if (responseData is Map<String, dynamic>) {
+          // Si es un mapa (JSON), devolverlo
+          return responseData;
+        } else {
+          return response.data;
+        }
+      }
+
+      throw Exception("Received status code ${response.statusCode}");
+    } on DioException catch (e) {
+      print(e);
+      throw DioExceptionCustom.fromDioError(e);
+    }
+  }
 }
+
+

@@ -8,7 +8,7 @@ Future<List<UltimasSolicitudes>> getReporteSolicitudesList(String token,int nodo
   if(isConnected){
     conexion.setUrl(url,token:token);
   }else{
-    conexion.setUrlConceptoMovilLogin(url,token:token);
+    conexion.setUrlOffLine(url,token:token);
   }
   final response = await conexion.get('');
   return (response).map((e) => UltimasSolicitudes.fromJson(e)).toList();

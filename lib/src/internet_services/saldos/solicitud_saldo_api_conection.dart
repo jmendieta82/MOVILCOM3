@@ -8,7 +8,7 @@ Future<SaldoResponse> solicitudSaldo(obj) async {
   if(isConnected){
     conexion.setUrl('solicitar_saldo');
   }else{
-    conexion.setUrlConceptoMovilLogin('solicitar_saldo');
+    conexion.setUrlOffLine('solicitar_saldo');
   }
   final response = await conexion.post('', data: obj);
   return SaldoResponse.fromJson(response);

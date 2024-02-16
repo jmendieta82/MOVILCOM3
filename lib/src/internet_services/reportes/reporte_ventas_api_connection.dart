@@ -12,7 +12,7 @@ Future<ReporteVentas> getReporteVentas(String token,int nodoId,String fechaInici
   if (isConnected) {
     conexion.setUrl('ventas_by_fecha_v3', token: token);
   } else {
-    conexion.setUrlConceptoMovilLogin('ventas_by_fecha_v3', token: token);
+    conexion.setUrlOffLine('ventas_by_fecha_v3', token: token);
   }
   final response = await conexion.post('', data: obj);
   return ReporteVentas.fromJson(response);

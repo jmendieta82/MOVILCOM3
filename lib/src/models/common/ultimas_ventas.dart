@@ -67,7 +67,7 @@ class UltimasVentas {
     createdAt= json["created_at"];
     hourAt= json["hour_at"];
     ultimo_saldo_ganancias= json["ultimo_saldo_ganancias"];
-    ultimo_saldo_ganancias= json["saldo_actual_ganancias"];
+    saldo_actual_ganancias= json["saldo_actual_ganancias"];
     imprime= json["imprime"];
   }
 

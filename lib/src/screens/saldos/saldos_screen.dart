@@ -40,59 +40,6 @@ class _SaldosScreenState extends ConsumerState<SaldosScreen> {
     return Scaffold(
       appBar: AppBar(
           title: const Text('Gestion de Saldos'),
-        actions: [
-          PopupMenuButton<String>(
-            onSelected: (String choice) {
-              // Maneja la opción seleccionada
-              switch (choice){
-                case 'Solicitud de credito':
-                  route.go('/solicitud_credito');
-                  break;
-                case 'Ultimas solicitudes':
-                  route.go('/ultimas_solicitudes');
-                  break;
-                case 'Cartera':
-                  route.go('/cartera');
-                  break;
-              }
-            },
-            icon: const Icon(Icons.menu), // Cambia el ícono por el que desees
-            itemBuilder: (BuildContext context) {
-              return <PopupMenuEntry<String>>[
-                const PopupMenuItem<String>(
-                  value: 'Solicitud de credito',
-                  child: Row(
-                    children: [
-                      Icon(Icons.monetization_on),
-                      SizedBox(width: 10),
-                      Text('Solicitud de credito'),
-                    ],
-                  ),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'Ultimas solicitudes',
-                  child: Row(
-                    children: [
-                      Icon(Icons.credit_score),
-                      SizedBox(width: 10),
-                      Text('Ultimas solicitudes'),
-                    ],
-                  ),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'Cartera',
-                  child: Row(
-                    children: [
-                      Icon(Icons.account_balance_wallet),
-                      SizedBox(width: 10),
-                      Text('Cartera'),
-                    ],
-                  ),
-                ),
-              ];
-            },
-          ),
-        ],
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: (){route.go('/home');},
@@ -101,6 +48,27 @@ class _SaldosScreenState extends ConsumerState<SaldosScreen> {
       body:Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Expanded(
+            child: ListView(
+                children:const [
+                  MenuCard(
+                    ruta: '/solicitud_credito',
+                    titulo: 'Solicitud de credito',
+                    icono: Icon(Icons.donut_small,size: 30,color: Color(0xFF182130),),
+                  ),
+                  MenuCard(
+                    ruta: '/ultimas_solicitudes',
+                    titulo: 'Ultimas solicitudes',
+                    icono: Icon(Icons.savings,size: 30,color: Color(0xFF182130),),
+                  ),
+                  MenuCard(
+                    ruta: '/cartera',
+                    titulo: 'Cartera',
+                    icono: Icon(Icons.request_quote,size: 30,color: Color(0xFF182130),),
+                  ),
+                ]
+            ),
+          ),
           Expanded(
             child: credito.when(
                 data:(data){
@@ -138,6 +106,56 @@ class _SaldosScreenState extends ConsumerState<SaldosScreen> {
           const BolsaScreen(),
         ],
       )
+    );
+  }
+}
+class MenuCard extends ConsumerWidget {
+  final String titulo;
+  final String subtitulo;
+  final String ruta;
+  final Icon icono;
+
+  const MenuCard({
+    super.key,
+    required this.ruta,
+    required this.titulo,
+    this.subtitulo = '',
+    required this.icono,
+  });
+
+  @override
+  Widget build(BuildContext context,ref) {
+    final route  = ref.watch(appRouteProvider);
+    return GestureDetector(
+      onTap: () {
+        route.go(ruta);
+      },
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Center(child: icono),
+                  const SizedBox(width: 10,),
+                  Text(
+                    titulo,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF182130),
+                    ),
+                  ),
+                ],
+              ),
+              const Icon(Icons.arrow_forward_ios_outlined),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

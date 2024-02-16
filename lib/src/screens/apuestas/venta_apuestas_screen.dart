@@ -78,6 +78,7 @@ class _ApuestasViewState extends ConsumerState<ApuestasView> {
                     label: 'Esta en venta',
                     controller: valorVenta,
                     kbType: TextInputType.number,
+                    formatters: [formatter],
                     size: 25,
                     align: TextAlign.right,
                   ),

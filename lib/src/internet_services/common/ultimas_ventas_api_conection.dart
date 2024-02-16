@@ -12,7 +12,7 @@ class UltimasVentasApiConection{
     if(isConnected){
       conexion.setUrl('ultimas_ventas_app/?nodo=$nodoId',token:token);
     }else{
-      conexion.setUrlConceptoMovilLogin('ultimas_ventas_app/?nodo=$nodoId',token:token);
+      conexion.setUrlOffLine('ultimas_ventas_app/?nodo=$nodoId',token:token);
     }
     final response = await conexion.get('');
     return (response).map((e) => UltimasVentas.fromJson(e)).toList();

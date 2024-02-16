@@ -39,8 +39,8 @@ class EmpresaScreen extends ConsumerWidget {
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: list.length == 1?1:3,
                   crossAxisSpacing: 5.0,
                   mainAxisSpacing: 1.0,
                 ),

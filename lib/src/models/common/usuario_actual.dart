@@ -9,6 +9,9 @@ class UsuarioActual {
   String? lastName;
   String? email;
   int? nodoId;
+  String? tipo_nodo;
+  String? telefono;
+  String? cargo;
 
   UsuarioActual({
     this.id,
@@ -19,6 +22,9 @@ class UsuarioActual {
     this.lastName,
     this.email,
     this.nodoId,
+    this.tipo_nodo,
+    this.telefono,
+    this.cargo,
   });
 
   UsuarioActual.fromJson(Map<String, dynamic> json) {
@@ -30,6 +36,9 @@ class UsuarioActual {
     lastName = json['last_name'];
     email = json['email'];
     nodoId = json['nodo_id'];
+    tipo_nodo = json['tipo_nodo'];
+    telefono = json['telefono'];
+    cargo = json['cargo'];
   }
 
   Map<String, dynamic> toJson() {
@@ -42,6 +51,9 @@ class UsuarioActual {
     data['last_name'] = lastName;
     data['email'] = email;
     data['nodo_id'] = nodoId;
+    data['tipo_nodo'] = tipo_nodo;
+    data['telefono'] = telefono;
+    data['telefono'] = telefono;
     return data;
   }
 }

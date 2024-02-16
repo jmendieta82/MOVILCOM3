@@ -25,7 +25,12 @@ class VentaRecargasPaquetesResultScreen extends ConsumerWidget {
   final response = ref.watch(ventaResponseProvider);
     return Scaffold(
       appBar: AppBar(
-        title:Text(response.resultado.toString()),
+        title:Center(
+          child: Text(
+            response.codigo_resultado == '001'?'Transaxion exitosa':'Transacción rechazada',
+            style: TextStyle(color: response.codigo_resultado == '001'?Colors.green:Colors.red),
+          ),
+        ),
       ),
       body: SafeArea(
           child: Padding(
@@ -58,6 +63,10 @@ class VentaRecargasPaquetesResultScreen extends ConsumerWidget {
                       ListTile(
                         title: Text('\$${formatter.format(response.valor.toString())}',textAlign: TextAlign.right),
                         subtitle: const Text('Valor venta',textAlign: TextAlign.right),
+                      ),
+                      ListTile(
+                        title: Text(response.resultado.toString(),textAlign: TextAlign.right),
+                        subtitle: const Text('Respuesta',textAlign: TextAlign.right),
                       ),
                     ],
                   ),

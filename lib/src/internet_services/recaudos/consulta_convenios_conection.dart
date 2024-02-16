@@ -10,7 +10,7 @@ Future<List<Convenio>> getConveniosList(parametro) async {
   if(isConnected){
     conexion.setUrl('consulta_convenios_practi');
   }else{
-    conexion.setUrlConceptoMovilLogin('consulta_convenios_practi');
+    conexion.setUrlOffLine('consulta_convenios_practi');
   }
   final data = {
     'idcomercio': '113935',
@@ -37,7 +37,7 @@ Future<FacturaReacudo> consultaReferencia(String convenio,String referencia) asy
   if(isConnected){
     conexion.setUrl('consulta_convenios_practi');
   }else{
-    conexion.setUrlConceptoMovilLogin('consulta_convenios_practi');
+    conexion.setUrlOffLine('consulta_convenios_practi');
   }
   final data = {
     "idcomercio": '113935',

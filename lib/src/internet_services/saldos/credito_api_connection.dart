@@ -11,7 +11,7 @@ class CreditoApiConection{
     if(isConnected){
       conexion.setUrl('creditos/?nodo=$nodoId',token:token);
     }else{
-      conexion.setUrlConceptoMovilLogin('creditos/?nodo=$nodoId',token:token);
+      conexion.setUrlOffLine('creditos/?nodo=$nodoId',token:token);
     }
     final response = await conexion.get('');
     return (response).map((e) => Credito.fromJson(e)).toList().first;

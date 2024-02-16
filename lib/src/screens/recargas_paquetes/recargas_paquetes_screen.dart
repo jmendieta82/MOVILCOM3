@@ -10,15 +10,16 @@ import '../../models/recargas/paquetes.dart';
 import '../../providers/shared_providers.dart';
 import '../common/custom_text_filed.dart';
 
+TextEditingController numeroDestinoController = TextEditingController();
 class RecargasPaquetesScreen extends ConsumerWidget {
   const RecargasPaquetesScreen({super.key});
 
   @override
   Widget build(BuildContext context,ref) {
+    numeroDestinoController.clear();
     final empresaSeleccionada = ref.watch(empresaSeleccionadaProvider);
     final route  = ref.watch(appRouteProvider);
     final selectedTab = ref.watch(selectedTabProvider);
-
     return DefaultTabController(
       length: 2,
       initialIndex: selectedTab == 0?0:selectedTab,
@@ -90,14 +91,11 @@ class RecargasView extends ConsumerWidget {
     final data = ref.watch(paquetesListProvider(params));
    TextEditingController valorVenta = TextEditingController();
    TextEditingController numeroDestino = TextEditingController();
-   var phoneMask = MaskTextInputFormatter(
-     mask: '(###) ###-####', // Máscara para el número de teléfono
-     filter: {"#": RegExp(r'[0-9]')}, // Caracteres permitidos en la máscara
-   );
    final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
      locale: 'es-Co', decimalDigits: 0,symbol: '',
    );
    final route  = ref.watch(appRouteProvider);
+
 
     return SingleChildScrollView(
       child: Column(
@@ -144,7 +142,7 @@ class RecargasView extends ConsumerWidget {
                   ),
                   MrnFieldBox(
                     label: 'Numero de telefono',
-                    controller: numeroDestino,
+                    controller: numeroDestinoController,
                     kbType: TextInputType.number,
                     size: 25,
                     align: TextAlign.right,
@@ -169,12 +167,12 @@ class RecargasView extends ConsumerWidget {
                           ),
                           child: const Text('Continuar'),
                           onPressed: () {
-                            if( numeroDestino.text.isNotEmpty && valorVenta.text.isNotEmpty){
+                            if( numeroDestinoController.text.isNotEmpty && valorVenta.text.isNotEmpty){
                                 data.when(data: (data){
                                 final Paquetes tiempoAire = data.where((element) => element.nomProducto == 'Tiempo al aire').first;
                                 ref.read(paqueteSeleccionadoProvider.notifier).update((state) => tiempoAire);
                                 ref.read(valorSeleccionadoProvider.notifier).update((state) => int.parse(valorVenta.text.replaceAll('.', '')));
-                                ref.read(telefonoSeleccionadoProvider.notifier).update((state) => numeroDestino.text);
+                                ref.read(telefonoSeleccionadoProvider.notifier).update((state) => numeroDestinoController.text);
                                 route.go('/confirm_recargas_paquetes');
                                 },error:(err,s) => print(err.toString()),loading: () =>{const CircularProgressIndicator()});
                             }
@@ -206,7 +204,8 @@ class RecargasView extends ConsumerWidget {
                           ),
                           child: const Text('Cancelar'),
                           onPressed: () {
-                            //ref.read(telefonoSeleccionadoProvider.notifier).update((state) => '');
+                            ref.read(telefonoSeleccionadoProvider.notifier).update((state) => '');
+                            numeroDestinoController.clear();
                             ref.read(selectedTabProvider.notifier).update((state) => 0);
                             route.go('/empresas');
                           },
@@ -231,10 +230,6 @@ class PaquetesView extends ConsumerWidget {
   Widget build(BuildContext context,ref) {
     final paqueteSeleccionado = ref.watch(paqueteSeleccionadoProvider);
     TextEditingController numeroDestino = TextEditingController();
-    var phoneMask = MaskTextInputFormatter(
-      mask: '(###) ###-####', // Máscara para el número de teléfono
-      filter: {"#": RegExp(r'[0-9]')}, // Caracteres permitidos en la máscara
-    );
     final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
       locale: 'es-Co', decimalDigits: 0,symbol: '',
     );
@@ -266,7 +261,7 @@ class PaquetesView extends ConsumerWidget {
                style: const TextStyle(fontSize: 40,fontWeight: FontWeight.bold,color: Colors.black54),),
                MrnFieldBox(
                  label: 'Numero de telefono',
-                 controller: numeroDestino,
+                 controller: numeroDestinoController,
                  kbType: TextInputType.number,
                  size: 25,
                  align: TextAlign.right,
@@ -284,8 +279,8 @@ class PaquetesView extends ConsumerWidget {
                        ),
                        child: const Text('Continuar'),
                        onPressed: () {
-                         if( numeroDestino.text.isNotEmpty && paqueteSeleccionado.valorProducto != 0){
-                           ref.read(telefonoSeleccionadoProvider.notifier).update((state) => numeroDestino.text);
+                         if( numeroDestinoController.text.isNotEmpty && paqueteSeleccionado.valorProducto != 0){
+                           ref.read(telefonoSeleccionadoProvider.notifier).update((state) => numeroDestinoController.text);
                            ref.read(valorSeleccionadoProvider.notifier).update((state) => paqueteSeleccionado.valorProducto?? 0);
                            route.go('/confirm_recargas_paquetes');
                          }

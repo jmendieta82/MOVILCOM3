@@ -9,7 +9,7 @@ final paquetesListProvider = FutureProvider.family<List<Paquetes>,Tuple3>((ref,t
   if(isConnected){
     conexion.setUrl('productos_codificados_moviv3/?proveedor=${tuple.item2}&empresa=${tuple.item3}',token:tuple.item1);
   }else{
-    conexion.setUrlConceptoMovilLogin('productos_codificados_moviv3/?proveedor=${tuple.item2}&empresa=${tuple.item3}',token:tuple.item1);
+    conexion.setUrlOffLine('productos_codificados_moviv3/?proveedor=${tuple.item2}&empresa=${tuple.item3}',token:tuple.item1);
   }
   final response = await conexion.get('');
   return (response).map((e) => Paquetes.fromJson(e as Map<String, dynamic>)).toList();

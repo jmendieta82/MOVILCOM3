@@ -10,7 +10,7 @@ class DetalleReporteVentasApiConection{
     if(isConnected){
       conexion.setUrl('ventas_by_fecha_detail_v3/?nodo=$nodoId&fechaInicial=$fInicial&fechaFinal=$fFinal',token:token);
     }else{
-      conexion.setUrlConceptoMovilLogin('ventas_by_fecha_detail_v3/?nodo=$nodoId&fechaInicial=$fInicial&fechaFinal=$fFinal',token:token);
+      conexion.setUrlOffLine('ventas_by_fecha_detail_v3/?nodo=$nodoId&fechaInicial=$fInicial&fechaFinal=$fFinal',token:token);
     }
     final response = await conexion.get('');
     return (response).map((e) => UltimasVentas.fromJson(e)).toList();

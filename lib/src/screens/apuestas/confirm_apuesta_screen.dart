@@ -206,7 +206,7 @@ class ConfirmVentaApuestasScreen extends ConsumerWidget {
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.all(16.0),
                     ),
-                    child: const Text('Vender con ganancias',style: TextStyle(color: Colors.white)),
+                    child: const Text('Vender con ganancias',style: TextStyle(color: Colors.black)),
                     onPressed: () {
                       final obj = MSData(
                           nodo: usuarioConectado.nodoId.toString(),
@@ -275,14 +275,17 @@ class ConfirmVentaApuestasScreen extends ConsumerWidget {
                   // Añade un espacio entre la Card y el ListView
                   height: 20.0,
                 ),
-                ElevatedButton(
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.all(16.0),
-                    ),
-                    child: const Text('Atras'),
-                    onPressed: () {
-                      route.go('/recargas_paquetes');
-                    }),
+                FractionallySizedBox(
+                  widthFactor: 0.8,
+                  child: ElevatedButton(
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.all(16.0),
+                      ),
+                      child: const Text('Atras'),
+                      onPressed: () {
+                        route.go('/empresas');
+                      }),
+                ),
               ],
             ),
           ),

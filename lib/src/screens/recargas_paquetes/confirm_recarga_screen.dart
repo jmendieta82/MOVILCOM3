@@ -65,7 +65,7 @@ class ConfirmRecargasPaquetesScreen extends ConsumerWidget {
                               color: Colors.blueGrey,
                               fontSize: 20),
                           textAlign: TextAlign.justify,),
-                        subtitle: const Text('Paquete en venta',textAlign: TextAlign.right),
+                        subtitle: const Text('Producto en venta',textAlign: TextAlign.right),
                       ),
                       ListTile(
                         title: Text(telefonoSeleccionado,

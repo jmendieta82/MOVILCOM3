@@ -10,6 +10,7 @@ class ReportePagos {
   String? soporte;
   String? entidad;
   String? created_at;
+  String? hour_at;
   String? estadoPago;
   String? motivo_rechazo;
 
@@ -25,6 +26,7 @@ class ReportePagos {
     this.soporte,
     this.entidad,
     this.created_at,
+    this.hour_at,
     this.estadoPago,
     this.motivo_rechazo,
   });
@@ -41,6 +43,7 @@ class ReportePagos {
     soporte = json['soporte'];
     entidad = json['entidad'];
     created_at = json['created_at'];
+    hour_at = json['hour_at'];
     estadoPago = json['estadoPago'];
     motivo_rechazo = json['motivo_rechazo'];
   }
@@ -59,6 +62,7 @@ class ReportePagos {
     data['soporte'] = soporte;
     data['entidad'] = entidad;
     data['created_at'] = created_at;
+    data['hour_at'] = hour_at;
     data['estadoPago'] = estadoPago;
     data['motivo_rechazo'] = motivo_rechazo;
     return data;

@@ -10,7 +10,7 @@ class UltimasSolicitudesApiConection{
     if(isConnected){
       conexion.setUrl('mis_solicitudes_saldo_movilV3/?nodo=$nodoId',token:token);
     }else{
-      conexion.setUrlConceptoMovilLogin('mis_solicitudes_saldo_movilV3/?nodo=$nodoId',token:token);
+      conexion.setUrlOffLine('mis_solicitudes_saldo_movilV3/?nodo=$nodoId',token:token);
     }
     final response = await conexion.get('');
     print(response);

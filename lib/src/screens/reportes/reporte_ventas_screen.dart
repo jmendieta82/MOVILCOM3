@@ -43,7 +43,6 @@ class _ReporteVentasScreenState extends ConsumerState<ReporteVentasScreen> {
     final tVentas = ref.watch(totalVentas);
     final tGanancias = ref.watch(totalGanancias);
     bool isProgress = ref.watch(progressProvider);
-
     Future<void> fetchData() async {
       if(txtfInicio.text.isNotEmpty && txtfFinal.text.isNotEmpty){
         ref.read(progressProvider.notifier).update((state) => true);
@@ -75,85 +74,89 @@ class _ReporteVentasScreenState extends ConsumerState<ReporteVentasScreen> {
               },
               icon: const Icon(Icons.arrow_back_ios))
       ),
-      body: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Column(
-          children:[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: MrnFieldBox(
-                controller: txtfInicio,
-                label: 'Fecha inicial',
-                kbType: TextInputType.text,
-                icon: IconButton(
-                  icon: const Icon(Icons.calendar_month), // Icono que se muestra al final del TextField
-                  onPressed: () async {
-                    final selectedDate = await selectDate(context);
-                    if (selectedDate != null) {
-                      txtfInicio.text = selectedDate;
-                    }
-                  },
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            children:[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MrnFieldBox(
+                  controller: txtfInicio,
+                  label: 'Fecha inicial',
+                  kbType: TextInputType.text,
+                  icon: IconButton(
+                    icon: const Icon(Icons.calendar_month), // Icono que se muestra al final del TextField
+                    onPressed: () async {
+                      final selectedDate = await selectDate(context);
+                      if (selectedDate != null) {
+                        txtfInicio.text = selectedDate;
+                        ref.read(fechaInicial.notifier).update((state) => txtfInicio.text);
+                      }
+                    },
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: MrnFieldBox(
-                controller: txtfFinal,
-                label: 'Fecha final',
-                kbType: TextInputType.text,
-                icon: IconButton(
-                  icon: const Icon(Icons.calendar_month), // Icono que se muestra al final del TextField
-                  onPressed: () async {
-                    final selectedDate = await selectDate(context);
-                    if (selectedDate != null) {
-                      txtfFinal.text = selectedDate;
-                    }
-                  },
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MrnFieldBox(
+                  controller: txtfFinal,
+                  label: 'Fecha final',
+                  kbType: TextInputType.text,
+                  icon: IconButton(
+                    icon: const Icon(Icons.calendar_month), // Icono que se muestra al final del TextField
+                    onPressed: () async {
+                      final selectedDate = await selectDate(context);
+                      if (selectedDate != null) {
+                        txtfFinal.text = selectedDate;
+                        ref.read(fechaFinal.notifier).update((state) => txtfFinal.text);
+                      }
+                    },
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20,),
-            isProgress ? const Center(child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(),
-                Text('Un momento por favor....')
-              ],
-            )) :
-            FractionallySizedBox(
-              widthFactor: 0.8,
-              child: ElevatedButton(
-                  onPressed:fetchData,
-                  child: const Text('Consultar')
+              const SizedBox(height: 20,),
+              isProgress ? const Center(child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  Text('Un momento por favor....')
+                ],
+              )) :
+              FractionallySizedBox(
+                widthFactor: 0.8,
+                child: ElevatedButton(
+                    onPressed:fetchData,
+                    child: const Text('Consultar')
+                ),
               ),
-            ),
-            FractionallySizedBox(
-              widthFactor: 0.8,
-              child: ElevatedButton(
-                  onPressed:(){
-                    ref.read(totalVentas.notifier).update((state) => 0);
-                    ref.read(totalGanancias.notifier).update((state) => 0);
-                    txtfInicio.text = '';
-                    txtfFinal.text = '';
-                  },
-                  child: const Text('Limpiar')
+              FractionallySizedBox(
+                widthFactor: 0.8,
+                child: ElevatedButton(
+                    onPressed:(){
+                      ref.read(totalVentas.notifier).update((state) => 0);
+                      ref.read(totalGanancias.notifier).update((state) => 0);
+                      txtfInicio.text = '';
+                      txtfFinal.text = '';
+                    },
+                    child: const Text('Limpiar')
+                ),
               ),
-            ),
-            const SizedBox(height: 20,),
-            MenuCard(
-              ruta: '/det_rep_ventas',
-              titulo: '\$${formatter.format(tVentas.toString())}',
-              subtitulo: 'Total ventas',
-            ),
-            const SizedBox(height: 10,),
-            MenuCard(
-              ruta: '/det_rep_ventas',
-              titulo: '\$${formatter.format(tGanancias.toString())}',
-              subtitulo: 'Total ganancias',
-            ),
-            const SizedBox(height: 10,),
-          ],
+              const SizedBox(height: 20,),
+              MenuCard(
+                ruta: '/det_rep_ventas',
+                titulo: '\$${formatter.format(tVentas.toString())}',
+                subtitulo: 'Total ventas',
+              ),
+              const SizedBox(height: 10,),
+              MenuCard(
+                ruta: '/det_rep_ventas',
+                titulo: '\$${formatter.format(tGanancias.toString())}',
+                subtitulo: 'Total ganancias',
+              ),
+              const SizedBox(height: 10,),
+            ],
+          ),
         ),
       ),
     );

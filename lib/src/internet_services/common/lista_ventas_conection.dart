@@ -8,9 +8,9 @@ class ListaVentasApiConection{
     DioClient conexion = DioClient.instance;
     bool isConnected = await conexion.checkInternetConnection();
     if(isConnected){
-      conexion.setUrl('comision_app_list/?nodo=$nodoId',token:token);
+      conexion.setUrl('comision_app_list_v3/?nodo=$nodoId',token:token);
     }else{
-      conexion.setUrlConceptoMovilLogin('comision_app_list/?nodo=$nodoId',token:token);
+      conexion.setUrlOffLine('comision_app_list_v3/?nodo=$nodoId',token:token);
     }
     final response = await conexion.get('');
     final data =  (response).map((e) => ListaVentas.fromJson(e)).toList();

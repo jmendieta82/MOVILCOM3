@@ -67,6 +67,9 @@ class DetalleReporteVentasScreen extends ConsumerWidget {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Card(
+                              color:
+                              list[index].codigoResultado.toString()=='00' ||
+                                  list[index].codigoResultado.toString()=='001'?Colors.green[100]:Colors.red[100],
                               child: ListTile(
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,6 +77,7 @@ class DetalleReporteVentasScreen extends ConsumerWidget {
                                     _buildListItem('',list[index].nomProducto.toString()),
                                     _buildListItem('Codigo de aprobacion',list[index].codigoTransaccionExterna.toString()),
                                     _buildListItem('Venta desde',list[index].ventaDesde.toString()),
+                                    _buildListItem('Fecha',list[index].createdAt.toString()),
                                     list[index].convenioPago == null?
                                     _buildListItem('Operador',list[index].nomEmpresa.toString())
                                         :_buildListItem('Convenio',list[index].convenioPago.toString()),

@@ -208,9 +208,31 @@ class _MyFormState extends ConsumerState<MyForm> {
               });
             },
             icon: IconButton(
-              icon: const Icon(Icons.qr_code_scanner), // Icono que se muestra al final del TextField
+              icon: const Icon(Icons.qr_code_scanner),
               onPressed: () {
-                scanBarcode();
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Dialog(
+                      child: Container(
+                        width: 500, // Ajusta este valor según tus necesidades
+                        height: 300, // Ajusta este valor según tus necesidades
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () async {
+                                Navigator.pop(context);
+                                await scanBarcode();
+                              },
+                              child: const Text('Escanear código de barras'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
               },
             ),
           ),

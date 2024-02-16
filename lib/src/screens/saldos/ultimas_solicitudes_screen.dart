@@ -60,17 +60,20 @@ class UltimasSolicitudesScreen extends ConsumerWidget {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Card(
+                              color: list[index].estado == 'Rechazado' || list[index].estado == 'Anulado'?Colors.red[100]:null,
                               child: ListTile(
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     _buildListItem('Transaccion',list[index].id.toString()),
+                                    _buildListItem('Saldo antes','\$${formatter.format(list[index].ultimoSaldo.toString())}'),
                                     _buildListItem('Valor','\$${formatter.format(list[index].valor.toString())}'),
+                                    _buildListItem('Saldo despues','\$${formatter.format(list[index].saldo_actual.toString())}'),
                                     _buildListItem('Metodo de pago',list[index].tipo_transaccion.toString()),
                                     if(list[index].fecha_aprobacion != null)
                                     _buildListItem('Aprobacion',formatDate(list[index].fecha_aprobacion.toString())),
                                     if(list[index].hora_aprobacion != null)
-                                    _buildListItem('Hora',formatTime(list[index].hora_aprobacion.toString())),
+                                    _buildListItem('Hora aprobacion',formatTime(list[index].hora_aprobacion.toString())),
                                     _buildListItem('Tipo de comision',list[index].tipoServicio.toString()),
                                     _buildListItem('Estado de solicitud',list[index].estado.toString()),
                                     _buildListItem('Estado de pago',list[index].estadoPago.toString()),

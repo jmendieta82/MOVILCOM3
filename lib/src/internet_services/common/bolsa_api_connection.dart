@@ -12,7 +12,7 @@ class BolsaApiConection{
     if(isConnected){
       conexion.setUrl('bolsa_dinero_app/?nodo=$nodoId',token:token);
     }else{
-      conexion.setUrlConceptoMovilLogin('bolsa_dinero_app/?nodo=$nodoId',token:token);
+      conexion.setUrlOffLine('bolsa_dinero_app/?nodo=$nodoId',token:token);
     }
     final response = await conexion.get('');
     return (response).map((e) => Bolsa.fromJson(e)).toList().first;

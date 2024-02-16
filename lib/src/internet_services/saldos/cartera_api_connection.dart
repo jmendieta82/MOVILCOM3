@@ -10,7 +10,7 @@ class CarteraApiConection{
     if(isConnected){
       conexion.setUrl('cartera_appv3/?nodo=$nodoId',token:token);
     }else{
-      conexion.setUrlConceptoMovilLogin('cartera_appv3/?nodo=$nodoId',token:token);
+      conexion.setUrlOffLine('cartera_appv3/?nodo=$nodoId',token:token);
     }
     final response = await conexion.get('');
     return (response).map((e) => Cartera.fromJson(e)).toList();
