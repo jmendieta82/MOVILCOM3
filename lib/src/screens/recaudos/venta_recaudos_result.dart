@@ -19,6 +19,15 @@ class VentaRecaudosResultScreen extends ConsumerWidget {
       final String formattedDate = outputFormat.format(parsedDate);
       return formattedDate;
     }
+    String extractTime(String dateTimeString) {
+      // Convertir la cadena a un objeto DateTime
+      DateTime fechaHora = DateTime.parse(dateTimeString);
+      // Sumar 5 horas al objeto DateTime
+      DateTime nuevaFechaHora = fechaHora.subtract(Duration(hours: 5));
+      // Formatear la hora en el formato deseado (hh:mm:ss a)
+      String horaFormateada = DateFormat('hh:mm:ss a').format(nuevaFechaHora);
+      return horaFormateada;
+    }
     final route  = ref.watch(appRouteProvider);
     final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
       locale: 'es-Co', decimalDigits: 0,symbol: '',
@@ -47,7 +56,7 @@ class VentaRecaudosResultScreen extends ConsumerWidget {
                         subtitle: const Text('Transacción N°',textAlign: TextAlign.right),
                       ),
                       ListTile(
-                        title: Text(formatDate(response.hour_at),textAlign: TextAlign.right),
+                        title: Text(extractTime(response.hour_at.toString()),textAlign: TextAlign.right),
                         subtitle: const Text('Fecha',textAlign: TextAlign.right),
                       ),
                       ListTile(

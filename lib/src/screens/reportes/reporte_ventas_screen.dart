@@ -39,7 +39,6 @@ class _ReporteVentasScreenState extends ConsumerState<ReporteVentasScreen> {
       }
       return null;
     }
-
     final tVentas = ref.watch(totalVentas);
     final tGanancias = ref.watch(totalGanancias);
     bool isProgress = ref.watch(progressProvider);

@@ -6,7 +6,7 @@ import 'package:movilcomercios/src/internet_services/dio/dio_exception.dart';
 class DioClient {
   DioClient._();
   static final instance = DioClient._();
-  //static const urlMRN = "http://192.168.1.102:8000/";
+  //static const urlMRN = "http://192.168.0.107:8000/";
   static const urlMRN = "https://api-produccion-recargas-mrn.click/";
 
   final Dio _dio = Dio(

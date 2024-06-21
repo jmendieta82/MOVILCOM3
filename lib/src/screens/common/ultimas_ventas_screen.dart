@@ -23,7 +23,6 @@ class _ListUltimasVentasScreenState extends ConsumerState<ListUltimasVentasScree
     Tuple2 params = Tuple2(usuarioConectado.token, usuarioConectado.nodoId);
     final data  = ref.watch(ultimasVentasListProvider(params));
     final router  = ref.watch(appRouteProvider);
-    print("Reconstruyendo el widget...");
     return Scaffold(
       appBar: AppBar(
           title: const Text('Ultimas ventas'),
@@ -41,21 +40,6 @@ class _ListUltimasVentasScreenState extends ConsumerState<ListUltimasVentasScree
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  /*Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: MrnFieldBox(
-                      placeholder: 'Buscar por telefono',
-                      kbType: TextInputType.number,
-                      onValueChange: (value){
-                        // Filtrar la lista original y almacenarla en la lista filtrada
-                        setState(() {
-                          filteredList = list.where((venta) {
-                            return venta.numeroDestino!.contains(value);
-                          }).toList();
-                        });
-                      },
-                    ),
-                  ),*/
                   Expanded(
                     child: ListView.builder(
                         itemCount: filteredList.length,

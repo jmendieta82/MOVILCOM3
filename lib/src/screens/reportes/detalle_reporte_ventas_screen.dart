@@ -43,6 +43,17 @@ class DetalleReporteVentasScreen extends ConsumerWidget {
     final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
       locale: 'es-Co', decimalDigits: 0,symbol: '',
     );
+    String extractTime(String dateTimeString) {
+      // Convertir la cadena a un objeto DateTime
+      DateTime fechaHora = DateTime.parse(dateTimeString);
+      // Sumar 5 horas al objeto DateTime
+      DateTime nuevaFechaHora = fechaHora.subtract(Duration(hours: 5));
+      // Formatear la hora en el formato deseado (hh:mm:ss a)
+      String horaFormateada = DateFormat('hh:mm:ss a').format(nuevaFechaHora);
+      return horaFormateada;
+    }
+
+
     return Scaffold(
       appBar: AppBar(
           title: const Text('Detalle reporte de ventas'),
@@ -78,6 +89,7 @@ class DetalleReporteVentasScreen extends ConsumerWidget {
                                     _buildListItem('Codigo de aprobacion',list[index].codigoTransaccionExterna.toString()),
                                     _buildListItem('Venta desde',list[index].ventaDesde.toString()),
                                     _buildListItem('Fecha',list[index].createdAt.toString()),
+                                    _buildListItem('hora',extractTime(list[index].hourAt.toString())),
                                     list[index].convenioPago == null?
                                     _buildListItem('Operador',list[index].nomEmpresa.toString())
                                         :_buildListItem('Convenio',list[index].convenioPago.toString()),

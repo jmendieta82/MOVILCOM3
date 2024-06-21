@@ -1,6 +1,7 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:movilcomercios/src/internet_services/reportes/reporte_pagos_api_connection.dart';
 import '../../app_router/app_router.dart';
 import '../../internet_services/common/login_api_conection.dart';
@@ -60,6 +61,15 @@ class _ReportePagosScreenState extends ConsumerState<ReportePagosScreen> {
         ));
       }
 
+    }
+    String extractTime(String dateTimeString) {
+      // Convertir la cadena a un objeto DateTime
+      DateTime fechaHora = DateTime.parse(dateTimeString);
+      // Sumar 5 horas al objeto DateTime
+      DateTime nuevaFechaHora = fechaHora.subtract(Duration(hours: 5));
+      // Formatear la hora en el formato deseado (hh:mm:ss a)
+      String horaFormateada = DateFormat('hh:mm:ss a').format(nuevaFechaHora);
+      return horaFormateada;
     }
 
     return Scaffold(
@@ -146,7 +156,7 @@ class _ReportePagosScreenState extends ConsumerState<ReportePagosScreen> {
                           subtitle: _buildListItem('Valor abono', '\$${formatter.format(reportePago.abono.toString())}'),
                           children: [
                             _buildListItem('Fecha', reportePago.created_at.toString()),
-                            _buildListItem('Hora', reportePago.hour_at.toString()),
+                            _buildListItem('Hora', extractTime(reportePago.hour_at.toString())),
                             _buildListItem('Valor factura', '\$${formatter.format(reportePago.valor.toString())}'),
                             _buildListItem('Valor abono', '\$${formatter.format(reportePago.abono.toString())}'),
                             _buildListItem('Saldo pendiente', '\$${formatter.format(reportePago.saldo_pendiente.toString())}'),

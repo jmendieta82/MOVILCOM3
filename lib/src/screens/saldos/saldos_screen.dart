@@ -53,7 +53,7 @@ class _SaldosScreenState extends ConsumerState<SaldosScreen> {
                 children:const [
                   MenuCard(
                     ruta: '/solicitud_credito',
-                    titulo: 'Solicitud de credito',
+                    titulo: 'Solicitud de saldo',
                     icono: Icon(Icons.donut_small,size: 30,color: Color(0xFF182130),),
                   ),
                   MenuCard(

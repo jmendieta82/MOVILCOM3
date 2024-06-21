@@ -28,10 +28,23 @@ class UltimasSolicitudes {
     this.estadoPago,
   });
 
+  String tipoTransaccionMapper(String tipoTransaccion) {
+    switch (tipoTransaccion) {
+      case 'SSC':
+        return 'Contado';
+      case 'SSCR':
+        return 'Crédito';
+      case 'AJS':
+        return 'Reversión';
+      default:
+        return 'Desconocido'; // O cualquier valor por defecto que desees
+    }
+  }
+
   UltimasSolicitudes.fromJson(Map<String, dynamic> json){
     id= json["id"];
     fecha_aprobacion= json["fecha_aprobacion"];
-    tipo_transaccion= json["tipo_transaccion"]=='SSC'?'Contado':'Credito';
+    tipo_transaccion= json["tipo_transaccion"];
     hora_aprobacion= json["hora_aprobacion"];
     created_at= json["created_at"];
     hour_at= json["hour_at"];

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app_router/app_router.dart';
-import '../../providers/shared_providers.dart';
-import '../common/custom_text_filed.dart';
-import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 
 class ReportesScreen extends ConsumerWidget {
   const ReportesScreen({super.key});

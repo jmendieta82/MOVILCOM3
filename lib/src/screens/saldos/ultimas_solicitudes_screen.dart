@@ -29,6 +29,15 @@ class UltimasSolicitudesScreen extends ConsumerWidget {
       final String formattedTime = outputFormat.format(parsedDate);
       return formattedTime;
     }
+    String extractTime(String dateTimeString) {
+      // Convertir la cadena a un objeto DateTime
+      DateTime fechaHora = DateTime.parse(dateTimeString);
+      // Sumar 5 horas al objeto DateTime
+      DateTime nuevaFechaHora = fechaHora.subtract(Duration(hours: 5));
+      // Formatear la hora en el formato deseado (hh:mm:ss a)
+      String horaFormateada = DateFormat('hh:mm:ss a').format(nuevaFechaHora);
+      return horaFormateada;
+    }
     final usuarioConectado = ref.watch(usuarioConectadoProvider);
     Tuple2 params = Tuple2(usuarioConectado.token, usuarioConectado.nodoId);
     final data  = ref.watch(ultimasSolicitudesListProvider(params));
@@ -70,10 +79,8 @@ class UltimasSolicitudesScreen extends ConsumerWidget {
                                     _buildListItem('Valor','\$${formatter.format(list[index].valor.toString())}'),
                                     _buildListItem('Saldo despues','\$${formatter.format(list[index].saldo_actual.toString())}'),
                                     _buildListItem('Metodo de pago',list[index].tipo_transaccion.toString()),
-                                    if(list[index].fecha_aprobacion != null)
-                                    _buildListItem('Aprobacion',formatDate(list[index].fecha_aprobacion.toString())),
-                                    if(list[index].hora_aprobacion != null)
-                                    _buildListItem('Hora aprobacion',formatTime(list[index].hora_aprobacion.toString())),
+                                    _buildListItem('Fecha',formatDate(list[index].created_at.toString())),
+                                    _buildListItem('Hora',extractTime(list[index].hour_at.toString())),
                                     _buildListItem('Tipo de comision',list[index].tipoServicio.toString()),
                                     _buildListItem('Estado de solicitud',list[index].estado.toString()),
                                     _buildListItem('Estado de pago',list[index].estadoPago.toString()),

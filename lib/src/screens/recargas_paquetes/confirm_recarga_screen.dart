@@ -5,6 +5,7 @@ import 'package:movilcomercios/src/internet_services/common/bolsa_api_connection
 import '../../app_router/app_router.dart';
 import '../../internet_services/common/login_api_conection.dart';
 import '../../internet_services/recargas/venta_api_conection.dart';
+import '../../models/recargas/paquetes.dart';
 import '../../models/recargas/ws_recargas.dart';
 import '../../providers/shared_providers.dart';
 import '../../providers/ultimas_ventas_provider.dart';
@@ -245,9 +246,12 @@ class ConfirmRecargasPaquetesScreen extends ConsumerWidget {
                         style: TextButton.styleFrom(
                           padding: const EdgeInsets.all(16.0),
                         ),
-                        child: const Text('Atras'),
+                        child: const Text('Cancelar'),
                         onPressed: () {
-                          route.go('/recargas_paquetes');
+                          ref.read(telefonoSeleccionadoProvider.notifier).update((state) => '');
+                          ref.read(valorSeleccionadoProvider.notifier).update((state) => 0);
+                          ref.read(paqueteSeleccionadoProvider.notifier).update((state) => Paquetes());
+                          route.go('/home');
                         }
                     ),
                   ],

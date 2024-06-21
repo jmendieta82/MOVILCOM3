@@ -193,7 +193,7 @@ class _PagoFacturasScreenState extends ConsumerState {
                       'entidad':'Ninguna',
                       'app_ver':3,
                     };
-                    if(totalAbonoController.text.isNotEmpty && imagen64Seleccionada.isNotEmpty && entidadSeleccionada.isNotEmpty){
+                    if(totalAbonoController.text.isNotEmpty && imagen64Seleccionada.isNotEmpty){
                       ref.read(progressProvider.notifier).update((state) => true);
                       pagarSaldo(obj).then((respponse){
                         ref.read(progressProvider.notifier).update((state) => false);

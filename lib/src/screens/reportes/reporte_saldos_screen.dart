@@ -22,20 +22,22 @@ class _ReporteSolicitudesScreenState extends ConsumerState<ReporteSolicitudesScr
   @override
   Widget build(BuildContext context) {
     String formatDate(dateString) {
-      print(dateString);
       final DateFormat inputFormat = DateFormat('yyyy-MM-dd');
       final DateFormat outputFormat = DateFormat('dd/MM/yyyy');
       final DateTime parsedDate = inputFormat.parse(dateString);
       final String formattedDate = outputFormat.format(parsedDate);
       return formattedDate;
     }
-    String formatTime(dateString) {
-      final DateFormat inputFormat = DateFormat('HH:mm:ss.SSSZ');
-      final DateFormat outputFormat = DateFormat('hh:mm a');
-      final DateTime parsedDate = inputFormat.parse(dateString);
-      final String formattedTime = outputFormat.format(parsedDate);
-      return formattedTime;
+    String extractTime(String dateTimeString) {
+      // Convertir la cadena a un objeto DateTime
+      DateTime fechaHora = DateTime.parse(dateTimeString);
+      // Sumar 5 horas al objeto DateTime
+      DateTime nuevaFechaHora = fechaHora.subtract(Duration(hours: 5));
+      // Formatear la hora en el formato deseado (hh:mm:ss a)
+      String horaFormateada = DateFormat('hh:mm:ss a').format(nuevaFechaHora);
+      return horaFormateada;
     }
+
     final usuarioConectado = ref.watch(usuarioConectadoProvider);
     final router  = ref.watch(appRouteProvider);
     final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
@@ -76,6 +78,18 @@ class _ReporteSolicitudesScreenState extends ConsumerState<ReporteSolicitudesScr
       }
 
     }
+    String obtenerEquivalente(String tipoTransaccion) {
+      print(tipoTransaccion);
+      final tipoTransaccionMap = {
+        'SSCR': 'Solicitud contado',
+        'SSC': 'Solicitud crédito',
+        'AJS': 'Reversión',
+        // Agrega otros tipos de transacción según sea necesario
+      };
+
+      return tipoTransaccionMap[tipoTransaccion] ?? 'Tipo no encontrado';
+    }
+
 
     return Scaffold(
       appBar: AppBar(
@@ -161,21 +175,19 @@ class _ReporteSolicitudesScreenState extends ConsumerState<ReporteSolicitudesScr
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: ExpansionTile(
-                            title: _buildListItem('Transaccion',listaSolicitudes[index].id.toString()),
+                            title: _buildListItem(obtenerEquivalente(listaSolicitudes[index].tipo_transaccion.toString()),listaSolicitudes[index].id.toString()),
                             subtitle: Column(
                               children: [
                                 _buildListItem('Valor','\$${formatter.format(listaSolicitudes[index].valor.toString())}'),
-                                _buildListItem('Fecha creacion', listaSolicitudes[index].created_at != null ? formatDate(listaSolicitudes[index].created_at.toString()) : 'Fecha no disponible'),
+                                _buildListItem('Fecha', listaSolicitudes[index].created_at != null ? formatDate(listaSolicitudes[index].created_at.toString()) : 'Fecha no disponible'),
                               ],
                             ),
                             children: [
                               _buildListItem('Transaccion',listaSolicitudes[index].id.toString()),
                               _buildListItem('Valor','\$${formatter.format(listaSolicitudes[index].valor.toString())}'),
                               _buildListItem('Metodo de pago',listaSolicitudes[index].tipo_transaccion.toString()),
-                              _buildListItem('Fecha creacion',formatDate(listaSolicitudes[index].created_at.toString())),
-                              _buildListItem('Hora creacion', listaSolicitudes[index].hour_at != null ? formatTime(listaSolicitudes[index].hour_at.toString()) : 'hora no disponible'),
-                              _buildListItem('Fecha aprobacion', listaSolicitudes[index].fecha_aprobacion != null ? formatDate(listaSolicitudes[index].fecha_aprobacion.toString()) : 'Fecha no disponible'),
-                              _buildListItem('Hora', listaSolicitudes[index].hour_at != null ? formatTime(listaSolicitudes[index].hora_aprobacion.toString()) : 'hora no disponible'),
+                              _buildListItem('Fecha',formatDate(listaSolicitudes[index].created_at.toString())),
+                              _buildListItem('Hora', listaSolicitudes[index].hour_at != null ? extractTime(listaSolicitudes[index].hour_at.toString()) : 'hora no disponible'),
                               _buildListItem('Tipo de comision',listaSolicitudes[index].tipoServicio.toString()),
                               _buildListItem('Estado de solicitud',listaSolicitudes[index].estado.toString()),
                               _buildListItem('Estado de pago',listaSolicitudes[index].estadoPago.toString()),

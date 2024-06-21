@@ -1,7 +1,6 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:movilcomercios/src/internet_services/common/login_api_conection.dart';
 import 'package:tuple/tuple.dart';
 import '../../app_router/app_router.dart';
@@ -11,12 +10,13 @@ import '../../providers/shared_providers.dart';
 import '../common/custom_text_filed.dart';
 
 TextEditingController numeroDestinoController = TextEditingController();
+
+
 class RecargasPaquetesScreen extends ConsumerWidget {
   const RecargasPaquetesScreen({super.key});
 
   @override
   Widget build(BuildContext context,ref) {
-    numeroDestinoController.clear();
     final empresaSeleccionada = ref.watch(empresaSeleccionadaProvider);
     final route  = ref.watch(appRouteProvider);
     final selectedTab = ref.watch(selectedTabProvider);
@@ -89,12 +89,11 @@ class RecargasView extends ConsumerWidget {
         empresaSeleccionada.proveedor_id,
         empresaSeleccionada.empresa_id);
     final data = ref.watch(paquetesListProvider(params));
-   TextEditingController valorVenta = TextEditingController();
-   TextEditingController numeroDestino = TextEditingController();
-   final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
+    TextEditingController valorVenta = TextEditingController();
+    final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
      locale: 'es-Co', decimalDigits: 0,symbol: '',
    );
-   final route  = ref.watch(appRouteProvider);
+    final route  = ref.watch(appRouteProvider);
 
 
     return SingleChildScrollView(
@@ -173,6 +172,7 @@ class RecargasView extends ConsumerWidget {
                                 ref.read(paqueteSeleccionadoProvider.notifier).update((state) => tiempoAire);
                                 ref.read(valorSeleccionadoProvider.notifier).update((state) => int.parse(valorVenta.text.replaceAll('.', '')));
                                 ref.read(telefonoSeleccionadoProvider.notifier).update((state) => numeroDestinoController.text);
+                                numeroDestinoController.clear();
                                 route.go('/confirm_recargas_paquetes');
                                 },error:(err,s) => print(err.toString()),loading: () =>{const CircularProgressIndicator()});
                             }
@@ -229,7 +229,6 @@ class PaquetesView extends ConsumerWidget {
   @override
   Widget build(BuildContext context,ref) {
     final paqueteSeleccionado = ref.watch(paqueteSeleccionadoProvider);
-    TextEditingController numeroDestino = TextEditingController();
     final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
       locale: 'es-Co', decimalDigits: 0,symbol: '',
     );
@@ -282,6 +281,7 @@ class PaquetesView extends ConsumerWidget {
                          if( numeroDestinoController.text.isNotEmpty && paqueteSeleccionado.valorProducto != 0){
                            ref.read(telefonoSeleccionadoProvider.notifier).update((state) => numeroDestinoController.text);
                            ref.read(valorSeleccionadoProvider.notifier).update((state) => paqueteSeleccionado.valorProducto?? 0);
+                           numeroDestinoController.clear();
                            route.go('/confirm_recargas_paquetes');
                          }
                          else {
@@ -314,8 +314,10 @@ class PaquetesView extends ConsumerWidget {
                      child: const Text('Cancelar'),
                      onPressed: () {
                        ref.read(telefonoSeleccionadoProvider.notifier).update((state) => '');
-                       ref.read(selectedTabProvider.notifier).update((state) => 0);
-                       route.go('/empresas');
+                       ref.read(valorSeleccionadoProvider.notifier).update((state) => 0);
+                       ref.read(paqueteSeleccionadoProvider.notifier).update((state) => Paquetes());
+                       numeroDestinoController.text = '';
+                       route.go('/home');
                      },
                    ),
                  ],

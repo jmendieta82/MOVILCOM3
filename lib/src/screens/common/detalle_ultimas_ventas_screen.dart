@@ -1,6 +1,7 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import '../../app_router/app_router.dart';
 import '../../providers/shared_providers.dart';
 
@@ -9,6 +10,15 @@ class DetalleUltimasVentasScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context,ref) {
+    String extractTime(String dateTimeString) {
+      // Convertir la cadena a un objeto DateTime
+      DateTime fechaHora = DateTime.parse(dateTimeString);
+      // Restar 5 horas al objeto DateTime
+      DateTime nuevaFechaHora = fechaHora.subtract(Duration(hours: 5));
+      // Formatear la hora en el formato deseado (hh:mm:ss a)
+      String horaFormateada = DateFormat('hh:mm:ss a').format(nuevaFechaHora);
+      return horaFormateada;
+    }
     final route  = ref.watch(appRouteProvider);
     final CurrencyTextInputFormatter formatter = CurrencyTextInputFormatter(
       locale: 'es-Co', decimalDigits: 0,symbol: '',
@@ -17,14 +27,6 @@ class DetalleUltimasVentasScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title:Text('Transaccion N. ${transaccion.id.toString()}'),
-
-        /*actions: transaccion.imprime == true?
-        const [
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Icon(Icons.print),
-          )
-        ]:[],*/
       ),
       body: SafeArea(
         child: Padding(
@@ -38,6 +40,7 @@ class DetalleUltimasVentasScreen extends ConsumerWidget {
                     _buildListItem('Codigo de aprobacion',transaccion.codigoTransaccionExterna.toString()),
                     _buildListItem('Venta desde',transaccion.ventaDesde.toString()),
                     _buildListItem('Fecha',transaccion.createdAt.toString()),
+                    _buildListItem('Hora',extractTime(transaccion.hourAt.toString())),
                     transaccion.convenioPago == null?
                     _buildListItem('Operador',transaccion.nomEmpresa.toString())
                     :_buildListItem('Convenio',transaccion.convenioPago.toString()),

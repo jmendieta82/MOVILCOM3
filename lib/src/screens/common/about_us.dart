@@ -62,7 +62,7 @@ class AboutUsPage extends ConsumerWidget {
             // Versión de la aplicación y derechos reservados
             const Spacer(),
             const Text(
-              'Versión de la aplicación: 3.0.0',
+              'Versión de la aplicación: 3.1.3',
               style: TextStyle(fontSize: 12),
             ),
             const SizedBox(height: 8),

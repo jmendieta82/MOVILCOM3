@@ -7,6 +7,7 @@ import 'package:movilcomercios/src/internet_services/saldos/solicitud_saldo_api_
 
 import '../../internet_services/common/bolsa_api_connection.dart';
 import '../../internet_services/saldos/credito_api_connection.dart';
+import '../../providers/credito_provider.dart';
 import '../../providers/ultimas_solicitudes_provider.dart';
 
 class ResumenSolicitudScreen extends ConsumerWidget {
@@ -86,6 +87,7 @@ class ResumenSolicitudScreen extends ConsumerWidget {
                               ref.invalidate(bolsaActualProvider);
                               ref.invalidate(ultimasSolicitudesListProvider);
                               ref.invalidate(creditoActualProvider);
+                              ref.invalidate(creditoProvider);
                               router.go('/saldos');
                             },
                             child: const Text('Aceptar'),
@@ -124,6 +126,7 @@ class ResumenSolicitudScreen extends ConsumerWidget {
                           response.mensaje?[0],
                           metodoSeleccionado == 'Credito'?'${response.mensaje?[1]}':''
                         ];
+
                         ref.read(respuestaSaldoPovider.notifier).update((state) => list);
                       });
                     },
