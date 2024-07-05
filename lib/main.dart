@@ -3,6 +3,7 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movilcomercios/src/app_router/app_router.dart';
+import 'package:flutterSmiSdkPlugin/flutterSmiSdkPlugin.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -40,6 +41,9 @@ class _MyAppState extends ConsumerState<MyApp> {
     );
     _localization.onTranslatedLanguage = _onTranslatedLanguage;
     super.initState();
+    FlutterSmiSdkPlugin.addSdStateListner((Map sdState) {
+      print('Sd State: $sdState');
+    });
   }
   void _onTranslatedLanguage(Locale? locale) {
     setState(() {});

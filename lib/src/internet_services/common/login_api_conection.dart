@@ -8,7 +8,6 @@ import '../dio/dio_client.dart';
 
 Future<UsuarioActual> loginUsuario(String username,String password) async {
   DioClient conexion = DioClient.instance;
-
   bool isConnected = await conexion.checkInternetConnection();
   if(isConnected){
     conexion.setUrl('api-token-auth3');

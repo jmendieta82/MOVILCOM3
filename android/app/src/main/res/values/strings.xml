@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="api_key">ak-e92a8711-cbe9-459a-bff4-b1b83eed9d7b</string>
+    <string name="sdk_messaging">true</string>
+    <string name="icon_folder">mipmap</string>
+    <string name="icon_name">ic_launcher</string>
+    <string name="smisdk_user_id">mrncolombia</string>
+</resources>

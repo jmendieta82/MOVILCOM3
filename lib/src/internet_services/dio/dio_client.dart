@@ -19,7 +19,8 @@ class DioClient {
   );
 
   Future<bool> checkInternetConnection() async {
-    try {
+    return true;
+    /*try {
       Dio dio = Dio();
       dio.options.connectTimeout = const Duration(seconds: 5); // Timeout de conexión de 5 segundos
       dio.options.receiveTimeout = const Duration(seconds: 5); // Timeout de recepción de 5 segundos
@@ -27,7 +28,7 @@ class DioClient {
       return response.statusCode == 200;
     } catch (e) {
       return false;
-    }
+    }*/
   }
 
   void setAuthToken(String token) {

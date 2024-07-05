@@ -238,6 +238,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutterSmiSdkPlugin:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: master
+      resolved-ref: dc40c6d1c67555f8689aff31de40a7369a4fae04
+      url: "https://bitbucket.org/datami/fluttersmisdkplugin.git"
+    source: git
+    version: "1.0.4"
   flutter_barcode_scanner:
     dependency: "direct main"
     description:
